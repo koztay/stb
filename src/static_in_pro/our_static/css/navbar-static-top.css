@@ -6,9 +6,12 @@ body {
     margin-bottom: 19px;
     background-color: #5ACDFF;
     border-color: #00B2FF;
+    height: 61px;
 }
 
 .navbar-default .navbar-brand {
+
+    padding-top: 0;
     color: #000;
     font-weight: 900;
 }
