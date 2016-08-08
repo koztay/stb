@@ -1,0 +1,36 @@
+bin/
+include/
+lib/
+.DS_STORE
+.Python
+
+;;files to ignore
+settings.py
+
+
+;;extensions to ignore
+*.log
+*.pot
+*.pyc
+
+;;directories to ignore
+.idea/
+bootstrap template/
+images/
+static_in_env
+webfaction
+LICENSE
+Notlar.txt
+README.md
+carts/__pycache__/
+carts/migrations/__pycache__/
+ecommerce2/__pycache__/
+ecommerce2/settings/__pycache__/
+newsletter/__pycache__/
+newsletter/migrations/__pycache__/
+orders/__pycache__/
+orders/migrations/__pycache__/
+products/__pycache__/
+products/migrations/0010_auto_20160528_1907.py
+products/migrations/__pycache__/
+products/templatetags/__pycache__/
