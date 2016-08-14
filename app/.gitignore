@@ -1,3 +1,4 @@
 /ecommerce2/old_settings.py
 /ecommerce2/settings/*
 
+db.sqlite3

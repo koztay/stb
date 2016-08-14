@@ -1,46 +1,32 @@
 version: '2'
-
-volumes:
-  istebu-pgdata:
-  istebu-websrc:
-  istebu-production_static:
-  istebu-development_static:
-  istebu-nginxstatic:
-
 services:
   postgres:
+    image: postgres:9.4
     restart: always
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-    volumes:
-      - istebu-pgdata:/var/lib/postgresql/data/
     env_file: .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+
+  app:
+    build: ./app/
+    env_file: .env
+    expose:
+      - '8000'
+    volumes:
+      - static-data:/static_in_env/static_root/
 
   web:
     build: ./web/
     restart: always
-    expose:
-      - "8000"
-    volumes:
-      - istebu-websrc:/usr/src/app
-      - istebu-production_static:/usr/src/app/static_in_pro
-      - istebu-development_static:/usr/src/static_in_env
-
-    env_file: .env
-    environment:
-      # - DEBUG : 'true'  # .env file 'a yaz
-      # - SECRET_KEY : 'my_secret_key' # .env file 'a yaz, buraya yazamak doğru değil
-
-    command: /usr/local/bin/gunicorn ecommerce2.wsgi:application -w 2 -b :8000
-
-
-  nginx:
-    restart: always
-    build: ./nginx/
     ports:
       - "80:80"
     volumes:
-      - istebu-nginxstatic:/www/static
+      - static-data:/static_in_env/static_root/
     volumes_from:
-      - web
+      - app
+
+volumes:
+  postgres-data:
+    driver: local
+  static-data:
+    driver: local
