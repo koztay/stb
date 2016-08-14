@@ -6,5 +6,6 @@ class ProductsAppConfig(AppConfig):
     verbose_name = 'Products'
 
     def ready(self):
-        # import signal handlers
+        # import signal handlers # aşağıdaki satırdaki gibi signals import edilmezse hiçbir
+        # signal çalışmıyor...
         pass
