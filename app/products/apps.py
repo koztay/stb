@@ -8,4 +8,4 @@ class ProductsAppConfig(AppConfig):
     def ready(self):
         # import signal handlers # aşağıdaki satırdaki gibi signals import edilmezse hiçbir
         # signal çalışmıyor...
-        pass
+        form . import signals

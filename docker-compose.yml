@@ -14,6 +14,7 @@ services:
       - '8000'
     volumes:
       - static-data:/static_in_env/static_root/
+      - media-data:/static_in_env/media_root/
 
   web:
     build: ./web/
@@ -22,6 +23,7 @@ services:
       - "80:80"
     volumes:
       - static-data:/static_in_env/static_root/
+      - media-data:/static_in_env/media_root/
     volumes_from:
       - app
 
@@ -29,4 +31,6 @@ volumes:
   postgres-data:
     driver: local
   static-data:
+    driver: local
+  media-data:
     driver: local
