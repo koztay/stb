@@ -62,8 +62,8 @@ def contact(request):
             form_message,
             form_email)
         some_html_message = """
-		<h1>hello</h1>
-		"""
+        <h1>hello</h1>
+        """
         send_mail(subject,
                   contact_message,
                   from_email,
