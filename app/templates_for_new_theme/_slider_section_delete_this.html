@@ -1,11 +1,15 @@
 {% load staticfiles %}
 
+{% block slider %}
+{{ object_list }}
+
 <!-- Start slider -->
 <section id="aa-slider">
     <div class="aa-slider-area">
         <div id="sequence" class="seq">
             <div class="seq-screen">
                 <ul class="seq-canvas">
+
                     <!-- single slide item -->
                     <li>
                         <div class="seq-model">
@@ -77,3 +81,5 @@
     </div>
 </section>
 <!-- / slider -->
+{% endblock %}
+
