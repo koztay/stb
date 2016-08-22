@@ -8,14 +8,14 @@ import random
 
 # bu aşağıdaki fonksiyon çalışmaz. Çünkü lokasyon product olarak gözüküyor.
 # universal bir değer döndürecek şekilde düzenlenmeli. Ayrıca
-def thumbnail_location(instance, filename):
-    return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
-
-THUMB_CHOICES = (
-    ("hd", "HD"),
-    ("sd", "SD"),
-    ("micro", "Micro"),
-)
+# def thumbnail_location(instance, filename):
+#     return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
+#
+# THUMB_CHOICES = (
+#     ("hd", "HD"),
+#     ("sd", "SD"),
+#     ("micro", "Micro"),
+# )
 
 
 def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):
