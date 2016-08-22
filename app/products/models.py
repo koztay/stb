@@ -2,8 +2,37 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 
-from .utils import image_upload_to, image_upload_to_featured, thumbnail_location, THUMB_CHOICES
+# from utils import thumbnail_location, THUMB_CHOICES
+
+
+def thumbnail_location(instance, filename):
+    return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
+
+THUMB_CHOICES = (
+    ("hd", "HD"),
+    ("sd", "SD"),
+    ("micro", "Micro"),
+)
+
+
+# This utility function creates the filename and filepath according to the slug and product instance
+def image_upload_to(instance, filename):
+    title = instance.product.title
+    slug = slugify(title)
+    basename, file_extension = filename.split(".")
+    new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
+    return "products/%s/%s" % (slug, new_filename)
+
+
+# This utility function creates the filename and filepath according to the slug and product instance
+def image_upload_to_featured(instance, filename):
+    title = instance.product.title
+    slug = slugify(title)
+    basename, file_extension = filename.split(".")
+    new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
+    return "products/%s/featured/%s" % (slug, new_filename)
 
 
 class ProductQuerySet(models.query.QuerySet):
