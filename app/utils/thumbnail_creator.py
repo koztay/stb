@@ -1,43 +1,21 @@
 from django.conf import settings
-from django.utils.text import slugify
-
-
-# This utility function creates the filename and filepath according to the slug and product instance
-def image_upload_to(instance, filename):
-    title = instance.product.title
-    slug = slugify(title)
-    basename, file_extension = filename.split(".")
-    new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
-    return "products/%s/%s" % (slug, new_filename)
-
-
-# This utility function creates the filename and filepath according to the slug and product instance
-def image_upload_to_featured(instance, filename):
-    title = instance.product.title
-    slug = slugify(title)
-    basename, file_extension = filename.split(".")
-    new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
-    return "products/%s/featured/%s" % (slug, new_filename)
-
-
-# Yine bu dosyaya thumbnail oluşturan fonksiyonu da ekleyebiliriz.
-
-def thumbnail_location(instance, filename):
-    return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
-
-
-THUMB_CHOICES = (
-    ("hd", "HD"),
-    ("sd", "SD"),
-    ("micro", "Micro"),
-)
-
+from django.core.files import File
 import os
 import shutil
 from PIL import Image
 import random
 
-from django.core.files import File
+
+# bu aşağıdaki fonksiyon çalışmaz. Çünkü lokasyon product olarak gözüküyor.
+# universal bir değer döndürecek şekilde düzenlenmeli. Ayrıca
+# def thumbnail_location(instance, filename):
+#     return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
+#
+# THUMB_CHOICES = (
+#     ("hd", "HD"),
+#     ("sd", "SD"),
+#     ("micro", "Micro"),
+# )
 
 
 def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):

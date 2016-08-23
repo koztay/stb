@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 
 from products.models import ProductFeatured, Product
-from visual_site_elements.models import SliderImage
+from visual_site_elements.models import SliderImage, Promotion
 from .forms import ContactForm, SignUpForm
 
 
@@ -15,6 +15,9 @@ def home(request):
     products = Product.objects.all().order_by("?")[:6]
     products2 = Product.objects.all().order_by("?")[:6]
     sliders = SliderImage.objects.all().filter(active=True)
+    promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
+    promotions_right = Promotion.objects.all().filter(active=True).order_by("?")[1:5]
+    promotions = (promotion_left, promotions_right)
 
     form = SignUpForm(request.POST or None)
     context = {
@@ -24,6 +27,7 @@ def home(request):
         "products": products,
         "products2": products2,
         "sliders": sliders,
+        "promotions": promotions,
 
     }
 

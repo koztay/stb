@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save
 from django.utils.text import slugify
 
 from products.models import Variation, AttributeType, AttributeValue, Product, Thumbnail, ProductImage
-from products.utils import create_new_thumb
+from utils import thumbnail_creator
 
 
 def product_post_save_receiver_for_variation(sender, instance, created, *args, **kwargs):
@@ -90,13 +90,13 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         media_path = instance.get_image_path()
         owner_slug = instance.product.slug
         if hd_created:
-            create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
+            thumbnail_creator.create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
 
         if sd_created:
-            create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
+            thumbnail_creator.create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
 
         if micro_created:
-            create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
+            thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
 
 
 post_save.connect(productimage_post_save_receiver_for_thumbnail, sender=ProductImage)
