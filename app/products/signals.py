@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from django.utils.text import slugify
 
-from products.models import Variation, AttributeType, AttributeValue, Product, Thumbnail, ProductImage
+from products.models import Variation, AttributeType, AttributeValue, Product, Category, Thumbnail, ProductImage
 from utils import thumbnail_creator
 
 
@@ -60,21 +61,16 @@ def attribute_type_post_save_receiver(sender, instance, created, *args, **kwargs
             AttributeValue.objects.create(attribute_type=instance, product=product, value="")
 
 
-def create_slug(instance, new_slug=None):
+def create_slug(instance, sender, new_slug=None):
     slug = slugify(instance.title)
     if new_slug is not None:
         slug = new_slug
-    qs = Product.objects.filter(slug=slug)
+    qs = sender.objects.filter(slug=slug)
     exists = qs.exists()
     if exists:
         new_slug = "%s-%s" % (slug, qs.first().id)
         return create_slug(instance, new_slug=new_slug)
     return slug
-
-
-def product_pre_save_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = create_slug(instance)
 
 
 def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *args, **kwargs):
@@ -103,4 +99,23 @@ post_save.connect(productimage_post_save_receiver_for_thumbnail, sender=ProductI
 post_save.connect(product_post_save_receiver_for_attributes, sender=Product)
 post_save.connect(product_post_save_receiver_for_variation, sender=Product)
 post_save.connect(attribute_type_post_save_receiver, sender=AttributeType)
-pre_save.connect(product_pre_save_receiver, sender=Product)
+
+
+@receiver(pre_save)
+def slug_pre_save_receiver(sender, instance, *args, **kwargs):
+    list_of_models = ('Product', 'Category', )
+    if sender.__name__ in list_of_models:  # this is the dynamic part you want
+        if not instance.slug:
+            instance.slug = create_slug(instance, sender)
+        # if sender.__name__ == 'Category':
+        #     instance.order = instance.id
+
+
+# @receiver(post_save, sender=Category)
+# def category_order_receiver(sender, instance, *args, **kwargs):
+#     print("post save category çalışıyor mu?")
+#     instance.order = instance.id
+#     # instance.save() # bu satır patlatıyor...
+
+
+
