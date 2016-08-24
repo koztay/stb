@@ -4,10 +4,10 @@
     <ul class="dropdown-menu">
 
         {% for child in category.get_children %}
-            <li><a href="#">{{ child.title }}</a></li>
+            <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
         {% endfor %}
 
-        <li><a href="#">Tümü.. <span class="caret"></span></a>
+        <li><a href="{{ category.get_absolute_url }}">Tümü.. <span class="caret"></span></a>
 {#                <ul class="dropdown-menu">#}
 {#                    <li><a href="#">Sleep Wear</a></li>#}
 {#                    <li><a href="#">Sandals</a></li>#}
