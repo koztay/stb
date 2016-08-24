@@ -15,8 +15,12 @@ def home(request):
     products = Product.objects.all().order_by("?")[:6]
     products2 = Product.objects.all().order_by("?")[:6]
     sliders = SliderImage.objects.all().filter(active=True)
+
+    # sol taraftaki promosyon için rastgele bir promosyon seç:
     promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
-    promotions_right = Promotion.objects.all().filter(active=True).order_by("?")[1:5]
+
+    # sol taraf için seçilen promosyonu aşağıdaki listeden çıkar ve kalanlar arasından ilk 4 'ü al, rastgele sırala.
+    promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
     promotions = (promotion_left, promotions_right)
 
     form = SignUpForm(request.POST or None)
