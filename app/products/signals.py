@@ -79,8 +79,9 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         sd, sd_created = Thumbnail.objects.get_or_create(product=instance.product, type='sd')
         micro, micro_created = Thumbnail.objects.get_or_create(product=instance.product, type='micro')
 
+        # hd_max = (width, height)
         hd_max = (500, 500)
-        sd_max = (350, 350)
+        sd_max = (250, 300)
         micro_max = (150, 150)
 
         media_path = instance.get_image_path()

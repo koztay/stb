@@ -27,29 +27,58 @@
 <a class="scrollToTop" href="#"><i class="fa fa-chevron-up"></i></a>
 <!-- END SCROLL TOP BUTTON -->
 
-{% block content %}
-{# Bunu buraya mı koymak gerek bilemedim...#}
-{% endblock %}
+
 {% include '_header_section.html' %}
 {% include "visual_site_elements/menu/menu_items.html" with object_list=categories %}
-{#{% include '_menu_section.html' %}#}
 
-{% include "visual_site_elements/sliders/sliders.html" with object_list=sliders %}
-{% include "visual_site_elements/promotions/promotions.html" with object_list=promotions %}
+{% block sliders %}
+{% endblock %}
+
+{% block promotions %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block popular %}
+{% endblock %}
+
+{% block banners %}
+{% endblock %}
+
+{% block products %}
+{% endblock %}
+
+{#---#}
+
+{% block support %}
+{% endblock %}
+
+{% block testimonial %}
+{% endblock %}
+
+{% block blog %}
+{% endblock %}
+
+{% block brands %}
+{% endblock %}
+
+{% block subscribe %}
+{% endblock %}
 
 
-{% include '_products_section.html' %}
-{% include '_banner_section.html' %}
-{% include '_popular_section.html' %}
-{% include '_support_section.html' %}
-{% include '_testimonial_section.html' %}
-{% include '_blog_section.html' %}
-{% include '_client_brand_section.html' %}
-{% include '_subscribe_section.html' %}
 {% include '_footer_section.html' %}
 {% include '_login_modal_form.html' %}
 {% include '_javascript_section.html' %}
+{##}
+{% include "javascript.html" %}
 
+<script>
+    $(document).ready(function () {
+        {% block jquery %}
+        {% endblock %}
+    });
 
+</script>
 </body>
 </html>

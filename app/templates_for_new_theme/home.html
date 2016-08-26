@@ -1,6 +1,61 @@
 {% extends "__base.html" %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
-{% block content %}
 
+
+
+{% block sliders %}
+    {% include "visual_site_elements/sliders/sliders.html" with object_list=sliders %}
 {% endblock %}
+
+{% block content %}
+{% endblock %}
+
+
+{% block promotions %}
+    {% include "visual_site_elements/promotions/promotions.html" with object_list=promotions %}
+{% endblock %}
+
+{% block products %}
+{#    {% include '_products_section.html' %}#}
+    {% include "products/products.html" with object_list=products %}
+{% endblock %}
+
+{% block banners %}
+    {% include '_banner_section.html' %}
+{% endblock %}
+
+{% block popular %}
+{#    {% include '_popular_section.html' %}#}
+    {% include "products/products.html" with object_list=products2 %}
+{% endblock %}
+
+{% block support %}
+    {% include '_support_section.html' %}
+{% endblock %}
+
+{% block testimonial %}
+    {% include '_testimonial_section.html' %}
+{% endblock %}
+
+{% block blog %}
+    {% include '_blog_section.html' %}
+{% endblock %}
+
+{% block brands %}
+    {% include '_client_brand_section.html' %}
+{% endblock %}
+
+{% block subscribe %}
+    {% include '_subscribe_section.html' %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
