@@ -13,6 +13,7 @@ def thumbnail_location(instance, filename):
 THUMB_CHOICES = (
     ("hd", "HD"),
     ("sd", "SD"),
+    ("medium", "Medium"),
     ("micro", "Micro"),
 )
 
@@ -85,6 +86,14 @@ class Product(models.Model):
         #     if img:
         #         return img.image.url
         #     return img  # None
+
+    def get_main_category(self):
+        categories = Category.objects.all().filter(product=self)
+        for category in categories:
+            if category.is_child:
+                return
+            else:
+                return category
 
 
 class Variation(models.Model):

@@ -12,8 +12,8 @@ def home(request):
     title = 'Sign Up Now'
 
     featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
-    products = Product.objects.all().order_by("?")[:6]
-    products2 = Product.objects.all().order_by("?")[:6]
+    products = Product.objects.all().order_by("?")[:16]
+    products2 = Product.objects.all().order_by("?")[:8]
     sliders = SliderImage.objects.all().filter(active=True)
     categories = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
     # sol taraftaki promosyon için rastgele bir promosyon seç:
