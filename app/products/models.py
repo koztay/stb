@@ -63,7 +63,7 @@ class Product(models.Model):
     product_type = models.ForeignKey('ProductType', null=True, blank=True)
     # attribute_type = models.ManyToManyField('AttributeType')
     default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
-    slug = models.SlugField(blank=True, )  # unique=True)
+    slug = models.SlugField(blank=True, unique=True)  # unique=True)
 
     objects = ProductManager()
 
@@ -147,10 +147,13 @@ class ProductImage(models.Model):
 
 # Product Category
 class Category(models.Model):
+    parent = models.ForeignKey("self", null=True, blank=True)
     title = models.CharField(max_length=120, unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
+    show_on_homepage = models.BooleanField(default=True)
+    order = models.IntegerField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 
     def __str__(self):
@@ -158,6 +161,19 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse("categories:category_detail", kwargs={"slug": self.slug})
+
+    @property
+    def is_child(self):
+        if self.parent is not None:
+            return True
+        else:
+            return False
+
+    def get_children(self):
+        if self.is_child:
+            return None
+        else:
+            return Category.objects.filter(parent=self)
 
 
 class ProductFeatured(models.Model):

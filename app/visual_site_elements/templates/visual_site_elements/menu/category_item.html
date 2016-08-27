@@ -1,0 +1,20 @@
+
+<li><a href="#">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
+    {% if category.get_children %}
+    <ul class="dropdown-menu">
+
+        {% for child in category.get_children %}
+            <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+        {% endfor %}
+
+        <li><a href="{{ category.get_absolute_url }}">Tümü.. <span class="caret"></span></a>
+{#                <ul class="dropdown-menu">#}
+{#                    <li><a href="#">Sleep Wear</a></li>#}
+{#                    <li><a href="#">Sandals</a></li>#}
+{#                    <li><a href="#">Loafers</a></li>#}
+{#                </ul>#}
+        </li>
+
+    </ul>
+    {% endif %}
+</li>

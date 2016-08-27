@@ -1,0 +1,32 @@
+{% load get_thumbnail %}
+
+<!-- start single product item -->
+<li>
+    <figure>
+        {% if product|get_thumbnail:"sd" %}
+        <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
+            <img id='img' class='img-responsive' src='{{ product|get_thumbnail:"sd"}}'
+            alt="{{ product.title|lower }} img" />
+        </a>
+        {% endif %}
+        <a class="aa-add-card-btn" href="#"><span
+                class="fa fa-shopping-cart"></span>Add To Cart</a>
+        <figcaption>
+            <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+            <span class="aa-product-price">$45.50</span><span
+                class="aa-product-price"><del>$65.50</del></span>
+        </figcaption>
+    </figure>
+    <div class="aa-product-hvr-content">
+        <a href="#" data-toggle="tooltip" data-placement="top"
+           title="Add to Wishlist"><span class="fa fa-heart-o"></span></a>
+        <a href="#" data-toggle="tooltip" data-placement="top"
+           title="Compare"><span class="fa fa-exchange"></span></a>
+        <a href="#" data-toggle2="tooltip" data-placement="top"
+           title="Quick View" data-toggle="modal"
+           data-target="#quick-view-modal"><span
+                class="fa fa-search"></span></a>
+    </div>
+    <!-- product badge -->
+    <span class="aa-badge aa-sale" href="#">SALE!</span>
+</li>

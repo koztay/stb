@@ -18,13 +18,52 @@ import random
 # )
 
 
-def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):
+def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
     filename = os.path.basename(media_path)
     print("filename : %s" % filename)
     thumb = Image.open(media_path)
-    size = (max_length, max_width)
-    thumb.thumbnail(size, Image.ANTIALIAS)
-    print(thumb)
+    width, height = thumb.size
+    # size = (max_height, max_width)
+    aspect_ratio = width / height
+
+    # width_ratio = width / max_width
+    # height_ratio = height / max_height
+    #
+    # # Eğer aşağıdaki koşul doğru ise resim eninden kırpılacak demektir.
+    # if width_ratio > height_ratio:
+    #     resize_ratio = max_width / width
+    #     new_size = (max_height * resize_ratio, max_width * resize_ratio)
+    #     thumb.thumbnail(new_size, Image.ANTIALIAS)
+    #     crop_size = (max_height * resize_ratio - height) / 2
+    #     box = (crop_size, 0, crop_size, 0)
+    #     thumb = thumb.crop(box)
+    #
+
+    if width > max_width or height > max_height:
+        # eğer 1 den büyükse bu demek ki resmin eni boyundan geniş
+        # yani resmin enini max_width 'e kadar küçült boyu uzun kalsın.
+        if aspect_ratio > 1:  # resim enden kırpılacak
+            resize_ratio = max_height / height
+            new_size = (width * resize_ratio, width * resize_ratio)
+            thumb.thumbnail(new_size, Image.ANTIALIAS)
+            new_width, new_heigth = thumb.size
+            crop_size = (new_width-max_width)/2
+            # thumb.crop(left, upper, right, lower)
+            box = (crop_size, 0, crop_size+max_width, max_height)
+            thumb = thumb.crop(box)
+        else:  # resim boydan kırpılacak
+            resize_ratio = max_width / width
+            new_size = (height * resize_ratio, height * resize_ratio)
+            thumb.thumbnail(new_size, Image.ANTIALIAS)
+            new_width, new_heigth = thumb.size
+            crop_size = (new_heigth - max_height) / 2
+            # thumb.crop(left, upper, right, lower)
+            box = (0, crop_size, 0, crop_size+max_height)
+            thumb = thumb.crop(box)
+    else:
+        # burada stok resim kullanmak lazım. Yani ürün resmi hazırlanıyor vb.
+        return False
+
     temp_loc = "%s/%s/tmp" % (settings.MEDIA_ROOT + "/products", owner_slug)
     print("temp_loc : %s" % temp_loc)
     if not os.path.exists(temp_loc):

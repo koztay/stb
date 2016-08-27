@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
 
-from products.models import ProductFeatured, Product
+from products.models import ProductFeatured, Product, Category
 from visual_site_elements.models import SliderImage, Promotion
 from .forms import ContactForm, SignUpForm
 
@@ -15,7 +15,7 @@ def home(request):
     products = Product.objects.all().order_by("?")[:6]
     products2 = Product.objects.all().order_by("?")[:6]
     sliders = SliderImage.objects.all().filter(active=True)
-
+    categories = Category.objects.all().filter(active=True).filter(show_on_homepage=True).order_by('order', 'pk')
     # sol taraftaki promosyon için rastgele bir promosyon seç:
     promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
 
@@ -32,7 +32,7 @@ def home(request):
         "products2": products2,
         "sliders": sliders,
         "promotions": promotions,
-
+        "categories": categories,
     }
 
     if form.is_valid():
