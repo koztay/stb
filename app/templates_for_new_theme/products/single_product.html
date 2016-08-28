@@ -13,8 +13,12 @@
                 class="fa fa-shopping-cart"></span>Add To Cart</a>
         <figcaption>
             <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
-            <span class="aa-product-price">$45.50</span><span
-                class="aa-product-price"><del>$65.50</del></span>
+            {% if product.variation_set.first.sale_price %}
+                <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+            {% else %}
+                <span class="aa-product-price">{{ product.price }},-₺</span>
+            {% endif %}
         </figcaption>
     </figure>
     <div class="aa-product-hvr-content">
