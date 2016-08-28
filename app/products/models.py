@@ -65,6 +65,8 @@ class Product(models.Model):
     # attribute_type = models.ManyToManyField('AttributeType')
     default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     slug = models.SlugField(blank=True, unique=True)  # unique=True)
+    show_on_homepage = models.BooleanField(default=True)
+    show_on_popular = models.BooleanField(default=True)
 
     objects = ProductManager()
 
