@@ -46,6 +46,7 @@
         var url = button.data('url');
         var imagehd = button.data('imagehd');
         var imagesd = button.data('imagesd');
+        var imagemedium = button.data('imagemedium');
         var imagemicro = button.data('imagemicro');
         var category = button.data('category');
         var category_url = button.data('category_url');
@@ -58,11 +59,11 @@
         modal.find('.modal-product-title').text(title);
         modal.find(".modal-product-description").text(description);
         modal.find('.view-product-details').attr("href", url);
-        modal.find('.simpleLens-big-image').attr("src", imagehd);
+        modal.find('.simpleLens-big-image').attr("src", imagemedium);
         modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);
-        modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagehd);
-        modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagehd);
-        modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagesd);
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagemedium);#}
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagemedium);#}
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);#}
         modal.find('.category-url').attr("href", category_url);
         modal.find(".category-url").text(category);
 
