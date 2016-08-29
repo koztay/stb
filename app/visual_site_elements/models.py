@@ -96,8 +96,29 @@ class PromotionThumbnail(models.Model):
         null=True,
         upload_to=thumbnail_location)
 
-    def __unicode__(self):  # __str__(self):
+    def __str__(self):  # __str__(self):
         return str(self.media.path)
+
+
+class HorizontalBanner(models.Model):
+    title = models.CharField(max_length=120)  # bu o slide  için en büyük başlık
+    image = models.ImageField(upload_to=image_upload_to)  # slider size 1170x170 ebatında.
+    url = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):  # __str__(self):
+        return str(self.title)
+
+
+class Testimonial(models.Model):
+    name_of_person = models.CharField(max_length=120)  # yorumu yapan kişinin adı
+    comment = models.CharField(max_length=500)
+    image = models.ImageField(upload_to=image_upload_to)  # satın aldığı ürünün resmi 150x150
+    url = models.CharField(max_length=250)  # N11 veya gittigidiyordaki linki
+    active = models.BooleanField(default=True)
+
+    def __str__(self):  # __str__(self):
+        return str(self.name_of_person)
 
 
 #  Aşağıdaki signals fonksiyonlarını ayırmaya gerek görmedim...
