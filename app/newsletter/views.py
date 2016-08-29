@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 
 from products.models import ProductFeatured, Product, Category
-from visual_site_elements.models import SliderImage, Promotion, HorizontalBanner
+from visual_site_elements.models import SliderImage, Promotion, HorizontalBanner, Testimonial
 from .forms import ContactForm, SignUpForm
 
 
@@ -23,6 +23,7 @@ def home(request):
     # sol taraf için seçilen promosyonu aşağıdaki listeden çıkar ve kalanlar arasından ilk 4 'ü al, rastgele sırala.
     promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
     promotions = (promotion_left, promotions_right)
+    testimonials = Testimonial.objects.filter(active=True).order_by("?")[:3]
 
     form = SignUpForm(request.POST or None)
 
@@ -35,7 +36,8 @@ def home(request):
         "sliders": sliders,
         "promotions": promotions,
         "categories": categories,
-        'horizontal_banner': horizontal_banner,
+        "horizontal_banner": horizontal_banner,
+        "testimonials": testimonials,
     }
 
     if form.is_valid():

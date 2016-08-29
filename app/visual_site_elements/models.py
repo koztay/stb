@@ -112,9 +112,10 @@ class HorizontalBanner(models.Model):
 
 class Testimonial(models.Model):
     name_of_person = models.CharField(max_length=120)  # yorumu yapan kişinin adı
-    comment = models.CharField(max_length=500)
-    image = models.ImageField(upload_to=image_upload_to)  # satın aldığı ürünün resmi 150x150
-    url = models.CharField(max_length=250)  # N11 veya gittigidiyordaki linki
+    comment = models.TextField()
+    comment_date = models.DateField()
+    image = models.CharField(max_length=500)  # satın aldığı ürünün resim linki n11 'deki
+    url = models.CharField(max_length=250)  # N11 veya gittigidiyordaki sayfa linki
     active = models.BooleanField(default=True)
 
     def __str__(self):  # __str__(self):

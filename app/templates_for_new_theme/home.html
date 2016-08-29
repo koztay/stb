@@ -35,11 +35,11 @@
 {% endblock %}
 
 {% block testimonial %}
-    {% include '_testimonial_section.html' %}
+    {% include 'visual_site_elements/testimonials/testimonials.html' with object_list=testimonials %}
 {% endblock %}
 
 {% block blog %}
-    {% include '_blog_section.html' %}
+{#    {% include '_blog_section.html' %}#}
 {% endblock %}
 
 {% block brands %}
