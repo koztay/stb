@@ -1,10 +1,12 @@
 from django.conf import settings
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render
 
 from products.models import ProductFeatured, Product, Category
 from visual_site_elements.models import SliderImage, Promotion, HorizontalBanner, Testimonial
 from .forms import ContactForm, SignUpForm
+from .models import SignUp
 
 
 # Create your views here.
@@ -25,7 +27,41 @@ def home(request):
     promotions = (promotion_left, promotions_right)
     testimonials = Testimonial.objects.filter(active=True).order_by("?")[:3]
 
-    form = SignUpForm(request.POST or None)
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+
+        '''
+        form = SignUpForm()
+        form instance oluştururken parantez içindeki parametreleri
+        yazmazsak POST edildiğinde hiçbirşey eklenmiyor database'e.
+        '''
+        if form.is_valid():
+            instance = form.save(commit=False)
+            email = form.cleaned_data.get('email')
+
+            # Aynı e-posta ile kayıt olunmuş mu bak
+            if SignUp.objects.filter(email=email).exists():
+                # daha önce bu email ile kayıt olunmuş
+                messages.error(request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
+            else:
+                # daha önce kayıt olunmamış kaydedebilirsin.
+                instance.save()
+                messages.success(request, 'Haber bültenimize başarıyla kayıt oldunuz.')
+
+                # try:
+                #     sign_upped = SignUp.objects.filter(email=email).exists()
+                #     if sign_upped:
+                #         messages.error(request, 'Bu e-posta ile daha önce kayıt olunmuş!', "danger")
+                #     else:
+                #         instance.save()
+                #         messages.success(request, 'Haber bültenimize başarıyla kayıt oldunuz.')
+                # except:
+                #     pass
+
+        else:
+            messages.error(request, 'Hatalı e-posta girdiniz.!', "danger")
+    else:
+        form = SignUpForm()
 
     context = {
         "title": title,
@@ -40,21 +76,21 @@ def home(request):
         "testimonials": testimonials,
     }
 
-    if form.is_valid():
-        # form.save()
-        # print request.POST['email'] #not recommended
-        instance = form.save(commit=False)
-
-        full_name = form.cleaned_data.get("full_name")
-        if not full_name:
-            full_name = "New full name"
-        instance.full_name = full_name
-        # if not instance.full_name:
-        # 	instance.full_name = "Justin"
-        instance.save()
-        context = {
-            "title": "Thank you"
-        }
+    # if form.is_valid():
+    #     # form.save()
+    #     # print request.POST['email'] #not recommended
+    #     instance = form.save(commit=False)
+    #
+    #     full_name = form.cleaned_data.get("full_name")
+    #     if not full_name:
+    #         full_name = "New full name"
+    #     instance.full_name = full_name
+    #     # if not instance.full_name:
+    #     # 	instance.full_name = "Justin"
+    #     instance.save()
+    #     context = {
+    #         "title": "Thank you"
+    #     }
 
     return render(request, "home.html", context)
 

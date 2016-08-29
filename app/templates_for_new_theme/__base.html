@@ -31,7 +31,11 @@
 
 
 {% include '_header_section.html' %}
+
 {% include "visual_site_elements/menu/menu_items.html" with object_list=categories %}
+
+{% block messages %}
+{% endblock %}
 
 {% block sliders %}
 {% endblock %}

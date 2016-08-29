@@ -1,14 +1,16 @@
 {% extends "__base.html" %}
 {% load crispy_forms_tags %}
-{% load staticfiles %}
 
-
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 
 {% block sliders %}
     {% include "visual_site_elements/sliders/sliders.html" with object_list=sliders %}
 {% endblock %}
 
 {% block content %}
+
 {% endblock %}
 
 
@@ -47,7 +49,7 @@
 {% endblock %}
 
 {% block subscribe %}
-    {% include '_subscribe_section.html' %}
+    {% include '_subscribe_section.html' with form=form %}
 {% endblock %}
 
 
