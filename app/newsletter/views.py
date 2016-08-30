@@ -96,37 +96,85 @@ def home(request):
 
 
 def contact(request):
-    title = 'Contact Us'
-    title_align_center = True
-    form = ContactForm(request.POST or None)
-    if form.is_valid():
-        # for key, value in form.cleaned_data.iteritems():
-        # 	print key, value
-        # 	#print form.cleaned_data.get(key)
-        form_email = form.cleaned_data.get("email")
-        form_message = form.cleaned_data.get("message")
-        form_full_name = form.cleaned_data.get("full_name")
-        # print email, message, full_name
-        subject = 'Site contact form'
+    title = "Bize Yazın"
+    title_align_center = False
+
+    contact_form = ContactForm(request.POST or None)
+    if contact_form.is_valid():
+        email = contact_form.cleaned_data.get('email')
+        full_name = contact_form.cleaned_data.get('full_name')
+        message = contact_form.cleaned_data.get('message')
+        subject = 'Site Contact Form'
         from_email = settings.EMAIL_HOST_USER
-        to_email = [from_email, 'youotheremail@email.com']
-        contact_message = "%s: %s via %s" % (
-            form_full_name,
-            form_message,
-            form_email)
-        some_html_message = """
-        <h1>hello</h1>
-        """
+        to_email = [from_email, 'koztay@me.com']
+        contact_message = '%s: %s via %s' % (full_name, message, email)
+
         send_mail(subject,
                   contact_message,
                   from_email,
                   to_email,
-                  html_message=some_html_message,
                   fail_silently=True)
 
+        '''
+        Yukarıdakinin daha python tarzında yapılış şekli şöyle:
+        Sebebi de formda bir sürü field varsa tek tek yazmak
+        doğru değil
+
+        for key in form.cleaned_data:
+        print(key)
+        print(form.cleaned_data.get(key))
+
+        '''
+
+        '''
+        bir başka ve daha kısa yöntem de şu:
+        python 2.7 'de:
+        from.cleaned_data.iteritems() imiş...
+
+        for key, value in form.cleaned_data.items():
+        print (key, value)
+        '''
     context = {
-        "form": form,
-        "title": title,
-        "title_align_center": title_align_center,
+        'contact_form': contact_form,
+        'title': title,
+        'title_align_center': title_align_center,
+        'section': "İletişim",
+
     }
-    return render(request, "forms.html", context)
+
+    return render(request, "contact.html", context)
+# def contact(request):
+#     title = 'Contact Us'
+#     title_align_center = True
+#     form = ContactForm(request.POST or None)
+#     if form.is_valid():
+#         # for key, value in form.cleaned_data.iteritems():
+#         # 	print key, value
+#         # 	#print form.cleaned_data.get(key)
+#         form_email = form.cleaned_data.get("email")
+#         form_message = form.cleaned_data.get("message")
+#         form_full_name = form.cleaned_data.get("full_name")
+#         # print email, message, full_name
+#         subject = 'Site contact form'
+#         from_email = settings.EMAIL_HOST_USER
+#         to_email = [from_email, 'youotheremail@email.com']
+#         contact_message = "%s: %s via %s" % (
+#             form_full_name,
+#             form_message,
+#             form_email)
+#         some_html_message = """
+#         <h1>hello</h1>
+#         """
+#         send_mail(subject,
+#                   contact_message,
+#                   from_email,
+#                   to_email,
+#                   html_message=some_html_message,
+#                   fail_silently=True)
+#
+#     context = {
+#         "form": form,
+#         "title": title,
+#         "title_align_center": title_align_center,
+#     }
+#     return render(request, "forms.html", context)
