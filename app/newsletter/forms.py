@@ -1,4 +1,3 @@
-from crispy_forms.helper import FormHelper
 from django import forms
 from .models import SignUp
 
@@ -35,7 +34,6 @@ class SignUpForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-
         # make some validations here
         # email_base, provider = email.split('@')
         # domain, extension = provider.split('.')  # eğer birden fazla nokta varsa hata veriyor.

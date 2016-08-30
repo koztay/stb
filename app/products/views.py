@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.exceptions import ImproperlyConfigured
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -7,6 +8,7 @@ from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
+
 
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
@@ -119,14 +121,29 @@ class FilterMixin(object):
 
 class ProductListView(FilterMixin, ListView):
     model = Product
-    queryset = Product.objects.all()
+    # queryset = Product.objects.all()
     filter_class = ProductFilter
+    paginate_by = 9
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
+        all_products = Product.objects.all()
+        paginator = Paginator(all_products, self.paginate_by)
+        page = self.request.GET.get('page')
+
+        try:
+            page_products = paginator.page(page)
+        except PageNotAnInteger:
+            page_products = paginator.page(1)
+        except EmptyPage:
+            page_products = paginator.page(paginator.num_pages)
+
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+        context["product_list_page"] = True
+        context["page_products"] = page_products
+
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -147,7 +164,7 @@ class ProductListView(FilterMixin, ListView):
         return qs
 
 
-import random
+import random  # related products için kullanılıyor...
 
 
 class ProductDetailView(DetailView):
