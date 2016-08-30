@@ -121,9 +121,9 @@ class FilterMixin(object):
 
 class ProductListView(FilterMixin, ListView):
     model = Product
-    # queryset = Product.objects.all()
+    queryset = Product.objects.all()
     filter_class = ProductFilter
-    paginate_by = 9
+    paginate_by = 12
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
