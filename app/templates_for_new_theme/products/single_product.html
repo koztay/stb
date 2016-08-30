@@ -5,7 +5,7 @@
     <figure>
         {% if product|get_thumbnail:"medium" %}
         <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
-            <img id='img' class='img-responsive' src='{{ product|get_thumbnail:"medium"}}'
+            <img id='img' src='{{ product|get_thumbnail:"medium"}}'
             alt="{{ product.title|lower }} img" />
         </a>
         {% endif %}
@@ -38,8 +38,7 @@
            data-imagemicro = '{{ product|get_thumbnail:"micro"}}'
            data-category = "{{ product.get_main_category }}"
            data-category_url = "{{ product.get_main_category.get_absolute_url }}"
-        ><span
-                class="fa fa-search"></span></a>
+        ><span class="fa fa-search"></span></a>
     </div>
     <!-- product badge -->
     <span class="aa-badge aa-sale" href="#">SALE!</span>
