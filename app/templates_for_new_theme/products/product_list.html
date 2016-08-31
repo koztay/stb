@@ -67,23 +67,24 @@
                     </div>
                     <!-- start pagination section -->
                     {% if is_paginated %}
+
                         <div class="aa-product-catg-pagination">
                             <nav>
                                 <ul class="pagination">
-                                    {% if page_obj.has_previous %}
+                                    {% if page_products.has_previous %}
                                         <li>
-                                            <a href="/products?page={{ page_obj.previous_page_number }}"
+                                            <a href="/products?page={{ page_products.previous_page_number }}"
                                                aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                                         </li>
                                     {% endif %}
                                     <li>
                                         <span class="page-current">
-                                        Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}.
+                                        Sayfa {{ page_products.number }} / {{ page_products.paginator.num_pages }}.
                                         </span>
                                     </li>
-                                    {% if page_obj.has_next %}
+                                    {% if page_products.has_next %}
                                         <li>
-                                            <a href="/products?page={{ page_obj.next_page_number }}"
+                                            <a href="/products?page={{ page_products.next_page_number }}"
                                             aria-label="Next">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>

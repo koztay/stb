@@ -127,9 +127,11 @@ class ProductListView(FilterMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
-        all_products = Product.objects.all()
-        paginator = Paginator(all_products, self.paginate_by)
+        # all_products = Product.objects.all()
+        print("count", context["object_list"].count())
+        paginator = Paginator(context["object_list"], self.paginate_by)
         page = self.request.GET.get('page')
+        print("number_of_pages:", paginator.num_pages)
 
         try:
             page_products = paginator.page(page)
@@ -143,6 +145,7 @@ class ProductListView(FilterMixin, ListView):
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
         context["product_list_page"] = True
         context["page_products"] = page_products
+        context["paginator"] = paginator
 
         return context
 
