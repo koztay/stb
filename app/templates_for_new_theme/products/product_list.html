@@ -1,6 +1,7 @@
 {% extends "__base.html" %}
 {% load staticfiles %}
 {% load crispy_forms_tags %}
+{#{% load bootstrap_pagination %}#}
 
 {% block messages %}
     {% include '_messages.html' %}
@@ -66,9 +67,11 @@
                         {% include "products/quick_view_modal.html" %}
                     </div>
                     <!-- start pagination section -->
-                    {% if is_paginated %}
+{#                    {% if page_products.has_next or page_products.has_previous %}#}
 
                         <div class="aa-product-catg-pagination">
+
+{#                                {% bootstrap_paginate page_products range=6%}#}
                             <nav>
                                 <ul class="pagination">
                                     {% if page_products.has_previous %}
@@ -93,7 +96,7 @@
                                 </ul>
                             </nav>
                         </div>
-                    {% endif %}
+{#                    {% endif %}#}
                     <!-- end pagination section -->
                 </div>
             </div>
