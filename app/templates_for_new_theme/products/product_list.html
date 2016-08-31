@@ -105,19 +105,19 @@
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
-{#                        <h3>Kategoriler</h3>#}
-{#                        <ul class="aa-catg-nav">#}
-{#                            <li><a href="#">Men</a></li>#}
-{#                            <li><a href="">Women</a></li>#}
-{#                            <li><a href="">Kids</a></li>#}
-{#                            <li><a href="">Electronics</a></li>#}
-{#                            <li><a href="">Sports</a></li>#}
-{#                        </ul>#}
-                        <form method="GET" action="{% url 'products:products' %}">
-                            {{ filter_form |crispy }}
-                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>
-                                <input type='submit' value='Apply Filter' class='btn btn-default'>
-                        </form>
+                        <h3>Kategoriler</h3>
+                        <ul class="aa-catg-nav">
+                            <li><a href="#">Men</a></li>
+                            <li><a href="">Women</a></li>
+                            <li><a href="">Kids</a></li>
+                            <li><a href="">Electronics</a></li>
+                            <li><a href="">Sports</a></li>
+                        </ul>
+{#                        <form method="GET" action="{% url 'products:products' %}">#}
+{#                            {{ filter_form |crispy }}#}
+{#                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>#}
+{#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
+{#                        </form>#}
                     </div>
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
@@ -150,8 +150,18 @@
                                        value="{{ filter_form.max_price.value }}">
                                 <input type='hidden' name='q' value='{{ request.GET.q }}'/>
 {#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
-                                <button id="filter-btn" class="aa-filter-btn" type="submit">Filter</button>
+                                <button id="filter-btn" class="aa-filter-btn" type="submit">Filtrele</button>
                             </form>
+                            </br>
+{#                            <h2><a style="border-radius:0px;#}
+{#                                    -webkit-border-radius:0px;#}
+{#                                    -moz-border-radius:0px;"#}
+{#                                   class="btn btn-info btn-block" href="/products/">Tüm Filtreleri Temizle</a></h2>#}
+                            <div class="row" align="center">
+                                <a href="/products">
+                                    <button class="aa-filter-btn" style="width: 100%" type="submit">Filtreleri Temizle</button>
+                                </a>
+                            </div>
                             <input id='minrange' type="hidden" name="min_price" value="{{ minimum_price }}">
                             <input id='maxrange' type="hidden" name="max_price" value="{{ maximum_price }}">
                             <input id='minsetvalue' type="hidden" name="minimum_set_price_value" value="{{ minimum_set_price_value }}">
@@ -159,6 +169,14 @@
                         </div>
 
                     </div>
+{#                    <!-- single sidebar -->#}
+{#                    <div class="aa-sidebar-widget">#}
+{#                        <div class="">#}
+{#                            <a href="/products" class="aa-filter-btn" role="button">#}
+{#                                <span><h3>Filtreleri Temizle</h3></span>#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    </div>#}
 {#                    <!-- single sidebar -->#}
 {#                    <div class="aa-sidebar-widget">#}
 {#                        <h3>Shop By Color</h3>#}

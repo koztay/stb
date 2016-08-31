@@ -262,6 +262,10 @@ jQuery(function ($) {
             }else {
                 start_value_max = parseInt(max_range);
             }
+
+            min_range = start_value_min;
+            max_range = start_value_max;
+
             console.log(start_value_min);
             console.log(start_value_max);
 
@@ -278,9 +282,9 @@ jQuery(function ($) {
 
             noUiSlider.create(skipSlider, {
                 start: [ start_value_min, start_value_max ],
-                step: 10,
+                step: 1,
                 range: {
-                  'min': 0,
+                  'min': parseInt(min_range),
                   'max': parseInt(max_range)
                 }
             });
