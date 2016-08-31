@@ -9,6 +9,7 @@
 
 
 {% block content %}
+
 <!-- catg header banner section -->
 <section id="aa-catg-head-banner">
     <img src='{% static "img/fashion/fashion-header-bg-8.jpg" %}' alt="fashion img">
@@ -113,7 +114,7 @@
 {#                            <li><a href="">Sports</a></li>#}
 {#                        </ul>#}
                         <form method="GET" action="{% url 'products:products' %}">
-                            {{ filter_form|crispy }}
+                            {{ filter_form |crispy }}
                                 <input type='hidden' name='q' value='{{ request.GET.q }}'/>
                                 <input type='submit' value='Apply Filter' class='btn btn-default'>
                         </form>
@@ -136,13 +137,25 @@
                         <h3>Fiyat Aralığı</h3>
                         <!-- price range -->
                         <div class="aa-sidebar-price-range">
-                            <form action="">
+                            <form method="GET" action="{% url 'products:products' %}">
                                 <div id="skipstep" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
                                 </div>
-                                <span id="skip-value-lower" class="example-val">30.00</span>
-                                <span id="skip-value-upper" class="example-val">100.00</span>
-                                <button class="aa-filter-btn" type="submit">Filter</button>
+                                <span id="skip-value-lower" class="example-val">20</span>
+                                <span id="skip-value-upper" class="example-val">70</span>
+                                <input id="skip-value-lower-input" type="hidden"
+                                       name="{{ filter_form.min_price.name }}"
+                                       value="{{ filter_form.min_price.value }}">
+                                <input id="skip-value-upper-input" type="hidden"
+                                       name="{{ filter_form.max_price.name }}"
+                                       value="{{ filter_form.max_price.value }}">
+                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>
+{#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
+                                <button id="filter-btn" class="aa-filter-btn" type="submit">Filter</button>
                             </form>
+                            <input id='minrange' type="hidden" name="min_price" value="{{ minimum_price }}">
+                            <input id='maxrange' type="hidden" name="max_price" value="{{ maximum_price }}">
+                            <input id='minsetvalue' type="hidden" name="minimum_set_price_value" value="{{ minimum_set_price_value }}">
+                            <input id='maxsetvalue' type="hidden" name="maximum_set_price_value" value="{{ maximum_set_price_value }}">
                         </div>
 
                     </div>

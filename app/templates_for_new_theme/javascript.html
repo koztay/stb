@@ -27,16 +27,18 @@
                 console.log(error);
             }
 
-        })
+        });
 
     }
     $(document).ready(function () {
 
-        updateCartItemCount()
-    })
+        updateCartItemCount();
+    });
 
 </script>
 
+
+{# quick view modal scripti #}
 <script>
     $('#quick-view-modal').on('show.bs.modal', function (event) {
 
@@ -51,10 +53,10 @@
         var category = button.data('category');
         var category_url = button.data('category_url');
 
-
   // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or
   // other methods instead.
+
         var modal = $(this);
         modal.find('.modal-product-title').text(title);
         modal.find(".modal-product-description").text(description);
@@ -68,5 +70,26 @@
         modal.find(".category-url").text(category);
 
 
-})
+});
 </script>
+
+
+{# product sayfasında butona tıklanınca fiyat filtresi yapan fonksiyon #}
+<script>
+     $("#filter-btn").click(function() {
+        {#   set span values from min max values bunu sayfa yüklenince yapmak lazım #}
+
+         {#  get span and other values  #}
+         var lower_set_value = $("#skip-value-lower").text();
+         var upper_set_value =  $("#skip-value-upper").text();
+         var category_id = ""
+
+            {#  set input values  #}
+         $("#skip-value-lower-input").val(lower_set_value);
+         $("#skip-value-upper-input").val(upper_set_value);
+
+        {#  seçili kategori varsa kategori id'lerini de set etmek gerek #}
+        {#  artı ilave başka filterlar varsa onları da set et. #}
+});
+</script>
+

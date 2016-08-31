@@ -10,7 +10,7 @@ CAT_CHOICES = (
 
 
 class ProductFilterForm(forms.Form):
-    q = forms.CharField(label='Search', required=False)
+    # q = forms.CharField(label='Search', required=False)
     category_id = forms.ModelMultipleChoiceField(
         label='Category',
         queryset=Category.objects.all(),

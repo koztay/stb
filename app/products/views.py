@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -128,10 +128,10 @@ class ProductListView(FilterMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
         # all_products = Product.objects.all()
-        print("count", context["object_list"].count())
+        # print("count", context["object_list"].count())
         paginator = Paginator(context["object_list"], self.paginate_by)
         page = self.request.GET.get('page')
-        print("number_of_pages:", paginator.num_pages)
+        # print("number_of_pages:", paginator.num_pages)
 
         try:
             page_products = paginator.page(page)
@@ -140,12 +140,36 @@ class ProductListView(FilterMixin, ListView):
         except EmptyPage:
             page_products = paginator.page(paginator.num_pages)
 
+        # # get all id's of the object_list
+        # product_ids = []
+        # for t in context["object_list"]:
+        #     product_ids += [t.id]
+        # # get all products in object_list
+        # product_object_list = Product.objects.all().filter(pk__in=product_ids)
+
+        # Yukarıda object listi içindeki minimum ve maksimumu buluyordm ama manasız.
+        # set minimum and maximum prices
+        minimum_price_aggregate = Product.objects.all().aggregate(Min('price'))
+        minimum_price = minimum_price_aggregate['price__min']
+        # yukarıdaki şekilde parse etmezsen,
+        # python dictionary döndürdüğü için sıçıyorsun...
+        context["minimum_price"] = minimum_price
+
+        maximum_price_aggregate = Product.objects.all().aggregate(Max('price'))
+        maximum_price = maximum_price_aggregate['price__max']
+        context["maximum_price"] = maximum_price
+
         context["now"] = timezone.now()
         context["query"] = self.request.GET.get("q")  # None
         context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
         context["product_list_page"] = True
         context["page_products"] = page_products
-        context["paginator"] = paginator
+
+        if self.request.GET.get('min_price', '') is not '':
+            context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
+
+        if self.request.GET.get('max_price', '') is not '':
+            context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
 
         return context
 
