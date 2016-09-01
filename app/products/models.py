@@ -80,7 +80,8 @@ class Product(models.Model):
     #     return reverse("products:product_detail", kwargs={"pk": self.pk})
 
     def get_absolute_url(self):
-        view_name = "products:product_detail_slug_function"
+        view_name = "products:product_detail"
+        # view_name = "products:product_detail_slug_function"
         return reverse(view_name, kwargs={"slug": self.slug})
         #
         # def get_image_url(self): # buna gerek yok o zaman

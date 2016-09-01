@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
 
-
+from analytics.models import ProductView
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category
@@ -203,37 +203,48 @@ class ProductDetailView(DetailView):
         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
         instance = self.get_object()
         # order_by("-title")
+
+        # ben user authenticated olmasa da view sayısını arttıracağım...
+        # if self.request.user.is_authenticated():
+        #     tag = self.get_object()
+        #     new_view = TagView.objects.add_count(self.request.user, tag)
+
+        # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
+        ProductView.objects.add_count(self.request.user, instance)
+
         context["related"] = sorted(Product.objects.get_related(instance)[:6], key=lambda x: random.random())
         return context
 
 
-def product_detail_view_func(request, id):
-    # product_instance = Product.objects.get(id=id)
-    product_instance = get_object_or_404(Product, id=id)
-    try:
-        product_instance = Product.objects.get(id=id)
-    except Product.DoesNotExist:
-        raise Http404
-    except:
-        raise Http404
+# detail view 'ı CBV olarak yazdık...
+# def product_detail_view_func(request, id):
+#     # product_instance = Product.objects.get(id=id)
+#     product_instance = get_object_or_404(Product, id=id)
+#     try:
+#         product_instance = Product.objects.get(id=id)
+#     except Product.DoesNotExist:
+#         raise Http404
+#     except:
+#         raise Http404
+#
+#     template = "products/product_detail.html"
+#     context = {
+#         "object": product_instance
+#     }
+#     return render(request, template, context)
 
-    template = "products/product_detail.html"
-    context = {
-        "object": product_instance
-    }
-    return render(request, template, context)
 
-
-def detail_slug_view(request, slug=None):
-    product = Product.objects.get(slug=slug)
-    try:
-        product = get_object_or_404(Product, slug=slug)
-    except Product.MultipleObjectsReturned:
-        product = Product.objects.filter(slug=slug).order_by("-title").first()
-    # print slug
-    # product = 1
-    template = "products/product_detail.html"
-    context = {
-        "object": product
-    }
-    return render(request, template, context)
+# Aşağıdaki de slug view olarak function based view...
+# def detail_slug_view(request, slug=None):
+#     product = Product.objects.get(slug=slug)
+#     try:
+#         product = get_object_or_404(Product, slug=slug)
+#     except Product.MultipleObjectsReturned:
+#         product = Product.objects.filter(slug=slug).order_by("-title").first()
+#     # print slug
+#     # product = 1
+#     template = "products/product_detail.html"
+#     context = {
+#         "object": product
+#     }
+#     return render(request, template, context)
