@@ -8,6 +8,7 @@ urlpatterns = [
     # url(r'^$', 'products.views.product_list', name='products'),
     url(r'^$', ProductListView.as_view(), name='products'),
     url(r'^(?P<slug>[\w-]+)/$', ProductDetailView.as_view(), name='product_detail'),
+    url(r'^tag/(?P<tag_slug>[-\w]+)/$', 'products.views.product_list_by_tag', name='product_list_by_tag'),
     # url(r'^(?P<pk>\d+)/$', ProductDetailView.as_view(), name='product_detail'),
     url(r'^(?P<pk>\d+)/inventory/$', VariationListView.as_view(), name='product_inventory'),
     # url(r'^(?P<id>\d+)', 'products.views.product_detail_view_func', name='product_detail_function'),

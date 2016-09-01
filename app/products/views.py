@@ -9,10 +9,37 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
 
+
 from analytics.models import ProductView
+from taggit.models import Tag
+
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin
 from .models import Product, Variation, Category
+
+
+# aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla
+def product_list_by_tag(request, tag_slug=None):
+    object_list = Product.objects.all()  # This is automatically returns active products.
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        object_list = object_list.filter(tags__in=[tag])
+    paginator = Paginator(object_list, 9)  # 3 products in each page
+    page = request.GET.get('page')
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer deliver the first page
+        products = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range deliver the last page of results
+        products = paginator.page(paginator.num_pages)
+
+    return render(request, 'products/product_list.html', {'page': page,
+                                                          'page_products': products,
+                                                          'tag': tag,
+                                                          'section': "Products"})
 
 
 class CategoryListView(ListView):
@@ -86,13 +113,13 @@ class ProductFilter(FilterSet):
         ]
 
 
-def product_list(request):
-    qs = Product.objects.all()
-    ordering = request.GET.get("ordering")
-    if ordering:
-        qs = Product.objects.all().order_by(ordering)
-    f = ProductFilter(request.GET, queryset=qs)
-    return render(request, "products/product_list.html", {"object_list": f})
+# def product_list(request):
+#     qs = Product.objects.all()
+#     ordering = request.GET.get("ordering")
+#     if ordering:
+#         qs = Product.objects.all().order_by(ordering)
+#     f = ProductFilter(request.GET, queryset=qs)
+#     return render(request, "products/product_list.html", {"object_list": f})
 
 
 class FilterMixin(object):
@@ -110,12 +137,15 @@ class FilterMixin(object):
         context = super(FilterMixin, self).get_context_data(*args, **kwargs)
         qs = self.get_queryset()
         ordering = self.request.GET.get(self.search_ordering_param)
+
         if ordering:
             qs = qs.order_by(ordering)
         filter_class = self.filter_class
+
         if filter_class:
             f = filter_class(self.request.GET, queryset=qs)
             context["object_list"] = f
+
         return context
 
 
@@ -142,8 +172,16 @@ class ProductListView(FilterMixin, ListView):
 
         # get all id's of the object_list
         product_ids = []
+        product_tags = []
         for t in context["object_list"]:
             product_ids += [t.id]
+            product_tags += t.tags.all()
+
+        # remove duplicates
+        product_tags = list(set(product_tags))
+        print(product_tags)
+        context['product_tag_list'] = product_tags
+
         # get all products in object_list
         product_object_list = Product.objects.all().filter(pk__in=product_ids)
 

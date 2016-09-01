@@ -123,6 +123,14 @@
                     <div class="aa-sidebar-widget">
                         <h3>Etiketler</h3>
                         <div class="tag-cloud">
+                            {% if product_tag_list %}
+                                {% for tag in product_tag_list %}
+                                    <a href="{% url 'products:product_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+    {#                            {{ tag.name }}#}
+                                {% endfor %}
+                            {% elif tag %}
+                                <a href="{% url 'products:product_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+                            {% endif %}
                             <a href="#">Fashion</a>
                             <a href="#">Ecommerce</a>
                             <a href="#">Shop</a>
