@@ -255,7 +255,7 @@ jQuery(function ($) {
             if (min_set_value>0) {
                 start_value_min = parseInt(min_set_value);
             }else {
-                start_value_min = 0;
+                start_value_min = parseInt(min_range);
             }
             if (max_set_value>0) {
                 start_value_max = parseInt(max_set_value);

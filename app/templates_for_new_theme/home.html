@@ -20,7 +20,7 @@
 
 {% block products %}
 {#    {% include '_products_section.html' %}#}
-    {% include "products/products.html" with object_list=products %}
+    {% include "products/home_page_products.html" with object_list=products %}
 {% endblock %}
 
 {% block banners %}
@@ -29,7 +29,7 @@
 
 {% block popular %}
 {#    {% include '_popular_section.html' %}#}
-    {% include "products/popular_products.html" with object_list=products2 %}
+    {% include "products/home_page_selected_products.html" with object_list=products2 %}
 {% endblock %}
 
 {% block support %}

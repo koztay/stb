@@ -140,22 +140,22 @@ class ProductListView(FilterMixin, ListView):
         except EmptyPage:
             page_products = paginator.page(paginator.num_pages)
 
-        # # get all id's of the object_list
-        # product_ids = []
-        # for t in context["object_list"]:
-        #     product_ids += [t.id]
-        # # get all products in object_list
-        # product_object_list = Product.objects.all().filter(pk__in=product_ids)
+        # get all id's of the object_list
+        product_ids = []
+        for t in context["object_list"]:
+            product_ids += [t.id]
+        # get all products in object_list
+        product_object_list = Product.objects.all().filter(pk__in=product_ids)
 
-        # Yukarıda object listi içindeki minimum ve maksimumu buluyordm ama manasız.
+        # Yukarıda object listi içindeki minimum ve maksimumu buluyordum ama manasız değil gibi.
         # set minimum and maximum prices
-        minimum_price_aggregate = Product.objects.all().aggregate(Min('price'))
+        minimum_price_aggregate = product_object_list.aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
         # yukarıdaki şekilde parse etmezsen,
         # python dictionary döndürdüğü için sıçıyorsun...
         context["minimum_price"] = minimum_price
 
-        maximum_price_aggregate = Product.objects.all().aggregate(Max('price'))
+        maximum_price_aggregate = product_object_list.aggregate(Max('price'))
         maximum_price = maximum_price_aggregate['price__max']
         context["maximum_price"] = maximum_price
 
@@ -212,7 +212,7 @@ class ProductDetailView(DetailView):
         # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
         ProductView.objects.add_count(self.request.user, instance)
 
-        context["related"] = sorted(Product.objects.get_related(instance)[:6], key=lambda x: random.random())
+        context["related"] = sorted(Product.objects.get_related(instance)[:3], key=lambda x: random.random())
         return context
 
 
