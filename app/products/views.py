@@ -248,7 +248,10 @@ class ProductDetailView(DetailView):
         #     new_view = TagView.objects.add_count(self.request.user, tag)
 
         # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
-        ProductView.objects.add_count(self.request.user.id, instance)
+        if self.request.user.is_authenticated():
+            ProductView.objects.add_count(self.request.user, instance)  # eğer user login olmuşsa
+        else:
+            ProductView.objects.add_count(self.request.user.id, instance)  # eğer user login olmamışsa
 
         context["related"] = sorted(Product.objects.get_related(instance)[:3], key=lambda x: random.random())
         return context
