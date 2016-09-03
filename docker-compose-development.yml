@@ -9,7 +9,8 @@ services:
 
   app:
     build: ./app/
-    env_file: .env
+    restart: always
+#    env_file: .env
     expose:
       - '8000'
     volumes:

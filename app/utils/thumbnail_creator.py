@@ -29,7 +29,7 @@ def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
         # print("boy kısa en değil, boydan genişleyecek, enden kırpılacak")
         thumb = boydan_genislet_enden_kirp(width, height, max_width, max_height, thumb)
     elif width >= max_width and height >= max_height:  # her ikisi de büyük o yüzden resize yok.
-        # print("her ikisi de büyük o yüzden resize yok.")
+        # print("her ikisi de büyük o yüzden resize yok. Bu hatalı resize olacak yine")
         if width / max_width > height / max_height:  # enden kırpılacak
             # print("enden kırparak thumb yarat.")
             thumb = enden_kirparak_thumb_yarat(width, height, max_width, max_height, thumb)
@@ -77,16 +77,6 @@ def boydan_kirparak_thumb_yarat(width, height, max_width, max_height, thumb):
     width = left+max_width
     height = top+max_height
     box = (left, top, width, height)
-    #  box = (0, crop_size, 0, crop_size + max_height)
-
-    print("boydan_kirparak_thumb_yarat")
-    width, height = thumb.size
-    print(width, height)
-    print(box)
-    if box[2]-box[0] > width:
-        print("hata!!! => box genişlik sınırları dışında")
-    if box[3]-box[1] > height:
-        print("hata!!! => box uzunluk sınırları dışında")
     thumb = thumb.crop(box)
     return thumb
 
@@ -104,15 +94,6 @@ def enden_kirparak_thumb_yarat(width, height, max_width, max_height, thumb):
     width = left+max_width
     height = top+max_height
     box = (left, top, width, height)
-    # box = (crop_size, 0, crop_size + max_width, max_height)
-    width, height = thumb.size
-    print("enden_kirparak_thumb_yarat")
-    print(width, height)
-    print(box)
-    if box[2]-box[0] > width:
-        print("hata!!! => box genişlik sınırları dışında")
-    if box[3]-box[1] > height:
-        print("hata!!! => box uzunluk sınırları dışında")
     thumb = thumb.crop(box)
     return thumb
 
@@ -126,16 +107,6 @@ def enden_genislet_boydan_kirp(width, height, max_width, max_height, thumb):
     width = left+max_width
     height = top+max_height
     box = (left, top, width, height)
-
-    # box = (0, crop_size, width, crop_size+max_height)
-    width, height = thumb.size
-    print("enden_genislet_boydan_kirp")
-    print(width, height)
-    print(box)
-    if box[2]-box[0] > width:
-        print("hata!!! => box genişlik sınırları dışında")
-    if box[3]-box[1] > height:
-        print("hata!!! => box uzunluk sınırları dışında")
     thumb = thumb.crop(box)
     return thumb
 
@@ -149,16 +120,6 @@ def boydan_genislet_enden_kirp(width, height, max_width, max_height, thumb):
     width = left+max_width
     height = top+max_height
     box = (left, top, width, height)
-
-    # box = (crop_size, 0, crop_size+max_width, height)
-    width, height = thumb.size
-    print("boydan_genislet_enden_kirp")
-    print(width, height)
-    print(box)
-    if box[2]-box[0] > width:
-        print("hata!!! => box genişlik sınırları dışında")
-    if box[3]-box[1] > height:
-        print("hata!!! => box uzunluk sınırları dışında")
     thumb = thumb.crop(box)
     return thumb
 
