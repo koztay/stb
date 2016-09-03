@@ -6,25 +6,25 @@ from .models import Product, Variation, ProductImage, Category, ProductFeatured,
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 0
+    extra = 1
     max_num = 10
 
 
 class VariationInline(admin.TabularInline):
     model = Variation
-    extra = 0
+    extra = 1
     max_num = 10
 
 
 class AttributeTypeInline(admin.TabularInline):
     model = AttributeType
-    extra = 0
+    extra = 1
     ordering = ("order",)
 
 
 class AttributeValueInline(admin.TabularInline):
     model = AttributeValue
-    extra = 0
+    extra = 1
     ordering = ("attribute_type__order",)
 
 
