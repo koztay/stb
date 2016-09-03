@@ -10,8 +10,9 @@ services:
 
   app:
     build: ./app/
-    image: kemal:istebu
-    env_file: .env
+    restart: always
+#    image: kemal:istebu
+#    env_file: .env
     expose:
       - '8000'
     volumes:
@@ -42,8 +43,8 @@ services:
 
 
 volumes:
-  postgres-data:
-    driver: local
+#  postgres-data:
+#    driver: local
   static-data:
     driver: local
   media-data:

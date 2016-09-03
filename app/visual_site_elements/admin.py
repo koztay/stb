@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SliderImage, Promotion, PromotionThumbnail
+from .models import SliderImage, Promotion, PromotionThumbnail, HorizontalBanner, Testimonial
 
 
 class PromotionThumbnailInline(admin.TabularInline):
@@ -17,3 +17,5 @@ class PromotionAdmin(admin.ModelAdmin):
 
 admin.site.register(SliderImage)
 admin.site.register(Promotion, PromotionAdmin)
+admin.site.register(HorizontalBanner)
+admin.site.register(Testimonial)

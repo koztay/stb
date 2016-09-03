@@ -15,10 +15,10 @@ urlpatterns = [
     url(r'^$', 'newsletter.views.home', name='home'),
     url(r'^contact/$', 'newsletter.views.contact', name='contact'),
     url(r'^about/$', 'ecommerce2.views.about', name='about'),
-    # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^categories/', include('products.urls_categories', namespace='categories')),
     url(r'^orders/$', OrderList.as_view(), name='orders'),

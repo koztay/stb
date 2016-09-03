@@ -1,14 +1,16 @@
 {% extends "__base.html" %}
 {% load crispy_forms_tags %}
-{% load staticfiles %}
 
-
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 
 {% block sliders %}
     {% include "visual_site_elements/sliders/sliders.html" with object_list=sliders %}
 {% endblock %}
 
 {% block content %}
+
 {% endblock %}
 
 
@@ -18,16 +20,16 @@
 
 {% block products %}
 {#    {% include '_products_section.html' %}#}
-    {% include "products/products.html" with object_list=products %}
+    {% include "products/home_page_products.html" with object_list=products %}
 {% endblock %}
 
 {% block banners %}
-    {% include '_banner_section.html' %}
+    {% include "visual_site_elements/horizontal_banner/horizontal_banner.html" with object_list=horizontal_banner %}
 {% endblock %}
 
 {% block popular %}
 {#    {% include '_popular_section.html' %}#}
-    {% include "products/products.html" with object_list=products2 %}
+    {% include "products/home_page_selected_products.html" with object_list=products2 %}
 {% endblock %}
 
 {% block support %}
@@ -35,11 +37,11 @@
 {% endblock %}
 
 {% block testimonial %}
-    {% include '_testimonial_section.html' %}
+    {% include 'visual_site_elements/testimonials/testimonials.html' with object_list=testimonials %}
 {% endblock %}
 
 {% block blog %}
-    {% include '_blog_section.html' %}
+{#    {% include '_blog_section.html' %}#}
 {% endblock %}
 
 {% block brands %}
@@ -47,7 +49,7 @@
 {% endblock %}
 
 {% block subscribe %}
-    {% include '_subscribe_section.html' %}
+    {% include '_subscribe_section.html' with form=form %}
 {% endblock %}
 
 

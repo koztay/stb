@@ -77,11 +77,13 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
     if sender:  # bu ilk seferde neden None döndürüyor anlamadım?
         hd, hd_created = Thumbnail.objects.get_or_create(product=instance.product, type='hd')
         sd, sd_created = Thumbnail.objects.get_or_create(product=instance.product, type='sd')
+        mid, mid_created = Thumbnail.objects.get_or_create(product=instance.product, type='medium')
         micro, micro_created = Thumbnail.objects.get_or_create(product=instance.product, type='micro')
 
         # hd_max = (width, height)
-        hd_max = (500, 500)
-        sd_max = (250, 300)
+        hd_max = (900, 1024)
+        sd_max = (500, 600)
+        mid_max = (250, 300)
         micro_max = (150, 150)
 
         media_path = instance.get_image_path()
@@ -91,6 +93,9 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
 
         if sd_created:
             thumbnail_creator.create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
+
+        if mid_created:
+            thumbnail_creator.create_new_thumb(media_path, mid, owner_slug, mid_max[0], mid_max[1])
 
         if micro_created:
             thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])

@@ -236,28 +236,59 @@ jQuery(function ($) {
     /* ----------------------------------------------------------- */
     /*  9. PRICE SLIDER  (noUiSlider SLIDER)
      /* ----------------------------------------------------------- */
-
+    /*
+    * Aşağıdaki kodu düzenledim min max değerleri almasını sağladım...
+    */
     jQuery(function () {
         if ($('body').is('.productPage')) {
             var skipSlider = document.getElementById('skipstep');
+            var min_range = document.getElementById('minrange').value;
+            var max_range = document.getElementById('maxrange').value;
+            var min_set_value = document.getElementById('minsetvalue').value;
+            var max_set_value = document.getElementById('maxsetvalue').value;
+            console.log(min_range);
+            console.log(max_range);
+            console.log(min_set_value);
+            console.log(max_set_value);
+            var start_value_min = 0;
+            var start_value_max = 100;
+            if (min_set_value>0) {
+                start_value_min = parseInt(min_set_value);
+            }else {
+                start_value_min = parseInt(min_range);
+            }
+            if (max_set_value>0) {
+                start_value_max = parseInt(max_set_value);
+            }else {
+                start_value_max = parseInt(max_range);
+            }
+
+            min_range = start_value_min;
+            max_range = start_value_max;
+
+            console.log(start_value_min);
+            console.log(start_value_max);
+
+            // noUiSlider.create(skipSlider, {
+            //     range: {
+            //         'min': 0,
+            //         'max': parseInt(max_range)
+            //     },
+            //     step: 10,
+            //     snap: true,
+            //     connect: true,
+            //     start: [start_value_min, start_value_max]
+            // });
+
             noUiSlider.create(skipSlider, {
+                start: [ start_value_min, start_value_max ],
+                step: 1,
                 range: {
-                    'min': 0,
-                    '10%': 10,
-                    '20%': 20,
-                    '30%': 30,
-                    '40%': 40,
-                    '50%': 50,
-                    '60%': 60,
-                    '70%': 70,
-                    '80%': 80,
-                    '90%': 90,
-                    'max': 100
-                },
-                snap: true,
-                connect: true,
-                start: [20, 70]
+                  'min': parseInt(min_range),
+                  'max': parseInt(max_range)
+                }
             });
+
             // for value print
             var skipValues = [
                 document.getElementById('skip-value-lower'),

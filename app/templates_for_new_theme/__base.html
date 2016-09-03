@@ -5,7 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Daily Shop | Home</title>
+    {% block title %}
+        <title>İştebu! | Yaşamınızı Kolaylaştırır </title>
+    {% endblock %}
 
     {% include '_head_css.html' %}
 
@@ -14,7 +16,8 @@
     </style>
 
 </head>
-<body>
+
+<body {% if product_list_page %} class="productPage" {% endif %}>
 
 <!-- wpf loader Two -->
 <div id="wpf-loader-two">
@@ -29,7 +32,11 @@
 
 
 {% include '_header_section.html' %}
+
 {% include "visual_site_elements/menu/menu_items.html" with object_list=categories %}
+
+{% block messages %}
+{% endblock %}
 
 {% block sliders %}
 {% endblock %}

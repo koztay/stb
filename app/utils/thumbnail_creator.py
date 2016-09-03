@@ -1,3 +1,4 @@
+import math
 from django.conf import settings
 from django.core.files import File
 import os
@@ -14,32 +15,35 @@ def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
     # size = (max_height, max_width)
     # aspect_ratio = width / height
 
-    if width < max_width and height < max_height:  # her ikisi de kısa ise
-        # hangi tarafa doğru genişletmek gerek bul
-        if width / max_width < height / max_height:  # enden genişleyecek, boydan kırpılacak
-            # print("her ikisi de kısa, enden genişleyecek, boydan kırpılacak")
-            thumb = enden_genislet_boydan_kirp(height, max_height, max_width, thumb, width)
-        else:  # boydan genişleyecek, enden kırpılacak
-            # print("her ikisi de kısa, boydan genişleyecek, enden kırpılacak")
-            thumb = boydan_genislet_enden_kirp(height, max_height, max_width, thumb, width)
-    elif width < max_width and height >= max_height:  # en küçük boy değil
-        # print("en kısa boy değil, enden genişleyecek, boydan kırpılacak")
-        thumb = enden_genislet_boydan_kirp(height, max_height, max_width, thumb, width)
-    elif width >= max_width and height < max_height:  # boy küçük en değil
-        # print("boy kısa en değil, boydan genişleyecek, enden kırpılacak")
-        thumb = boydan_genislet_enden_kirp(height, max_height, max_width, thumb, width)
-    elif width >= max_width and height >= max_height:  # her ikisi de büyük o yüzden resize yok.
-        # print("her ikisi de büyük o yüzden resize yok.")
-        if width / max_width > height / max_height:  # enden kırpılacak
-            # print("enden kırparak thumb yarat.")
-            thumb = enden_kirparak_thumb_yarat(height, max_height, max_width, thumb, width)
-        elif width / max_width < height / max_height:
-            # print("boydan kırparak thumb yarat.")
-            thumb = boydan_kirparak_thumb_yarat(height, max_height, max_width, thumb, width)
-        else:
-            new_size = (max_width, max_height)
-            thumb.thumbnail(new_size, Image.ANTIALIAS)
-            # print(thumb)
+    # if width < max_width and height < max_height:  # her ikisi de kısa ise
+    #     # hangi tarafa doğru genişletmek gerek bul
+    #     if width / max_width < height / max_height:  # enden genişleyecek, boydan kırpılacak
+    #         # print("her ikisi de kısa, enden genişleyecek, boydan kırpılacak")
+    #         thumb = enden_genislet_boydan_kirp(width, height, max_width, max_height, thumb)
+    #     else:  # boydan genişleyecek, enden kırpılacak
+    #         # print("her ikisi de kısa, boydan genişleyecek, enden kırpılacak")
+    #         thumb = boydan_genislet_enden_kirp(width, height, max_width, max_height, thumb)
+    # elif width < max_width and height >= max_height:  # en küçük boy değil
+    #     # print("en kısa boy değil, enden genişleyecek, boydan kırpılacak")
+    #     thumb = enden_genislet_boydan_kirp(width, height, max_width, max_height, thumb)
+    # elif width >= max_width and height < max_height:  # boy küçük en değil
+    #     # print("boy kısa en değil, boydan genişleyecek, enden kırpılacak")
+    #     thumb = boydan_genislet_enden_kirp(width, height, max_width, max_height, thumb)
+    # elif width >= max_width and height >= max_height:  # her ikisi de büyük o yüzden resize yok.
+    #     # print("her ikisi de büyük o yüzden resize yok. Bu hatalı resize olacak yine")
+    #     if width / max_width > height / max_height:  # enden kırpılacak
+    #         # print("enden kırparak thumb yarat.")
+    #         thumb = enden_kirparak_thumb_yarat(width, height, max_width, max_height, thumb)
+    #     elif width / max_width < height / max_height:
+    #         # print("boydan kırparak thumb yarat.")
+    #         thumb = boydan_kirparak_thumb_yarat(width, height, max_width, max_height, thumb)
+    #     else:
+    #         new_size = (max_width, max_height)
+    #         thumb.thumbnail(new_size, Image.ANTIALIAS)
+    #         # print(thumb)
+
+    # thumb = auto_resize_and_crop_image(width, height, max_width, max_height, thumb)
+    thumb = auto_resize_without_crop(width, height, max_width, max_height, thumb)
 
     temp_loc = "%s/%s/tmp" % (settings.MEDIA_ROOT + "/products", owner_slug)
     print("temp_loc : %s" % temp_loc)
@@ -63,51 +67,146 @@ def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
     shutil.rmtree(temp_loc, ignore_errors=True)
     return True
 
+#
+# def boydan_kirparak_thumb_yarat(width, height, max_width, max_height, thumb):
+#     resize_ratio = max_width / width
+#     new_size = (height * resize_ratio, height * resize_ratio)
+#     thumb.thumbnail(new_size, Image.ANTIALIAS)
+#     new_width, new_heigth = thumb.size
+#     crop_size = (new_heigth - max_height) // 2
+#     # thumb.crop(left, upper, right, lower)
+#
+#     left = 0
+#     top = crop_size
+#     width = left+max_width
+#     height = top+max_height
+#     box = (left, top, width, height)
+#     thumb = thumb.crop(box)
+#     return thumb
+#
+#
+# def enden_kirparak_thumb_yarat(width, height, max_width, max_height, thumb):
+#     resize_ratio = max_height / height
+#     new_size = (width * resize_ratio, width * resize_ratio)
+#     thumb.thumbnail(new_size, Image.ANTIALIAS)
+#     new_width, new_heigth = thumb.size
+#     crop_size = (new_width - max_width) // 2
+#     # thumb.crop(left, upper, right, lower)
+#
+#     left = crop_size
+#     top = 0
+#     width = left+max_width
+#     height = top+max_height
+#     box = (left, top, width, height)
+#     thumb = thumb.crop(box)
+#     return thumb
+#
+#
+# def enden_genislet_boydan_kirp(width, height, max_width, max_height, thumb):
+#     new_width, new_heigth, thumb = resize_image(width, height, max_width, max_height, thumb, enden=True)
+#     crop_size = (new_heigth - max_height) // 2
+#
+#     left = 0
+#     top = crop_size
+#     width = left+max_width
+#     height = top+max_height
+#     box = (left, top, width, height)
+#     thumb = thumb.crop(box)
+#     return thumb
+#
+#
+# def boydan_genislet_enden_kirp(width, height, max_width, max_height, thumb):
+#     new_width, new_heigth, thumb = resize_image(width, height, max_width, max_height, thumb, enden=False)
+#     crop_size = (new_width - max_width) / 2
+#
+#     left = crop_size
+#     top = 0
+#     width = left+max_width
+#     height = top+max_height
+#     box = (left, top, width, height)
+#     thumb = thumb.crop(box)
+#     return thumb
+#
+#
+# def resize_image(width, height, max_width, max_height, thumb, enden):
+#     if not enden:
+#         resize_ratio = max_height / height
+#     else:
+#         resize_ratio = max_width / width
+#
+#     new_width = int(width * resize_ratio)
+#     new_heigth = int(height * resize_ratio)
+#     new_size = (new_width, new_heigth)
+#     thumb = thumb.resize(new_size, Image.ANTIALIAS)
+#     return new_width, new_heigth, thumb
 
-def boydan_kirparak_thumb_yarat(height, max_height, max_width, thumb, width):
-    resize_ratio = max_width / width
-    new_size = (height * resize_ratio, height * resize_ratio)
-    thumb.thumbnail(new_size, Image.ANTIALIAS)
-    new_width, new_heigth = thumb.size
-    crop_size = (new_heigth - max_height) // 2
-    # thumb.crop(left, upper, right, lower)
-    box = (0, crop_size, 0, crop_size + max_height)
-    thumb = thumb.crop(box)
-    return thumb
+
+#  Aşağıdaki algoritma en boy oranının çok orantısız olduğu durumlarda resmi kırpıyor ve tamamının
+#  gözükmesine olanak vermiyor.
+def auto_resize_and_crop_image(width, height, max_width, max_height, thumb):
+    width_ratio = max_width / width
+    height_ratio = max_height / height
+    resizing_factor = width_ratio / height_ratio
+    if __name__ == '__main__':
+        if resizing_factor > 1:  # boy eşit olana kadar resize et yani küçült yada büyüt yani heigth_ratio ile çarp
+            resize_ratio = width_ratio
+            new_width = int(width * resize_ratio)
+            new_heigth = int(height * resize_ratio)
+            new_size = (new_width, new_heigth)
+            thumb = thumb.resize(new_size, Image.ANTIALIAS)
+            crop_size = (new_heigth - max_height) / 2
+            left = 0
+            top = crop_size
+            width = left + max_width
+            height = top + max_height
+            box = (left, top, width, height)
+            thumb = thumb.crop(box)
+            return thumb
+
+        else:
+            resize_ratio = height_ratio  # eşitse ikisinden biri kadar büyütmek yeterli
+            new_width = int(width * resize_ratio)
+            new_heigth = int(height * resize_ratio)
+            new_size = (new_width, new_heigth)
+            thumb = thumb.resize(new_size, Image.ANTIALIAS)
+            crop_size = (new_width-max_width) / 2
+            left = crop_size
+            top = 0
+            width = left + max_width
+            height = top + max_height
+            box = (left, top, width, height)
+            thumb = thumb.crop(box)
+            return thumb
 
 
-def enden_kirparak_thumb_yarat(height, max_height, max_width, thumb, width):
-    resize_ratio = max_height / height
-    new_size = (width * resize_ratio, width * resize_ratio)
-    thumb.thumbnail(new_size, Image.ANTIALIAS)
-    new_width, new_heigth = thumb.size
-    crop_size = (new_width - max_width) // 2
-    # thumb.crop(left, upper, right, lower)
-    box = (crop_size, 0, crop_size + max_width, max_height)
-    thumb = thumb.crop(box)
-    return thumb
+# Bir de crop'suz algoritma yazabilirim, bu algoritma resmi her zaman kare olacak şekle resize eder.
+# Yani olması gereken aspecte resize etmek lazım. O zaman da arka planda beyaz bir resim açıp o resme
+# yapıştırmak lazım
+def auto_resize_without_crop(width, height, max_width, max_height, thumb):
+    max_size_aspect = max_width / max_height
+    thumb_aspect = width / height
+
+    if thumb_aspect > max_size_aspect:  # Resmi boydan uzatmak lazım
+        new_height = (width / max_size_aspect)
+        new_height = math.floor(new_height)
+        new_size = (width, new_height)
+        new_container_image = Image.new("RGB", new_size, "white")
+        left = 0
+        top = math.floor((new_height-height)/2)
+        box = (left, top)
+        new_container_image.paste(thumb, box)
+        thumb = new_container_image.resize((max_width, max_height), Image.ANTIALIAS)
+        return thumb
+    else:
+        new_width = math.floor(height * max_size_aspect)
+        new_size = (new_width, height)
+        new_container_image = Image.new("RGB", new_size, "white")
+        left = math.floor((new_width-width)/2)
+        top = 0
+        box = (left, top)
+        new_container_image.paste(thumb, box)
+        thumb = new_container_image.resize((max_width, max_height), Image.ANTIALIAS)
+        return thumb
 
 
-def enden_genislet_boydan_kirp(height, max_height, max_width, thumb, width):
-    new_width, new_heigth, thumb = resize_image(height, max_height, thumb, width)
-    crop_size = (new_heigth - max_height) // 2
-    box = (0, crop_size, 0, crop_size + max_height)
-    thumb = thumb.crop(box)
-    return thumb
 
-
-def boydan_genislet_enden_kirp(height, max_height, max_width, thumb, width):
-    new_width, new_heigth, thumb = resize_image(height, max_height, thumb, width)
-    crop_size = (new_width - max_width) // 2
-    box = (crop_size, 0, crop_size + max_width, max_height)
-    thumb = thumb.crop(box)
-    return thumb
-
-
-def resize_image(height, max_height, thumb, width):
-    resize_ratio = max_height / height
-    new_width = int(width * resize_ratio)
-    new_heigth = int(height * resize_ratio)
-    new_size = (new_width, new_heigth)
-    thumb = thumb.resize(new_size, Image.ANTIALIAS)
-    return new_width, new_heigth, thumb

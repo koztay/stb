@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
+from taggit.managers import TaggableManager
 # from utils import thumbnail_location, THUMB_CHOICES
 
 
@@ -13,6 +14,7 @@ def thumbnail_location(instance, filename):
 THUMB_CHOICES = (
     ("hd", "HD"),
     ("sd", "SD"),
+    ("medium", "Medium"),
     ("micro", "Micro"),
 )
 
@@ -64,6 +66,9 @@ class Product(models.Model):
     # attribute_type = models.ManyToManyField('AttributeType')
     default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     slug = models.SlugField(blank=True, unique=True)  # unique=True)
+    show_on_homepage = models.BooleanField(default=True)
+    show_on_popular = models.BooleanField(default=True)
+    tags = TaggableManager()
 
     objects = ProductManager()
 
@@ -77,14 +82,30 @@ class Product(models.Model):
     #     return reverse("products:product_detail", kwargs={"pk": self.pk})
 
     def get_absolute_url(self):
-        view_name = "products:product_detail_slug_function"
+        view_name = "products:product_detail"
+        # view_name = "products:product_detail_slug_function"
         return reverse(view_name, kwargs={"slug": self.slug})
+
+        # return reverse('blog:post_detail',
+        #                args=[self.publish.year,
+        #                      self.publish.strftime('%m'),
+        #                      self.publish.strftime('%d'),
+        #                      self.slug])
+
         #
         # def get_image_url(self): # buna gerek yok o zaman
         #     img = self.productimage_set.first()
         #     if img:
         #         return img.image.url
         #     return img  # None
+
+    def get_main_category(self):  # bu quickview 'da ürününü kategorisini göstermek için...
+        categories = Category.objects.all().filter(product=self)
+        for category in categories:
+            if category.is_child:
+                return
+            else:
+                return category
 
 
 class Variation(models.Model):

@@ -1,0 +1,43 @@
+{% load staticfiles %}
+
+{#Bu template anasayfada gösterilen Sizin İçin Seçtiklerimiz Bölümü için#}
+{#birden fazla tab var orijinalinde ben şu anda tek tab ile#}
+{#kullanıyorum.#}
+
+<!-- popular section -->
+<section id="aa-popular-category">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="aa-popular-category-area">
+                        <!-- start prduct navigation -->
+                        <ul class="nav nav-tabs aa-products-tab">
+                            <li class="active"><a href="#popular" data-toggle="tab">SİZİN İÇİN SEÇTİKLERİMİZ</a></li>
+{#                            <li><a href="#featured" data-toggle="tab">Featured</a></li>#}
+{#                            <li><a href="#latest" data-toggle="tab">Latest</a></li>#}
+                        </ul>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <!-- Start men popular category -->
+                            <div class="tab-pane fade in active" id="popular">
+                                <ul class="aa-product-catg aa-popular-slider">
+                                    <!-- start single product item -->
+                                    {% for product in products2 %}
+                                        {% include "products/single_product.html" with product=product price="True" %}
+                                    {% endfor %}
+
+                                </ul>
+                                <a class="aa-browse-btn" href="/products">TÜMÜNE GÖZAT <span
+                                        class="fa fa-long-arrow-right"></span></a>
+                            </div>
+                            <!-- / popular product category -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / popular section -->

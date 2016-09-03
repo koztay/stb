@@ -22,21 +22,21 @@
                                 {% include "visual_site_elements/menu/category_item.html" with category=category %}
                             {% endif %}
                         {% endfor %}
-                        <li><a href="blog-archive.html">Blog <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="blog-archive.html">Blog Style 1</a></li>
-                                <li><a href="blog-archive-2.html">Blog Style 2</a></li>
-                                <li><a href="blog-single.html">Blog Single</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="#">Pages <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="product.html">Shop Page</a></li>
-                                <li><a href="product-detail.html">Shop Single</a></li>
-                                <li><a href="404.html">404 Page</a></li>
-                            </ul>
-                        </li>
+{#                        <li><a href="blog-archive.html">Blog <span class="caret"></span></a>#}
+{#                            <ul class="dropdown-menu">#}
+{#                                <li><a href="blog-archive.html">Blog Style 1</a></li>#}
+{#                                <li><a href="blog-archive-2.html">Blog Style 2</a></li>#}
+{#                                <li><a href="blog-single.html">Blog Single</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
+                        <li><a href="{% url 'contact' %}">İletişim</a></li>
+{#                        <li><a href="#">Pages <span class="caret"></span></a>#}
+{#                            <ul class="dropdown-menu">#}
+{#                                <li><a href="product.html">Shop Page</a></li>#}
+{#                                <li><a href="product-detail.html">Shop Single</a></li>#}
+{#                                <li><a href="404.html">404 Page</a></li>#}
+{#                            </ul>#}
+{#                        </li>#}
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
