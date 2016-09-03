@@ -125,7 +125,10 @@
                         <div class="tag-cloud">
                             {% if product_tag_list %}
                                 {% for tag in product_tag_list %}
-                                    <a href="{% url 'products:product_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+{#                                    <a href="{% url 'products:product_list_by_tag' tag.slug %}">{{ tag.name }}</a>#}
+                                    <a href="{% url 'products:products' %}?tag={{ tag.name }}&{{ request.GET.urlencode }}">
+                                    {{ tag.name }}
+                                    </a>
     {#                            {{ tag.name }}#}
                                 {% endfor %}
                             {% elif tag %}
@@ -156,13 +159,15 @@
                                 <input id="skip-value-upper-input" type="hidden"
                                        name="{{ filter_form.max_price.name }}"
                                        value="{{ filter_form.max_price.value }}">
-                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>
+{#                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>#}
 {#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
+{#                                <a href="{% url 'products:products' %}?min_price={{ minimum_price }}&max_price={{ maximum_price }}&{{ request.GET.urlencode }}">#}
                                 <button id="filter-btn" class="aa-filter-btn" type="submit">Filtrele</button>
+{#                                </a>#}
                             </form>
                             </br>
                             <div class="row" align="center">
-                                <a href="/products">
+                                <a href="{% url 'products:products' %}">
                                     <button class="aa-filter-btn"
                                             style="width: 100%; height: 2.2em; font-size: large"
                                             type="submit">Filtreleri Temizle</button>

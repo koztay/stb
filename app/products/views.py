@@ -248,7 +248,7 @@ class ProductDetailView(DetailView):
         #     new_view = TagView.objects.add_count(self.request.user, tag)
 
         # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
-        ProductView.objects.add_count(self.request.user, instance)
+        ProductView.objects.add_count(self.request.user.id, instance)
 
         context["related"] = sorted(Product.objects.get_related(instance)[:3], key=lambda x: random.random())
         return context
