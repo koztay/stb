@@ -24,6 +24,7 @@ class ProductFilterForm(forms.Form):
     #     required=False)
     max_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
     min_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
+    tag = forms.CharField(required=False)
 
 
 class VariationInventoryForm(forms.ModelForm):
