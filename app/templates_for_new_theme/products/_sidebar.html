@@ -137,6 +137,13 @@
                                     </div>
                                 </li>
                             </ul>
+                            <ul>
+                                {% for product in request.session.last_visited_item_list %}
+                                    <li>
+                                    <a href="#" class="aa-cartbox-img">{{ product.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                     <!-- single sidebar -->
