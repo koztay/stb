@@ -1,3 +1,5 @@
+{% load get_thumbnail %}
+
 <div class="col-lg-3 col-md-3 col-sm-4 col-md-pull-9">
                 <aside class="aa-sidebar">
                     <!-- single sidebar -->
@@ -111,41 +113,33 @@
 {#                        </div>#}
 {#                    </div>#}
                     <!-- single sidebar -->
-                    <div class="aa-sidebar-widget">
-                        <h3>Son Ziyaret Edilenler</h3>
-                        <div class="aa-recently-views">
-                            <ul>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                            </ul>
-                            <ul>
-                                {% for product in request.session.last_visited_item_list %}
-                                    <li>
-                                    <a href="#" class="aa-cartbox-img">{{ product.title }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                    {% if request.session.last_visited_item_list %}
+                        <div class="aa-sidebar-widget">
+                            <h3>Son Ziyaret Edilenler</h3>
+                            <div class="aa-recently-views">
+                                <ul>
+                                    {% for product in request.session.last_visited_item_list %}
+                                        <li>
+                                            <a href="{{ product.get_absolute_url }}" class="aa-cartbox-img">
+                                                <img alt="{{ product.title }} micro img" src="{{ product|get_thumbnail:'micro'}}">
+                                            </a>
+                                            <div class="aa-cartbox-info">
+                                            <h4><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+                                            <p>
+                                                {% if product.variation_set.first.sale_price %}
+                                                    <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                                                    <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                                                {% else %}
+                                                    <span class="aa-product-price">{{ product.price }},-₺</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     <!-- single sidebar -->
                     <div class="aa-sidebar-widget">
                         <h3>En Beğenilen Ürünler</h3>

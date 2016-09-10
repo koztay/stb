@@ -233,16 +233,17 @@ class ProductDetailView(DetailView):
         #### END NEW CODE ####
 
         if self.request.session.get('last_visited_item_list'):
-            if 0 <= len(self.request.session.get('last_visited_item_list')) < 3:
-                self.request.session['last_visited_item_list'].append(instance)
-                self.request.session.modified = True
-                print("3 'ten küçük ya da hiç yok", len(self.request.session.get('last_visited_item_list')))
-                print(self.request.session.get('last_visited_item_list'))
-            else:
-                del self.request.session.get('last_visited_item_list')[0]
-                self.request.session['last_visited_item_list'].append(instance)
-                self.request.session.modified = True
-                print(self.request.session.get('last_visited_item_list'))
+            if instance not in self.request.session.get('last_visited_item_list'):
+                if 0 <= len(self.request.session.get('last_visited_item_list')) < 3:
+                    self.request.session['last_visited_item_list'].append(instance)
+                    self.request.session.modified = True
+                    print("3 'ten küçük ya da hiç yok", len(self.request.session.get('last_visited_item_list')))
+                    print(self.request.session.get('last_visited_item_list'))
+                else:
+                    del self.request.session.get('last_visited_item_list')[0]
+                    self.request.session['last_visited_item_list'].append(instance)
+                    self.request.session.modified = True
+                    print(self.request.session.get('last_visited_item_list'))
         else:
             self.request.session['last_visited_item_list'] = []
             self.request.session['last_visited_item_list'].append(instance)
