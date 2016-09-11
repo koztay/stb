@@ -136,7 +136,7 @@ class ProductListView(FilterMixin, ListView):
         # print("count", context["object_list"].count())
         paginator = Paginator(context["object_list"], self.paginate_by)
         page = self.request.GET.get('page')
-        # print("number_of_pages:", paginator.num_pages)
+        print("number_of_pages:", paginator.num_pages)
 
         # ------------Paginator section--------------#
         try:
@@ -158,25 +158,13 @@ class ProductListView(FilterMixin, ListView):
         product_tags = list(set(product_tags))
         # print(product_tags)
         context['product_tag_list'] = product_tags
+
+        # -------------Categories section-------------#
         context['categories'] = Category.objects.all().filter(parent=None).order_by('title')
 
         # ----------Most Visited section---------------#
-        product_view_list = Product.objects.all()
-        counted_product_list = []
-        sorted_product_list = []
-        for viewed_product in product_view_list:
-            view_set = viewed_product.productview_set.all()
-            # print('view_set : ', view_set.count())
-            number_of_view_counts = 0
-            for view in view_set:
-                number_of_view_counts += view.count
-            counted_product = {'product': viewed_product, 'number_of_view': number_of_view_counts}
-            # print("product : ", viewed_product)
-            # print("count : ", number_of_view_counts)
-            counted_product_list.append(counted_product)
-            sorted_product_list = sorted(counted_product_list, key=lambda k: k['number_of_view'], reverse=True)
-        context['most_visited_products'] = sorted_product_list[:3]
-        # print(context['most_visited_products'])
+        results = self.get_most_visited_products()
+        context['most_visited_products'] = results
 
         # ----------Price filter section---------------#
         # Yukarıda object listi içindeki minimum ve maksimumu buluyordum ama manasız değil gibi.
@@ -208,6 +196,27 @@ class ProductListView(FilterMixin, ListView):
         context["page_products"] = page_products
 
         return context
+
+    def get_most_visited_products(self):
+        product_view_list = Product.objects.all()
+        counted_product_list = []
+        sorted_product_list = []
+        for viewed_product in product_view_list:
+            view_set = viewed_product.productview_set.all()  # user bazlı tuttuğu için bunu alıyoruz.
+            # print('view_set : ', view_set.count())
+            number_of_view_counts = 0
+            for view in view_set:
+                number_of_view_counts += view.count
+            counted_product = {'product': viewed_product, 'number_of_view': number_of_view_counts}
+            # print("product : ", viewed_product)
+            # print("count : ", number_of_view_counts)
+            counted_product_list.append(counted_product)
+            sorted_product_list = sorted(counted_product_list, key=lambda k: k['number_of_view'], reverse=True)
+            # keys, values = sorted_product_list.keys(), sorted_product_list.values()
+            # keys, values = zip(*sorted_product_list.items())
+        most_visited_products = sorted_product_list[:3]
+        results = [item['product'] for item in most_visited_products]
+        return results
 
     def get_queryset(self, *args, **kwargs):
         qs = super(ProductListView, self).get_queryset(*args, **kwargs)

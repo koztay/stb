@@ -145,27 +145,24 @@
                         <h3>En Beğenilen Ürünler</h3>
                         <div class="aa-recently-views">
                             <ul>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-1.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#" class="aa-cartbox-img"><img alt="img" src="img/woman-small-2.jpg"></a>
-                                    <div class="aa-cartbox-info">
-                                        <h4><a href="#">Product Name</a></h4>
-                                        <p>1 x $250</p>
-                                    </div>
-                                </li>
+                                {% for product in most_visited_products %}
+                                    <li>
+                                        <a href="{{ product.get_absolute_url }}" class="aa-cartbox-img">
+                                            <img alt="{{ product.title }} micro img" src="{{ product|get_thumbnail:'micro'}}">
+                                        </a>
+                                        <div class="aa-cartbox-info">
+                                            <h4><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+                                            <p>
+                                                {% if product.variation_set.first.sale_price %}
+                                                    <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                                                    <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                                                {% else %}
+                                                    <span class="aa-product-price">{{ product.price }},-₺</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
