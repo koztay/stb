@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from datetime import datetime
+# from datetime import datetime
 from django.db.models import Q, Max, Min
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -138,6 +138,7 @@ class ProductListView(FilterMixin, ListView):
         page = self.request.GET.get('page')
         # print("number_of_pages:", paginator.num_pages)
 
+        # ------------Paginator section--------------#
         try:
             page_products = paginator.page(page)
         except PageNotAnInteger:
@@ -145,6 +146,7 @@ class ProductListView(FilterMixin, ListView):
         except EmptyPage:
             page_products = paginator.page(paginator.num_pages)
 
+        # -------------Tags section-------------------#
         # get all id's of the object_list
         product_ids = []
         product_tags = []
@@ -157,11 +159,31 @@ class ProductListView(FilterMixin, ListView):
         # print(product_tags)
         context['product_tag_list'] = product_tags
         context['categories'] = Category.objects.all().filter(parent=None).order_by('title')
-        # get all products in object_list
-        product_object_list = Product.objects.all().filter(pk__in=product_ids)
 
+        # ----------Most Visited section---------------#
+        product_view_list = Product.objects.all()
+        counted_product_list = []
+        sorted_product_list = []
+        for viewed_product in product_view_list:
+            view_set = viewed_product.productview_set.all()
+            # print('view_set : ', view_set.count())
+            number_of_view_counts = 0
+            for view in view_set:
+                number_of_view_counts += view.count
+            counted_product = {'product': viewed_product, 'number_of_view': number_of_view_counts}
+            # print("product : ", viewed_product)
+            # print("count : ", number_of_view_counts)
+            counted_product_list.append(counted_product)
+            sorted_product_list = sorted(counted_product_list, key=lambda k: k['number_of_view'], reverse=True)
+        context['most_visited_products'] = sorted_product_list[:3]
+        # print(context['most_visited_products'])
+
+        # ----------Price filter section---------------#
         # Yukarıda object listi içindeki minimum ve maksimumu buluyordum ama manasız değil gibi.
         # set minimum and maximum prices
+
+        # get all products in object_list
+        product_object_list = Product.objects.all().filter(pk__in=product_ids)
         minimum_price_aggregate = product_object_list.aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
         # yukarıdaki şekilde parse etmezsen,
@@ -172,17 +194,18 @@ class ProductListView(FilterMixin, ListView):
         maximum_price = maximum_price_aggregate['price__max']
         context["maximum_price"] = maximum_price
 
-        context["now"] = timezone.now()
-        context["query"] = self.request.GET.get("q")  # None
-        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-        context["product_list_page"] = True
-        context["page_products"] = page_products
-
         if self.request.GET.get('min_price', '') is not '':
             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
 
         if self.request.GET.get('max_price', '') is not '':
             context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
+
+        # ----------Other context data section-----------#
+        context["now"] = timezone.now()
+        context["query"] = self.request.GET.get("q")  # None
+        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+        context["product_list_page"] = True
+        context["page_products"] = page_products
 
         return context
 
@@ -214,23 +237,23 @@ class ProductDetailView(DetailView):
         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
         instance = self.get_object()
 
-        #### NEW CODE ####
-        if self.request.session.get('last_visit'):
-            # The session has a value for the last visit
-            last_visit_time = self.request.session.get('last_visit')
-            visits = self.request.session.get('visits', 0)
-
-            if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
-                self.request.session['visits'] = visits + 1
-                self.request.session['last_visit'] = str(datetime.now())
-        else:
-            # The get returns None, and the session does not have a value for the last visit.
-            self.request.session['last_visit'] = str(datetime.now())
-            self.request.session['visits'] = 1
-
-        print(self.request.session.get('visits'))
-        print(self.request.session.get('last_visit'))
-        #### END NEW CODE ####
+        # #### NEW CODE ####
+        # if self.request.session.get('last_visit'):
+        #     # The session has a value for the last visit
+        #     last_visit_time = self.request.session.get('last_visit')
+        #     visits = self.request.session.get('visits', 0)
+        #
+        #     if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
+        #         self.request.session['visits'] = visits + 1
+        #         self.request.session['last_visit'] = str(datetime.now())
+        # else:
+        #     # The get returns None, and the session does not have a value for the last visit.
+        #     self.request.session['last_visit'] = str(datetime.now())
+        #     self.request.session['visits'] = 1
+        #
+        # print(self.request.session.get('visits'))
+        # print(self.request.session.get('last_visit'))
+        # #### END NEW CODE ####
 
         if self.request.session.get('last_visited_item_list'):
             if instance not in self.request.session.get('last_visited_item_list'):
@@ -249,10 +272,7 @@ class ProductDetailView(DetailView):
             self.request.session['last_visited_item_list'].append(instance)
             self.request.session.modified = True
 
-
         # print last item
-
-
         # order_by("-title")
 
         # ben user authenticated olmasa da view sayısını arttıracağım...

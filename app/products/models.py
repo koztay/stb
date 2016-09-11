@@ -107,6 +107,13 @@ class Product(models.Model):
             else:
                 return category
 
+    def get_total_views(self):
+        number_of_views = 0
+        views = self.productview_set.all()
+        for view in views:
+            number_of_views += view.count
+        return number_of_views
+
 
 class Variation(models.Model):
     product = models.ForeignKey(Product)
