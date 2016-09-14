@@ -37,43 +37,6 @@
 
 </script>
 
-
-{# quick view modal scripti #}
-<script>
-    $('#quick-view-modal').on('show.bs.modal', function (event) {
-
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var title = button.data('title'); // Extract info from data-* attributes
-        var description = button.data('description');
-        var url = button.data('url');
-        var imagehd = button.data('imagehd');
-        var imagesd = button.data('imagesd');
-        var imagemedium = button.data('imagemedium');
-        var imagemicro = button.data('imagemicro');
-        var category = button.data('category');
-        var category_url = button.data('category_url');
-
-  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or
-  // other methods instead.
-
-        var modal = $(this);
-        modal.find('.modal-product-title').text(title);
-        modal.find(".modal-product-description").text(description);
-        modal.find('.view-product-details').attr("href", url);
-        modal.find('.simpleLens-big-image').attr("src", imagemedium);
-        modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);
-{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagemedium);#}
-{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagemedium);#}
-{#        modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);#}
-        modal.find('.category-url').attr("href", category_url);
-        modal.find(".category-url").text(category);
-
-
-});
-</script>
-
-
 {# product sayfasında butona tıklanınca fiyat filtresi yapan fonksiyon #}
 <script>
      $("#filter-btn").click(function() {
