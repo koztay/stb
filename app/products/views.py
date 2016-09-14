@@ -295,7 +295,7 @@ class ProductDetailView(DetailView):
         else:
             ProductView.objects.add_count(self.request.user.id, instance)  # eğer user login olmamışsa
 
-        context["related"] = sorted(Product.objects.get_related(instance)[:3], key=lambda x: random.random())
+        context["related"] = sorted(Product.objects.get_related(instance)[:8], key=lambda x: random.random())
         return context
 
 

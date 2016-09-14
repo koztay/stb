@@ -47,18 +47,11 @@
                         <div class="aa-product-view-content">
                             <h3 class="modal-product-title">{{ product.title }}</h3>
                             <div class="aa-price-block">
-                                <span class="aa-product-view-price">
-                                    {% if product.variation_set.first.sale_price %}
-                                        <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
-                                        <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
-                                    {% else %}
-                                        <span class="aa-product-price">{{ product.price }},-₺</span>
-                                    {% endif %}
-                                </span>
+                                <span class="aa-product-view-price">34.99</span>
                                 <p class="aa-product-avilability">Stok durumu: <span>10+</span>
                                 </p>
                             </div>
-                            <p class="modal-product-description">{{ product.description|truncatechars:150 }}</p>
+                            <p class="modal-product-description">{{ product.description|truncatechars:200 }}</p>
 {#                                                        <h4>Size</h4>#}
 {#                                                        <div class="aa-prod-view-size">#}
 {#                                                            <a href="#">S</a>#}
