@@ -59,8 +59,9 @@
             <div class="aa-catg-head-banner-content">
                 <h2>{{ object.title }}</h2>
                 <ol class="breadcrumb">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#">Product</a></li>
+                    <li><a href="/">Anasayfa</a></li>
+                    <li><a href="{% url 'products:products' %}">Ürünler</a></li>
+                    <li><a href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a></li>
                     <li class="active">{{ object.title }}</li>
                 </ol>
             </div>
@@ -83,28 +84,28 @@
                                     <div id="demo-1" class="simpleLens-gallery-container">
                                         <div class="simpleLens-container">
                                             <div class="simpleLens-big-image-container"><a
-                                                    data-lens-image="img/view-slider/large/polo-shirt-1.png"
+                                                    data-lens-image="{{ product|get_thumbnail:"hd"}}"
                                                     class="simpleLens-lens-image"><img
-                                                    src="img/view-slider/medium/polo-shirt-1.png"
+                                                    src="{{ product|get_thumbnail:"medium"}}"
                                                     class="simpleLens-big-image"></a></div>
                                         </div>
-                                        <div class="simpleLens-thumbnails-container">
-                                            <a data-big-image="img/view-slider/medium/polo-shirt-1.png"
-                                               data-lens-image="img/view-slider/large/polo-shirt-1.png"
-                                               class="simpleLens-thumbnail-wrapper" href="#">
-                                                <img src="img/view-slider/thumbnail/polo-shirt-1.png">
-                                            </a>
-                                            <a data-big-image="img/view-slider/medium/polo-shirt-3.png"
-                                               data-lens-image="img/view-slider/large/polo-shirt-3.png"
-                                               class="simpleLens-thumbnail-wrapper" href="#">
-                                                <img src="img/view-slider/thumbnail/polo-shirt-3.png">
-                                            </a>
-                                            <a data-big-image="img/view-slider/medium/polo-shirt-4.png"
-                                               data-lens-image="img/view-slider/large/polo-shirt-4.png"
-                                               class="simpleLens-thumbnail-wrapper" href="#">
-                                                <img src="img/view-slider/thumbnail/polo-shirt-4.png">
-                                            </a>
-                                        </div>
+{#                                        <div class="simpleLens-thumbnails-container">#}
+{#                                            <a data-big-image="img/view-slider/medium/polo-shirt-1.png"#}
+{#                                               data-lens-image="img/view-slider/large/polo-shirt-1.png"#}
+{#                                               class="simpleLens-thumbnail-wrapper" href="#">#}
+{#                                                <img src="img/view-slider/thumbnail/polo-shirt-1.png">#}
+{#                                            </a>#}
+{#                                            <a data-big-image="img/view-slider/medium/polo-shirt-3.png"#}
+{#                                               data-lens-image="img/view-slider/large/polo-shirt-3.png"#}
+{#                                               class="simpleLens-thumbnail-wrapper" href="#">#}
+{#                                                <img src="img/view-slider/thumbnail/polo-shirt-3.png">#}
+{#                                            </a>#}
+{#                                            <a data-big-image="img/view-slider/medium/polo-shirt-4.png"#}
+{#                                               data-lens-image="img/view-slider/large/polo-shirt-4.png"#}
+{#                                               class="simpleLens-thumbnail-wrapper" href="#">#}
+{#                                                <img src="img/view-slider/thumbnail/polo-shirt-4.png">#}
+{#                                            </a>#}
+{#                                        </div>#}
                                     </div>
                                 </div>
                             </div>
@@ -124,52 +125,6 @@
                                         <p class="aa-product-avilability">Stok Durumu: <span>10+</span></p>
                                     </div>
                                     <p>{{ object.description|truncatechars:150 }}</p>
-                                    <h4>Size</h4>
-                                    <div class="aa-prod-view-size">
-                                        <a href="#">S</a>
-                                        <a href="#">M</a>
-                                        <a href="#">L</a>
-                                        <a href="#">XL</a>
-                                    </div>
-                                    <h4>Color</h4>
-                                    <div class="aa-color-tag">
-                                        <a href="#" class="aa-color-green"></a>
-                                        <a href="#" class="aa-color-yellow"></a>
-                                        <a href="#" class="aa-color-pink"></a>
-                                        <a href="#" class="aa-color-black"></a>
-                                        <a href="#" class="aa-color-white"></a>
-                                    </div>
-                                    <form id='add-form' method='GET' action="{% url 'cart' %}">
-                                        <p id='jquery-message' class='lead'>
-
-                                        </p>
-                                        {% if object.variation_set.count > 1 %}
-                                            <select name='item' class='form-control variation_select'>
-                                                {% for vari_obj in object.variation_set.all %}
-                                                    <!-- <option data-img="http://www.spirit1059.com/pics/Feeds/Articles/2015611/118317/Beach.jpg" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->
-                                                    <option data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}"
-                                                            value="{{ vari_obj.id }}">{{ vari_obj }}</option>
-                                                {% endfor %}
-                                            </select>
-
-                                        {% else %}
-                                            <input type="hidden" name='item' value='{{ object.variation_set.first.id }}'/>
-                                            <h3 id='price'>{% if object.variation_set.first.sale_price %}
-                                                {{ object.variation_set.first.sale_price }}
-                                                <small class='og-price'>{{ object.variation_set.first.price }}</small>
-                                            {% else %}
-
-                                                {{ object.variation_set.first.price }}
-                                            {% endif %}
-                                            </h3>
-
-
-                                        {% endif %}
-                                        <br/>
-                                        <input class='form-control' type='number' name='qty' value='1'/>
-                                        <br/>
-                                        <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-default'/>
-                                    </form>
                                     <div class="aa-prod-quantity">
                                         <form action="">
                                             <select id="" name="">

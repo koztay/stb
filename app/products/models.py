@@ -112,6 +112,7 @@ class Product(models.Model):
         views = self.productview_set.all()
         for view in views:
             number_of_views += view.count
+        print(number_of_views)
         return number_of_views
 
 
