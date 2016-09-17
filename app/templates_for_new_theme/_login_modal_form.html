@@ -11,14 +11,17 @@
                     <input type="text" name='username' placeholder="Kullanıcı Adı">
                     <label for="">Şifre<span>*</span></label>
                     <input type="password" name='password' placeholder="Şifre">
-                    <button class="aa-browse-btn" type="submit">Giriş</button>
-                    <label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me
-                    </label>
-                    <p class="aa-lost-password"><a href="{% url "auth_password_reset" %}">Şifremi Unuttum?</a></p>
-                    <div class="aa-register-now">
-                        Üye değil misiniz?<a href="{% url 'registration_register' %}">Kayıt Ol!</a>
-                    </div>
+                    <button class="aa-browse-btn btn-block" type="submit">Giriş</button> <br><br><br>
+{#                    <label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me#}
+{#                    </label>#}
+
                 </form>
+                 <div class="aa-register-now">
+                        Üye değil misiniz?<a href="{% url 'registration_register' %}">Kayıt Ol!</a>
+                 </div>
+                 <div class="aa-register-now">
+                    Şifremi unuttum <a href="{% url "auth_password_reset" %}">Şifremi Sıfırla!</a>
+                 </div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

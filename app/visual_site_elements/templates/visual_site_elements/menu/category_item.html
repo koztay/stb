@@ -1,5 +1,5 @@
 
-<li><a href="#">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
+<li><a href="{{ category.get_absolute_url }}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
     {% if category.get_children %}
     <ul class="dropdown-menu">
 
