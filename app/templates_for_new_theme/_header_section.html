@@ -50,11 +50,21 @@
                         <!-- / header top left -->
                         <div class="aa-header-top-right">
                             <ul class="aa-head-top-nav-right">
-                                <li><a href="account.html">My Account</a></li>
-                                <li class="hidden-xs"><a href="wishlist.html">Wishlist</a></li>
-                                <li class="hidden-xs"><a href="cart.html">My Cart</a></li>
-                                <li class="hidden-xs"><a href="checkout.html">Checkout</a></li>
-                                <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
+                                <li>
+                                    <a href='{% url "cart" %}'><i class="fa fa-shopping-cart fa-navbar-cart"></i> <span
+                                            id="cart-count-badge" class='badge'>{{ request.session.cart_item_count }}</span></a>
+                                </li>
+                                <li class="hidden-xs"><a href="checkout.html">Alışverişi Tamamla</a></li>
+                            {% if request.user.is_authenticated %}
+                                <li><a href="{% url 'orders' %}">Siparişlerim</a></li>
+                                <li><a href="{% url 'auth_logout' %}">Çıkış</a></li>
+                            {% else %}
+                                <li><a href="{% url 'registration_register' %}">Kayıt Ol</a></li>
+                                {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
+                                    <li><a href="" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
+                                {% endif %}
+
+                            {% endif %}
                             </ul>
                         </div>
                     </div>
