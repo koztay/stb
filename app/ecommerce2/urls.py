@@ -10,11 +10,14 @@ from orders.views import (
     OrderList,
     OrderDetail)
 
+from static_pages.views import StaticPageDetailView
+
 urlpatterns = [
     # Examples:
     url(r'^$', 'newsletter.views.home', name='home'),
     url(r'^contact/$', 'newsletter.views.contact', name='contact'),
-    url(r'^about/$', 'ecommerce2.views.about', name='about'),
+    # url(r'^about/$', 'ecommerce2.views.about', name='about'),
+
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
@@ -30,6 +33,8 @@ urlpatterns = [
     url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
     url(r'^checkout/final/$', CheckoutFinalView.as_view(), name='checkout_final'),
 
+    # static_pages
+    url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'),
 ]
 
 if settings.DEBUG:

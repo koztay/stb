@@ -1,0 +1,162 @@
+{% load get_thumbnail %}
+
+
+<div class="col-md-3">
+    <aside class="aa-blog-sidebar">
+    <aside class="aa-sidebar">
+        <!-- single sidebar -->
+        <div class="aa-sidebar-widget">
+            <h3>Kategoriler</h3>
+            <ul class="aa-catg-nav">
+                {% for category in categories %}
+                    <li><a href="{% url 'products:products' %}?category={{ category.title }}">
+                        {{ category.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+{#                        <form method="GET" action="{% url 'products:products' %}">#}
+{#                            {{ filter_form |crispy }}#}
+{#                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>#}
+{#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
+{#                        </form>#}
+        </div>
+        <!-- single sidebar -->
+{#        <div class="aa-sidebar-widget">#}
+{#            <h3>Etiketler</h3>#}
+{#            <div class="tag-cloud">#}
+{#            <form>#}
+{#                {% if product_tag_list %}#}
+{#                    {% for tag in product_tag_list %}#}
+{#                                    <a href="{% url 'products:product_list_by_tag' tag.slug %}">{{ tag.name }}</a>#}
+{#                        <a href="{% url 'products:products' %}?tag={{ tag.name }}&{{ request.GET.urlencode }}">#}
+{#                        {{ tag.name }}#}
+{#                        </a>#}
+{#                            {{ tag.name }}#}
+{#                    {% endfor %}#}
+{#                {% endif %}#}
+{#            </form>#}
+{#            </div>#}
+{#        </div>#}
+        <!-- single sidebar -->
+        {% if object_list.count > 1  %}
+            <div class="aa-sidebar-widget">
+                <h3>Fiyat Aralığı</h3>
+                <!-- price range -->
+                <div class="aa-sidebar-price-range">
+                    <form method="GET" action="{% url 'products:products' %}">
+                        <div id="skipstep" class="noUi-target noUi-ltr noUi-horizontal noUi-background">
+                        </div>
+                        <span id="skip-value-lower" class="example-val">20</span>
+                        <span id="skip-value-upper" class="example-val">70</span>
+                        <input id="skip-value-lower-input" type="hidden"
+                               name="{{ filter_form.min_price.name }}"
+                               value="{{ filter_form.min_price.value }}">
+                        <input id="skip-value-upper-input" type="hidden"
+                               name="{{ filter_form.max_price.name }}"
+                               value="{{ filter_form.max_price.value }}">
+{#                                <input type='hidden' name='q' value='{{ request.GET.q }}'/>#}
+{#                                <input type='submit' value='Apply Filter' class='btn btn-default'>#}
+{#                                <a href="{% url 'products:products' %}?min_price={{ minimum_price }}&max_price={{ maximum_price }}&{{ request.GET.urlencode }}">#}
+                        <button id="filter-btn" class="aa-filter-btn" type="submit">Filtrele</button>
+{#                                </a>#}
+                    </form>
+                    </br>
+                    <div class="row" align="center">
+                        <a href="{% url 'products:products' %}">
+                            <button class="aa-filter-btn"
+                                    style="width: 100%; height: 2.2em; font-size: large"
+                                    type="submit">Filtreleri Temizle</button>
+                        </a>
+                    </div>
+                    <input id='minrange' type="hidden" name="min_price" value="{{ minimum_price }}">
+                    <input id='maxrange' type="hidden" name="max_price" value="{{ maximum_price }}">
+                    <input id='minsetvalue' type="hidden" name="minimum_set_price_value" value="{{ minimum_set_price_value }}">
+                    <input id='maxsetvalue' type="hidden" name="maximum_set_price_value" value="{{ maximum_set_price_value }}">
+                </div>
+
+            </div>
+        {% endif %}
+
+{#                    <!-- single sidebar -->#}
+{#                    <div class="aa-sidebar-widget">#}
+{#                        <div class="">#}
+{#                            <a href="/products" class="aa-filter-btn" role="button">#}
+{#                                <span><h3>Filtreleri Temizle</h3></span>#}
+{#                            </a>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <!-- single sidebar -->#}
+{#                    <div class="aa-sidebar-widget">#}
+{#                        <h3>Shop By Color</h3>#}
+{#                        <div class="aa-color-tag">#}
+{#                            <a class="aa-color-green" href="#"></a>#}
+{#                            <a class="aa-color-yellow" href="#"></a>#}
+{#                            <a class="aa-color-pink" href="#"></a>#}
+{#                            <a class="aa-color-purple" href="#"></a>#}
+{#                            <a class="aa-color-blue" href="#"></a>#}
+{#                            <a class="aa-color-orange" href="#"></a>#}
+{#                            <a class="aa-color-gray" href="#"></a>#}
+{#                            <a class="aa-color-black" href="#"></a>#}
+{#                            <a class="aa-color-white" href="#"></a>#}
+{#                            <a class="aa-color-cyan" href="#"></a>#}
+{#                            <a class="aa-color-olive" href="#"></a>#}
+{#                            <a class="aa-color-orchid" href="#"></a>#}
+{#                        </div>#}
+{#                    </div>#}
+        <!-- single sidebar -->
+        {% if request.session.last_visited_item_list %}
+            <div class="aa-sidebar-widget">
+                <h3>Son Ziyaret Edilenler</h3>
+                <div class="aa-recently-views">
+                    <ul>
+                        {% for product in request.session.last_visited_item_list %}
+                            <li>
+                                <a href="{{ product.get_absolute_url }}" class="aa-cartbox-img">
+                                    <img alt="{{ product.title }} micro img" src="{{ product|get_thumbnail:'micro'}}">
+                                </a>
+                                <div class="aa-cartbox-info">
+                                <h4><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+                                <p>
+                                    {% if product.variation_set.first.sale_price %}
+                                        <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                                        <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                                    {% else %}
+                                        <span class="aa-product-price">{{ product.price }},-₺</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        <!-- single sidebar -->
+        <div class="aa-sidebar-widget">
+            <h3>En Beğenilen Ürünler</h3>
+            <div class="aa-recently-views">
+                <ul>
+                    {% for product in most_visited_products %}
+                        <li>
+                            <a href="{{ product.get_absolute_url }}" class="aa-cartbox-img">
+                                <img alt="{{ product.title }} micro img" src="{{ product|get_thumbnail:'micro'}}">
+                            </a>
+                            <div class="aa-cartbox-info">
+                                <h4><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
+                                <p>
+                                    {% if product.variation_set.first.sale_price %}
+                                        <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                                        <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                                    {% else %}
+                                        <span class="aa-product-price">{{ product.price }},-₺</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </aside>
+</div>
