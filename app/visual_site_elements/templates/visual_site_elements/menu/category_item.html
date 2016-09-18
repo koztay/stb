@@ -1,13 +1,13 @@
 
-<li><a href="{{ category.get_absolute_url }}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
+<li><a href="{% url 'products:products' %}?category={{ category.title }}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
     {% if category.get_children %}
     <ul class="dropdown-menu">
 
         {% for child in category.get_children %}
-            <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+            <li><a href="{% url 'products:products' %}?category={{ child.title }}">{{ child.title }}</a></li>
         {% endfor %}
 
-        <li><a href="{{ category.get_absolute_url }}">Tümü.. <span class="caret"></span></a>
+        <li><a href="{% url 'products:products' %}?category={{ category.title }}">Tümü.. <span class="caret"></span></a>
 {#                <ul class="dropdown-menu">#}
 {#                    <li><a href="#">Sleep Wear</a></li>#}
 {#                    <li><a href="#">Sandals</a></li>#}

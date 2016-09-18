@@ -158,7 +158,9 @@
                         <!-- Tab panes -->
                         <div class="tab-content">
                             <div class="tab-pane fade in active" id="description">
+                                {% autoescape off %}
                                 <p>{{ object.description }}</p>
+                                {% endautoescape %}
                             </div>
                         </div>
                     </div>
