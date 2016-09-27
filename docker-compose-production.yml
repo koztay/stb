@@ -1,34 +1,24 @@
 version: '2'
 services:
-#  postgres:
-#    image: postgres:9.4
-#    restart: always
-#    env_file: .env
-#    volumes:
-#      - postgres-data:/var/lib/postgresql/data/
-
+  postgres:
+    image: postgres:9.4
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
 
   app:
     build: ./app/
     restart: always
-#    image: kemal:istebu
-#    env_file: .env
+    env_file:
+      - .env
     expose:
       - '8000'
     volumes:
-#      - ./app:/app
-# yukarıdaki volume ayarını sadece local virtualbox 'larda aç. Yoksa digitalocean vb.
-# cloud 'da asla ve asla çalışmıyor. Django app 'no module named ecommerce2' hatası verip
-# başlayamıyor..
       - static-data:/usr/src/static_in_env/static_root/
       - media-data:/usr/src/static_in_env/media_root/
     command: /usr/local/bin/gunicorn ecommerce2.wsgi:application -w 2 -b :8000
-
-
-#  media_data:
-#    image: kemal:istebu
-#    build: ./static_in_env/
-
 
   web:
     build: ./web/
@@ -41,10 +31,9 @@ services:
     volumes_from:
       - app
 
-
 volumes:
-#  postgres-data:
-#    driver: local
+  postgres-data:
+    driver: local
   static-data:
     driver: local
   media-data:

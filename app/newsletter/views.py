@@ -23,8 +23,13 @@ def home(request):
     promotion_left = Promotion.objects.all().filter(active=True).order_by("?").first()
 
     # sol taraf için seçilen promosyonu aşağıdaki listeden çıkar ve kalanlar arasından ilk 4 'ü al, rastgele sırala.
-    promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
-    promotions = (promotion_left, promotions_right)
+    try:
+        promotions_right = Promotion.objects.all().exclude(id=promotion_left.id).filter(active=True).order_by("?")[:4]
+        promotions = (promotion_left, promotions_right)
+    except:
+        promotions = None
+        pass
+
     testimonials = Testimonial.objects.filter(active=True).order_by("?")[:3]
 
     if request.method == "POST":

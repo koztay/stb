@@ -19,7 +19,7 @@ urlpatterns = [
     # url(r'^about/$', 'ecommerce2.views.about', name='about'),
 
 
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^istebu_backend_1357/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^blog/', include('blog.urls', namespace='blog')),
     url(r'^products/', include('products.urls', namespace='products')),
