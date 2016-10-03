@@ -16,9 +16,10 @@
                 <div class="navbar-collapse collapse">
                     <!-- Left nav -->
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Anasayfa</a></li>
+{#                        <li><a href="/">Anasayfa</a></li>#}
                         {% for category in object_list %}
                             {% if not category.is_child %}
+
                                 {% include "visual_site_elements/menu/category_item.html" with category=category %}
                             {% endif %}
                         {% endfor %}

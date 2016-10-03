@@ -35,6 +35,10 @@ urlpatterns = [
 
     # static_pages
     url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'),
+
+    # tiny_mce
+    url(r'^tinymce/', include('tinymce.urls')),
+
 ]
 
 if settings.DEBUG:

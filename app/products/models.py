@@ -4,7 +4,9 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
+
 from taggit.managers import TaggableManager
+from tinymce.models import HTMLField
 # from utils import thumbnail_location, THUMB_CHOICES
 
 
@@ -58,7 +60,8 @@ class ProductManager(models.Manager):
 
 class Product(models.Model):
     title = models.CharField(max_length=120)
-    description = models.TextField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    description = HTMLField(default="<h1>default description</h1>", blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=20)
     active = models.BooleanField(default=True)
     categories = models.ManyToManyField('Category', blank=True)
@@ -199,10 +202,22 @@ class Category(models.Model):
             return False
 
     def get_children(self):
-        if self.is_child:
-            return None
+        children = Category.objects.filter(parent=self)
+        if len(children) > 0:
+            print(self)
+            print(len(children))
+            print("children 0 den büyük:", children)
+            return children
         else:
-            return Category.objects.filter(parent=self)
+            print(self)
+            print(len(children))
+            print("children 0 den büyük değil:", children)
+            return None
+
+        # if self.is_child:
+        #     return None
+        # else:
+        #     return Category.objects.filter(parent=self)
 
 
 class ProductFeatured(models.Model):
