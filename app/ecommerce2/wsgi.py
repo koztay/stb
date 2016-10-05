@@ -11,6 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce2.settings.new_theme")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce2.settings")
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ecommerce2.settings.new_theme")
 
 application = get_wsgi_application()

@@ -266,8 +266,8 @@ jQuery(function ($) {
             min_range = start_value_min;
             max_range = start_value_max;
 
-            console.log(start_value_min);
-            console.log(start_value_max);
+            console.log(min_range);
+            console.log(max_range);
 
             // noUiSlider.create(skipSlider, {
             //     range: {
@@ -280,6 +280,8 @@ jQuery(function ($) {
             //     start: [start_value_min, start_value_max]
             // });
 
+            // Eğer min range max range eşit değilse yarat
+
             noUiSlider.create(skipSlider, {
                 start: [ start_value_min, start_value_max ],
                 step: 1,
@@ -289,7 +291,8 @@ jQuery(function ($) {
                 }
             });
 
-            // for value print
+
+        // for value print
             var skipValues = [
                 document.getElementById('skip-value-lower'),
                 document.getElementById('skip-value-upper')
@@ -298,6 +301,7 @@ jQuery(function ($) {
             skipSlider.noUiSlider.on('update', function (values, handle) {
                 skipValues[handle].innerHTML = values[handle];
             });
+
         }
     });
 

@@ -19,8 +19,9 @@
 
                                 <div class="tab-pane fade in active" id="men">
                                     <ul class="aa-product-catg"
+
                                        {% for product in products %}
-                                           {% include "products/single_product.html" with product=product price="True" %}
+                                           {% include "products/_single_product.html" with product=product price="True" %}
                                        {% endfor %}
                                     </ul>
                                     <a class="aa-browse-btn" href="/products">TÜMÜNE GÖZAT <span
@@ -28,7 +29,7 @@
                                 </div>
 
                             </div>
-                            {% include "products/quick_view_modal.html" %}
+                            {% include "products/_quick_view_modal.html" %}
                         </div>
                     </div>
                 </div>

@@ -100,6 +100,13 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         if micro_created:
             thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
 
+        # yukarıdaki gibi if 'ler olduğunda sadece ilk resme ilişkin thumnail yaratıyor. Biz tamamı,
+        # için thumbnail yaratmak istiyoruz. Ama bu sefer de thumb resme ait mi değil mi bulmamız gerek.
+
+        # thumbnail_creator.create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
+        # thumbnail_creator.create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
+        # thumbnail_creator.create_new_thumb(media_path, mid, owner_slug, mid_max[0], mid_max[1])
+        # thumbnail_creator.create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
 
 post_save.connect(productimage_post_save_receiver_for_thumbnail, sender=ProductImage)
 post_save.connect(product_post_save_receiver_for_attributes, sender=Product)

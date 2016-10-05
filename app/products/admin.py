@@ -54,6 +54,7 @@ class ThumbnailInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'price']
+    prepopulated_fields = {'slug': ('title',)}
     inlines = [
         ProductImageInline,
         ThumbnailInline,
@@ -65,13 +66,19 @@ class ProductAdmin(admin.ModelAdmin):
         model = Product
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
+    class Meta:
+        model = Category
+
 admin.site.register(Product, ProductAdmin)
 
 # admin.site.register(Variation)
 
 admin.site.register(ProductImage)
 
-admin.site.register(Category)
+admin.site.register(Category, CategoryAdmin)
 
 admin.site.register(ProductFeatured)
 

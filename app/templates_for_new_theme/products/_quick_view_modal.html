@@ -45,15 +45,13 @@
                     <!-- Modal view content -->
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="aa-product-view-content">
-                            <h3 class="modal-product-title">T-Shirt</h3>
+                            <h3 class="modal-product-title">{{ product.title }}</h3>
                             <div class="aa-price-block">
-                                <span class="aa-product-view-price">$34.99</span>
+                                <span class="aa-product-view-price">34.99</span>
                                 <p class="aa-product-avilability">Stok durumu: <span>10+</span>
                                 </p>
                             </div>
-                            <p class="modal-product-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                Officiis animi, veritatis quae repudiandae quod nulla porro
-                                quidem, itaque quis quaerat!</p>
+                            <p class="modal-product-description">{{ product.description|truncatechars:200 }}</p>
 {#                                                        <h4>Size</h4>#}
 {#                                                        <div class="aa-prod-view-size">#}
 {#                                                            <a href="#">S</a>#}
@@ -73,13 +71,13 @@
                                     </select>
                                 </form>
                                 <p class="aa-prod-category">
-                                    Kategori: <a class="category-url" href="#">Polo T-Shirt</a>
+                                    Kategori: <a class="category-url" href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a>
                                 </p>
                             </div>
                             <div class="aa-prod-view-bottom">
                                 <a href="#" class="aa-add-to-cart-btn"><span
                                         class="fa fa-shopping-cart"></span>Sepete At</a>
-                                <a href="#" class="aa-add-to-cart-btn view-product-details">Ürün Detayı</a>
+                                <a href="{{ product.get_absolute_url }}" class="aa-add-to-cart-btn view-product-details">Ürün Detayı</a>
                             </div>
                         </div>
                     </div>

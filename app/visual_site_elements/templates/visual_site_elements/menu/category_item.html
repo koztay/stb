@@ -1,18 +1,24 @@
 
-<li><a href="#">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
+<li><a href="{% url 'products:products' %}?category={{ category.title }}">{{ category.title }}{% if category.get_children %}<span class="caret">{% endif %}</span></a>
     {% if category.get_children %}
     <ul class="dropdown-menu">
 
         {% for child in category.get_children %}
-            <li><a href="{{ child.get_absolute_url }}">{{ child.title }}</a></li>
+            {% if child.get_children %}
+                <li class="dropdown-submenu">
+                <a href="{% url 'products:products' %}?category={{ child.title }}">{{ child.title }}</a>
+                    <ul class="dropdown-menu">
+                        {% for second_child in child.get_children %}
+                            <li><a href="{% url 'products:products' %}?category={{ second_child.title }}">{{ second_child.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% else %}
+                <li><a href="{% url 'products:products' %}?category={{ child.title }}">{{ child.title }}</a></li>
+            {% endif%}
         {% endfor %}
-
-        <li><a href="{{ category.get_absolute_url }}">Tümü.. <span class="caret"></span></a>
-{#                <ul class="dropdown-menu">#}
-{#                    <li><a href="#">Sleep Wear</a></li>#}
-{#                    <li><a href="#">Sandals</a></li>#}
-{#                    <li><a href="#">Loafers</a></li>#}
-{#                </ul>#}
+        <li>
+            <a href="{% url 'products:products' %}?category={{ category.title }}">Tümü... <span class="caret"></span></a>
         </li>
 
     </ul>

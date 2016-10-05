@@ -30,6 +30,8 @@
            title="Quick View" data-toggle="modal"
            data-target="#quick-view-modal"
            data-title="{{ product.title }}"
+           data-price="{{ product.price }}"
+           data-saleprice="{{ product.variation_set.first.sale_price }}"
            data-url="{{ product.get_absolute_url }}"
            data-description="{{ product.description|truncatechars:200}}"
            data-imagehd = '{{ product|get_thumbnail:"hd"}}'

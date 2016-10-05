@@ -45,6 +45,8 @@
         var button = $(event.relatedTarget); // Button that triggered the modal
         var title = button.data('title'); // Extract info from data-* attributes
         var description = button.data('description');
+        var price = button.data('price');
+        var saleprice = button.data('saleprice');
         var url = button.data('url');
         var imagehd = button.data('imagehd');
         var imagesd = button.data('imagesd');
@@ -68,6 +70,27 @@
 {#        modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);#}
         modal.find('.category-url').attr("href", category_url);
         modal.find(".category-url").text(category);
+
+        if (saleprice > 0){
+
+            var element = modal.find('.aa-product-view-price');
+            element.text('');
+            var spansale = document.createElement("span");
+            var nodesale = document.createTextNode(saleprice + ' ,-₺ ');
+            spansale.appendChild(nodesale);
+            element[0].appendChild(spansale);
+
+            var spanprice = document.createElement("span");
+            var del = document.createElement("del");
+            var nodeprice = document.createTextNode(price + ' ,-₺ ');
+            del.appendChild(nodeprice);
+            spanprice.appendChild(del);
+            element[0].appendChild(spanprice);
+
+        }else{
+            console.log("burası çalışmamalı");
+            modal.find('.aa-product-view-price').text(price + ' ,-₺ ');
+        }
 
 
 });

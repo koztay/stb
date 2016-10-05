@@ -1,7 +1,7 @@
 from django.contrib import messages
-from django.core.exceptions import ImproperlyConfigured
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q, Max, Min
+# from datetime import datetime
+from django.db.models import Q, Max, Min, Count, Sum
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
@@ -14,7 +14,7 @@ from analytics.models import ProductView
 from taggit.models import Tag
 
 from .forms import VariationInventoryFormSet, ProductFilterForm
-from .mixins import StaffRequiredMixin
+from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
 
 
@@ -98,9 +98,10 @@ class VariationListView(StaffRequiredMixin, ListView):
 class ProductFilter(FilterSet):
     title = CharFilter(name='title', lookup_type='icontains', distinct=True)
     category = CharFilter(name='categories__title', lookup_type='icontains', distinct=True)
-    category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
+    # category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
     min_price = NumberFilter(name='variation__price', lookup_type='gte', distinct=True)  # (some_price__gte=somequery)
     max_price = NumberFilter(name='variation__price', lookup_type='lte', distinct=True)
+    tag = CharFilter(name='tags__name', lookup_type='icontains', distinct=True)
 
     class Meta:
         model = Product
@@ -110,6 +111,7 @@ class ProductFilter(FilterSet):
             'category',
             'title',
             'description',
+            'tag',
         ]
 
 
@@ -120,33 +122,6 @@ class ProductFilter(FilterSet):
 #         qs = Product.objects.all().order_by(ordering)
 #     f = ProductFilter(request.GET, queryset=qs)
 #     return render(request, "products/product_list.html", {"object_list": f})
-
-
-class FilterMixin(object):
-    filter_class = None
-    search_ordering_param = "ordering"
-
-    def get_queryset(self, *args, **kwargs):
-        try:
-            qs = super(FilterMixin, self).get_queryset(*args, **kwargs)
-            return qs
-        except:
-            raise ImproperlyConfigured("You must have a queryset in order to use the FilterMixin")
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(FilterMixin, self).get_context_data(*args, **kwargs)
-        qs = self.get_queryset()
-        ordering = self.request.GET.get(self.search_ordering_param)
-
-        if ordering:
-            qs = qs.order_by(ordering)
-        filter_class = self.filter_class
-
-        if filter_class:
-            f = filter_class(self.request.GET, queryset=qs)
-            context["object_list"] = f
-
-        return context
 
 
 class ProductListView(FilterMixin, ListView):
@@ -161,8 +136,9 @@ class ProductListView(FilterMixin, ListView):
         # print("count", context["object_list"].count())
         paginator = Paginator(context["object_list"], self.paginate_by)
         page = self.request.GET.get('page')
-        # print("number_of_pages:", paginator.num_pages)
+        print("number_of_pages:", paginator.num_pages)
 
+        # ------------Paginator section--------------#
         try:
             page_products = paginator.page(page)
         except PageNotAnInteger:
@@ -170,6 +146,7 @@ class ProductListView(FilterMixin, ListView):
         except EmptyPage:
             page_products = paginator.page(paginator.num_pages)
 
+        # -------------Tags section-------------------#
         # get all id's of the object_list
         product_ids = []
         product_tags = []
@@ -179,14 +156,23 @@ class ProductListView(FilterMixin, ListView):
 
         # remove duplicates
         product_tags = list(set(product_tags))
-        print(product_tags)
+        # print(product_tags)
         context['product_tag_list'] = product_tags
+
+        # -------------Categories section-------------#
+        context['categories'] = Category.objects.all().filter(parent=None).order_by('title')
+
+        # ----------Most Visited deneme bu oldu----------------#
+        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productview__count')).order_by('-num_views')
+        # print(product_list)
+        context['most_visited_products'] = most_viewed_product_list[:3]
+
+        # ----------Price filter section---------------#
+        # Yukarıda object listi içindeki minimum ve maksimumu buluyordum ama manasız değil gibi.
+        # set minimum and maximum prices
 
         # get all products in object_list
         product_object_list = Product.objects.all().filter(pk__in=product_ids)
-
-        # Yukarıda object listi içindeki minimum ve maksimumu buluyordum ama manasız değil gibi.
-        # set minimum and maximum prices
         minimum_price_aggregate = product_object_list.aggregate(Min('price'))
         minimum_price = minimum_price_aggregate['price__min']
         # yukarıdaki şekilde parse etmezsen,
@@ -197,17 +183,18 @@ class ProductListView(FilterMixin, ListView):
         maximum_price = maximum_price_aggregate['price__max']
         context["maximum_price"] = maximum_price
 
-        context["now"] = timezone.now()
-        context["query"] = self.request.GET.get("q")  # None
-        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
-        context["product_list_page"] = True
-        context["page_products"] = page_products
-
         if self.request.GET.get('min_price', '') is not '':
             context["minimum_set_price_value"] = str(self.request.GET.get('min_price', ''))
 
         if self.request.GET.get('max_price', '') is not '':
             context["maximum_set_price_value"] = str(self.request.GET.get('max_price', ''))
+
+        # ----------Other context data section-----------#
+        context["now"] = timezone.now()
+        context["query"] = self.request.GET.get("q")  # None
+        context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+        context["product_list_page"] = True
+        context["page_products"] = page_products
 
         return context
 
@@ -235,11 +222,46 @@ import random  # related products için kullanılıyor...
 class ProductDetailView(DetailView):
     model = Product
 
-    # template_name = "product.html"
-    # template_name = "<appname>/<modelname>_detail.html"
     def get_context_data(self, *args, **kwargs):
         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
         instance = self.get_object()
+
+        # #### NEW CODE ####
+        # if self.request.session.get('last_visit'):
+        #     # The session has a value for the last visit
+        #     last_visit_time = self.request.session.get('last_visit')
+        #     visits = self.request.session.get('visits', 0)
+        #
+        #     if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
+        #         self.request.session['visits'] = visits + 1
+        #         self.request.session['last_visit'] = str(datetime.now())
+        # else:
+        #     # The get returns None, and the session does not have a value for the last visit.
+        #     self.request.session['last_visit'] = str(datetime.now())
+        #     self.request.session['visits'] = 1
+        #
+        # print(self.request.session.get('visits'))
+        # print(self.request.session.get('last_visit'))
+        # #### END NEW CODE ####
+
+        if self.request.session.get('last_visited_item_list'):
+            if instance not in self.request.session.get('last_visited_item_list'):
+                if 0 <= len(self.request.session.get('last_visited_item_list')) < 3:
+                    self.request.session['last_visited_item_list'].append(instance)
+                    self.request.session.modified = True
+                    print("3 'ten küçük ya da hiç yok", len(self.request.session.get('last_visited_item_list')))
+                    print(self.request.session.get('last_visited_item_list'))
+                else:
+                    del self.request.session.get('last_visited_item_list')[0]
+                    self.request.session['last_visited_item_list'].append(instance)
+                    self.request.session.modified = True
+                    print(self.request.session.get('last_visited_item_list'))
+        else:
+            self.request.session['last_visited_item_list'] = []
+            self.request.session['last_visited_item_list'].append(instance)
+            self.request.session.modified = True
+
+        # print last item
         # order_by("-title")
 
         # ben user authenticated olmasa da view sayısını arttıracağım...
@@ -253,7 +275,7 @@ class ProductDetailView(DetailView):
         else:
             ProductView.objects.add_count(self.request.user.id, instance)  # eğer user login olmamışsa
 
-        context["related"] = sorted(Product.objects.get_related(instance)[:3], key=lambda x: random.random())
+        context["related"] = sorted(Product.objects.get_related(instance)[:8], key=lambda x: random.random())
         return context
 
 
