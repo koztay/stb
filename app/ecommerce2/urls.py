@@ -33,11 +33,14 @@ urlpatterns = [
     url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
     url(r'^checkout/final/$', CheckoutFinalView.as_view(), name='checkout_final'),
 
-    # static_pages
-    url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'),
-
     # tiny_mce
     url(r'^tinymce/', include('tinymce.urls')),
+
+    # data-importer
+    url(r'^data-importer/', include('importer.urls', namespace='importer')),
+
+    # static_pages bu en altta olmazsa yukarıdakiler çalışmıyor.
+    url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'),
 
 ]
 
