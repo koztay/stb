@@ -62,6 +62,7 @@ def attribute_type_post_save_receiver(sender, instance, created, *args, **kwargs
 
 
 def create_slug(instance, sender, new_slug=None):
+    print(instance)
     slug = slugify(instance.title)
     if new_slug is not None:
         slug = new_slug
@@ -69,7 +70,7 @@ def create_slug(instance, sender, new_slug=None):
     exists = qs.exists()
     if exists:
         new_slug = "%s-%s" % (slug, qs.first().id)
-        return create_slug(instance, new_slug=new_slug)
+        return create_slug(instance, sender=sender, new_slug=new_slug)
     return slug
 
 
@@ -116,12 +117,20 @@ post_save.connect(attribute_type_post_save_receiver, sender=AttributeType)
 
 @receiver(pre_save)
 def slug_pre_save_receiver(sender, instance, *args, **kwargs):
-    list_of_models = ('Product', 'Category', )
+    print("pre_save_receiver_çalıştı...")
+
+    list_of_models = ('Product', 'Category')
+    print("sender:", sender.__name__)
+
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
         if not instance.slug:
             instance.slug = create_slug(instance, sender)
-        # if sender.__name__ == 'Category':
-        #     instance.order = instance.id
+    else:
+        print("sender list of models içinde değil")
+
+
+#     if sender.__name__ == 'Category':
+#         instance.order = instance.id
 
 
 # @receiver(post_save, sender=Category)
