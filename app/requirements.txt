@@ -22,12 +22,16 @@ django-suit==0.2.21
 
 #data-importer
 git+https://github.com/valdergallo/data-importer.git@py3k
+# data-importer için gerekli
+six==1.10.0
 
 # Aşağıdaki satırı kurmazsak...ğı yiyoruz. django app server bu.
 gunicorn==19.3.0
 
 # benzer şekilde postgres için aşağıdaki satırı kurmak lazım
 psycopg2==2.6
+
+celery-3.1.24
 
 # bu aşağıdakiler nedir bilmiyorum? o yüzden sildim.
 # data==0.4 --- bunu kaldırınca da çalıştı
@@ -41,3 +45,5 @@ psycopg2==2.6
 # pytz==2016.4 --- bunu kaldırınca da çalıştı
 # six==1.10.0 --- bunu kaldırınca da çalıştı
 
+# installed celery and it came with following :
+# Successfully installed amqp-1.4.9 anyjson-0.3.3 billiard-3.3.0.23 celery-3.1.24 kombu-3.0.37 pytz-2016.7
