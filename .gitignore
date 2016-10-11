@@ -17,6 +17,8 @@ README.md
 *.pot
 *.pyc
 *.sh
+*.xls
+*.xlsx
 
 ;;directories to ignore
 .idea/
