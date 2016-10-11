@@ -46,6 +46,7 @@ class XLSImporterCreateView(DataImporterForm):
         importer = ProductXLSImporterModel
 
         def form_valid(self, form, owner=None):
+
             if self.request.user.id:
                 owner = self.request.user
 
