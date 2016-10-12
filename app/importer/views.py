@@ -34,6 +34,7 @@ class ProductXLSImporterModel(XLSImporter):
 
 class ProductXLSXImporterModel(XLSXImporter):
     class Meta:
+
         model = Product
         ignore_first_line = True
 
@@ -45,6 +46,7 @@ class ProductXMLImporterModel(XMLImporter):
 
 
 class XLSImporterCreateView(DataImporterForm):
+        HAS_CELERY = False
         template_name = 'importer/product_importer.html'
         extra_context = {'title': 'Create XLS Data Importer',
                          'template_file': 'myfile.xls',
