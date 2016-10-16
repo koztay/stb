@@ -27,7 +27,7 @@ urlpatterns = [
     # url(r'^assign-fields/$', create_fields_for_map, name="create_map_success"),
 
     # aşağıdaki url 'ler ile yukarının örtüşmesi gerek. şimdilik aşağıyı disable edelim.
-    # url(r'^$', ImporterHomePageView.as_view(), name='product_importer_home'),
+    url(r'^$', ImporterHomePageView.as_view(), name='product_importer_home'),
     url(r'^XLS/$', XLSImporterCreateView.as_view(), name='xls_importer'),
     url(r'^XLSX/$', XLSXImporterCreateView.as_view(), name='xlsx_importer'),
     url(r'^XML/$', XMLImporterCreateView.as_view(), name='xml_importer'),

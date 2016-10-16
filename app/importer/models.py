@@ -9,7 +9,7 @@ from products.models import AttributeType, ProductType
 # sonuçta her firmanın kendine has bir importer 'ı olacak.
 
 
-default_fields = ("Ürün Adı", "Ürün Tanımı", "Ürün Kategorisi", "Ürün Resmi")
+default_fields = ("Ürün Adı", "Ürün Fiyatı", "Ürün Tanımı", "Ürün Kategorisi", "Ürün Resmi")
 
 
 # bu map 'e ait bir de file field olmalı aslında ki o file'a ilişkin map olsun bu.
@@ -30,6 +30,9 @@ class Fields(models.Model):
 
     def __str__(self):
         return "%s - %s :" % (self.product_field, self.xml_field)
+
+    def get_xml_field(self):
+        return "%s" % self.xml_field
 
 
 def import_map_post_save_receiver(sender, instance, *args, **kwargs):

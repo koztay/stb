@@ -2,33 +2,11 @@ from collections import OrderedDict
 from django import forms
 
 
-from .models import ProductImportMap, Fields
+from .models import ProductImportMap
 
 
-class ImportMapCreationForm(forms.ModelForm):
-    class Meta:
-        model = ProductImportMap
-        fields = ('name', 'type',)
-
-
-class FieldCreationForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        extra = kwargs.pop('extra')
-        super(FieldCreationForm, self).__init__(*args, **kwargs)
-        for i, xmlfield in enumerate(extra):
-            self.fields['custom_%s' % i] = forms.ChoiceField(label=xmlfield, choices=get_attribute_choices())
-        self.fields = OrderedDict(self.fields)
-
-    def extra_answers(self):
-        for name, value in self.cleaned_data.items():
-            if name.startswith('custom_'):
-                yield (self.fields[name].label, value)
-
-
-class FieldUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Fields
-        fields = ('product_field', 'xml_field',)
+class ProductImporterMapTypeForm(forms.Form):
+    import_map = forms.ModelChoiceField(queryset=ProductImportMap.objects.all())
 
 
 # class UserCreationForm(forms.Form):

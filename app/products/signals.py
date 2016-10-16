@@ -17,8 +17,8 @@ def product_post_save_receiver_for_variation(sender, instance, created, *args, *
         new_var.save()
 
 
-# This receiver function creates predefined product attributes for saced product
-def product_post_save_receiver_for_attributes(sender, instance, created, *args, **kwargs):
+# This receiver function creates predefined product attributes for saved product
+def product_post_save_receiver_for_attributes(sender, instance, *args, **kwargs):
 
     create_featureset(instance=instance)  # buna valueset 'i nasıl göndereceğiz.?
     # 1-) o producta ait tüm attribute type 'ları al
@@ -90,7 +90,7 @@ def create_featureset(instance=None, valueset=None):
 
 
 # This receiver function creates attribute types for existing products after an attribute created
-def attribute_type_post_save_receiver(sender, instance, created, *args, **kwargs):
+def attribute_type_post_save_receiver(sender, instance, *args, **kwargs):
     # 1 - tüm productlar içerisinde product_type 'ı yeni yaratılan attibute'un product_type'ı aynı olanları süz.
     products = Product.objects.filter(product_type=instance.product_type)
     print(products)
