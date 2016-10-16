@@ -1,12 +1,16 @@
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.views.generic.base import TemplateView
-from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
-from data_importer.models import FileHistory
+# from django.contrib import messages
+# from django.contrib.contenttypes.models import ContentType
+# from data_importer.models import FileHistory
 from data_importer.views import DataImporterForm
 from data_importer.importers import XLSImporter, XLSXImporter, XMLImporter
 from products.models import Product
 from products.mixins import StaffRequiredMixin
 
+from .models import ProductImportMap, Fields
 
 # csv importer çalışmıyor. dosyayı text modunda açtın değil mi diye soruyor salak.
 # class ExampleCSVImporter(CSVImporter):
@@ -26,7 +30,7 @@ class ProductXLSImporterModel(XLSImporter):
         model = Product
         ignore_first_line = True
 
-    # process row'u override edeceğiz.
+    # process row'u override edeceğiz. kendi importerımı kendim yazıyorum.
     # TODO: Burada her Row 'u process ederken task olarak RabbitMQ queue 'ye ekle.
     def process_row(self, row, values):
         print(row, values)
@@ -49,7 +53,6 @@ class ProductXLSImporterModel(XLSImporter):
         # 7-) update all (product.attribute_type = bla_bla, product.attribute_value = bla_bla)
 
         # 8-) save product
-
 
 
 class ProductXLSXImporterModel(XLSXImporter):
