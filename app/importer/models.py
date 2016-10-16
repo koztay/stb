@@ -52,3 +52,4 @@ def import_map_post_save_receiver(sender, instance, *args, **kwargs):
 
 
 post_save.connect(import_map_post_save_receiver, sender=ProductImportMap)
+# test
