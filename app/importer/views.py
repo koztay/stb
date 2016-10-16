@@ -31,6 +31,26 @@ class ProductXLSImporterModel(XLSImporter):
     def process_row(self, row, values):
         print(row, values)
 
+        # 1-) get product type from row (there must be such column in excel sheet)
+        # 1 - a) get importer name from row (there must be such column in excel sheet)
+        # (importer name bilgisinden mapping 'e ulaşabiliriz.)
+
+        # 2-) get all attribute types for product type
+
+        # 3-) get column headers from product type for attribute types
+        # this can be get from models which describes matching schema for importer
+
+        # 4-) get column values from row by using importer schema (get it from the importer name column)
+
+        # 5-) get or create product
+
+        # 6-) get or create attribute values (not types, types must be created manually)
+
+        # 7-) update all (product.attribute_type = bla_bla, product.attribute_value = bla_bla)
+
+        # 8-) save product
+
+
 
 class ProductXLSXImporterModel(XLSXImporter):
     class Meta:
@@ -46,7 +66,6 @@ class ProductXMLImporterModel(XMLImporter):
 
 
 class XLSImporterCreateView(DataImporterForm):
-        HAS_CELERY = False
         template_name = 'importer/product_importer.html'
         extra_context = {'title': 'Create XLS Data Importer',
                          'template_file': 'myfile.xls',
