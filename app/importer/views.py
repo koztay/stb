@@ -77,48 +77,16 @@ class ProductXLSImporterModel(XLSImporter):
 
                 else:
                     print("this field will be updated as attribute value")
-            update_product.save()
-
-        def update_attribute_fields(update_product=None):
-            attribute_types = AttributeType.objects.filter(product=update_product)
-            # attributes_to_update = AttributeValue.objects.filter(attribute_type=attribute_type)
-            print(attribute_types)
-            for attr_type in attribute_types:
-                type_name = attr_type.type
-                type_value = get_cell_for_field(type_name)
-                attr_value, created_or_not = AttributeValue.objects.get_or_create(value=type_value, attribute_type=attr_type)
-                attr_value.product = update_product
-                attr_value.save()
-                # attr_type.attributevalue_set.get_or_create(attr_value)
+            update_product.valueset = values
+            update_product.importer_map = importer_map
+            print("update_product.valueset", update_product.valueset)
+            update_product.save()  # burada gönderdiğim values yazılacak mı bakalım?
 
         title = get_cell_for_field("Ürün Adı")
         product_type = ProductType.objects.get(name=importer_map.type)
-        product, created = Product.objects.get_or_create(title=title, product_type=product_type)
+        product, product_created = Product.objects.get_or_create(title=title, product_type=product_type)
 
         update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
-        update_attribute_fields(product)
-
-        # except:
-        #     print("yukarıdaki lerden herhangi biri sağlanamadı...")
-
-        # for field in fields:
-        #     print(field.product_field, field.xml_field)
-        #     try:
-        #         attribute_type = AttributeType.objects.get(type=field.product_field, product=product)
-        #         print(attribute_type)
-        #         # attribute_type.product = product
-        #         # attribute_type.save()
-        #     except:
-        #         print("attribute_type bulunamadı")
-        #     print(values)
-        #     attribute_cell_value = values[int(field.xml_field)]
-        #     print("attribute_cell_value:", attribute_cell_value)
-        #     print("attribute_type", attribute_type)
-        #     print("product", product)
-        #     attribute_value, created = AttributeValue.objects.get_or_create(value=attribute_cell_value,
-        #                                                                     attribute_type=attribute_type,
-        #                                                                     product=product)
-
 
 
 class ProductXLSXImporterModel(XLSXImporter):

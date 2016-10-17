@@ -19,8 +19,14 @@ def product_post_save_receiver_for_variation(sender, instance, created, *args, *
 
 # This receiver function creates predefined product attributes for saved product
 def product_post_save_receiver_for_attributes(sender, instance, *args, **kwargs):
+    # print("sender:", sender)
+    try:
+        valueset = instance.valueset
+    except:
+        valueset = "Error"
 
-    create_featureset(instance=instance)  # buna valueset 'i nasıl göndereceğiz.?
+    print("valueset:", valueset)
+    create_featureset(instance=instance, valueset=valueset)  # buna valueset 'i nasıl göndereceğiz.?
     # 1-) o producta ait tüm attribute type 'ları al
     # product_features = AttributeType.objects.filter(product_type=instance.product_type)
     # # print(instance.title)
@@ -61,7 +67,18 @@ def product_post_save_receiver_for_attributes(sender, instance, *args, **kwargs)
 # create yaptığında çalışıp emty value olarak yaratacak, sonra biz bir daha valuset ile birlikte
 # çağıracağız.
 
-def create_featureset(instance=None, valueset=None):
+def create_featureset(instance=None, valueset=None):  # instance içerisinde valuset var ama sıkıntı yaratıyor.
+
+    def get_cell_for_field(field_name):
+        importer_map = instance.importer_map
+        try:
+            field_object = importer_map.fields_set.get(product_field=field_name)
+            cell_value_index = int(field_object.get_xml_field())
+            cell_value = instance.valueset[cell_value_index]
+        except:
+            return None
+        return cell_value
+
     # featureları al
     product_features = AttributeType.objects.filter(product_type=instance.product_type)
     # eklenenleri al
@@ -70,23 +87,34 @@ def create_featureset(instance=None, valueset=None):
     difference = list(set(product_features) - set(assigned_product_features))
     print(len(difference))
     # eğer varsa:
-    if len(difference) > 0:  # ilkinde eklenmişse sonradan valuseti nasıl ekleyeceğiz.?
+    if len(difference) > 0:  # ilkinde eklenmişse sonradan valuseti nasıl ekleyeceğiz.? Update edeceğiz.
         for feature in difference:  # burada sadece 1 feature varsa sıkıntı olabilir, non iterable diyordu sanki
             feature.product.add(instance)
             feature.save()
             # sonrasında da boş değer yaratıyoruz. Aslında burada import ederken value olacak
             # o yüzden value empty olmayabilir.
-            if valueset:
-                print(valueset)
+            if valueset is not "Error":
                 # 1-) get value for the feature
-                # 2-) create Value for the feature
+                print("get_cell_for_field :",get_cell_for_field(feature))
+                feature_value = get_cell_for_field(feature)
+
+                # 2-) create or update Value for the feature
+                attribute_value, attr_created = AttributeValue.objects.get_or_create(attribute_type=feature,
+                                                                                     product=instance)
+                attribute_value.value = feature_value
+                attribute_value.save()
             else:
                 AttributeValue.objects.create(attribute_type=feature, product=instance, value="")
-    else:  # eklenmemiş ürün yok
-        if valueset:
+    else:  # eklenmemiş ürün feature'ı yok o zaman update et
+        if valueset is not "Error":
             for feature in assigned_product_features:
                 print("values will be updated for feature:", feature)
+                feature_value = get_cell_for_field(feature)
                 # update values
+                attribute_value, attr_created = AttributeValue.objects.get_or_create(attribute_type=feature,
+                                                                                     product=instance)
+                attribute_value.value = feature_value
+                attribute_value.save()
 
 
 # This receiver function creates attribute types for existing products after an attribute created

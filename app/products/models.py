@@ -118,6 +118,12 @@ class Product(models.Model):
         print(number_of_views)
         return number_of_views
 
+    # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
+    def save(self, *args, **kwargs):
+        super(Product, self).save(*args, **kwargs)
+        self.valueset = None
+        self.importer_map = None
+
 
 class Variation(models.Model):
     product = models.ForeignKey(Product)
