@@ -41,7 +41,7 @@ def create_featureset(instance=None, valueset=None):  # instance içerisinde val
             cell_value_index = int(field_object.get_xml_field())
             cell_value = instance.valueset[cell_value_index]
         except:
-            return None
+            cell_value = ""
         return cell_value
 
     # featureları al
