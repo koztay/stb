@@ -227,4 +227,4 @@ class XMLImporterCreateView(DataImporterForm):
                      'success_message': "File uploaded successfully"}
     importer = ProductXMLImporterModel
 
-
+#
