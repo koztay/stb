@@ -27,46 +27,11 @@ def product_post_save_receiver_for_attributes(sender, instance, *args, **kwargs)
 
     print("valueset:", valueset)
     create_featureset(instance=instance, valueset=valueset)  # buna valueset 'i nasıl göndereceğiz.?
-    # 1-) o producta ait tüm attribute type 'ları al
-    # product_features = AttributeType.objects.filter(product_type=instance.product_type)
-    # # print(instance.title)
-    # # print("all product features :%s" % product_features)
-    #
-    # # 2-) product 'a type olarak eklenmiş olanları al (bunu neden ayrıca aldık?)
-    # assigned_product_features = AttributeType.objects.filter(product=instance)
-    # # print("assigned product features :%s" % assigned_product_features)
-    #
-    # # 3-) şunun için yapmışız producta eklenmemiş olanları eklemek için.
-    # # Sonradan yeni type'ler eklemiş olabiliriz vs. ondan her save ettiğimizde bakıp ekliyoruz.
-    # for feature in product_features:
-    #     # eğer producuct feature 'a ekli değilse
-    #     if feature not in assigned_product_features:
-    #         feature.product.add(instance)
-    #         feature.save()
-    #         # print(feature.product)
-    #         # sonrasında da boş değer yaratıyoruz. Aslında burada import ederken value olacak
-    #         # o yüzden value empty olmayabilir.
-    #         AttributeValue.objects.create(attribute_type=feature, product=instance, value="")
-    #     else:
-    #         # eğer feature producta ekliyse
-    #         # bu durumda feature 'ı al assigned product features a bak değer döndürmeyenleri ekle
-    #         #  ##########  aşağıdaki algoritma yerine get_or_create yazamaz mıyız?
-    #         product_attribute_value = AttributeValue.objects.filter(product=instance,
-    #                                                                 attribute_type=feature)
-    #         print(product_attribute_value)
-    #         if product_attribute_value:
-    #             print("bu type eklenmiş.")
-    #             print(product_attribute_value[0])
-    #
-    #         else:
-    #             print("bu type eklenecek.")
-    #             AttributeValue.objects.create(attribute_type=feature, product=instance, value="")
 
 
 # aşağıdaki fonksiyon çalışıyor aslında iki kez çalışacak bu önce product'ı get_or_create yapacak,
 # create yaptığında çalışıp emty value olarak yaratacak, sonra biz bir daha valuset ile birlikte
 # çağıracağız.
-
 def create_featureset(instance=None, valueset=None):  # instance içerisinde valuset var ama sıkıntı yaratıyor.
 
     def get_cell_for_field(field_name):
