@@ -13,10 +13,11 @@ default_fields = ("Ürün Adı", "Ürün Fiyatı", "Ürün Tanımı", "Ürün Ka
 
 
 # bu map 'e ait bir de file field olmalı aslında ki o file'a ilişkin map olsun bu.
-# hatta webden çekiyorsak çektiğimiz url 'yi de filed olarak girmeliyiz.
+# hatta webden çekiyorsak çektiğimiz url 'yi de field olarak girmeliyiz.
 class ProductImportMap(models.Model):
     name = models.CharField(max_length=120)
     type = models.CharField(max_length=120)
+    root = models.CharField(max_length=120, blank=True, null=True)  # buna gerek olmayabilir. Fileds 'dan alınabilir.
 
     def __str__(self):
         return self.name

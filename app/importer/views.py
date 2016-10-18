@@ -10,11 +10,11 @@ from data_importer.models import FileHistory
 
 
 from data_importer.views import DataImporterForm
-from data_importer.importers import XLSImporter, XLSXImporter, XMLImporter
+from data_importer.importers import XLSImporter, XLSXImporter, XMLImporter, GenericImporter
 from products.models import Product, ProductType, AttributeType, AttributeValue, Category, ProductImage
 from products.mixins import StaffRequiredMixin
 
-from .forms import ProductImporterMapTypeForm
+from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueForm
 from .models import ProductImportMap, default_fields
 
 # csv importer çalışmıyor. dosyayı text modunda açtın değil mi diye soruyor salak.
@@ -106,12 +106,25 @@ class ProductXLSXImporterModel(XLSXImporter):
         process_xls_row(importer_map=importer_map, row=row, values=values)
 
 
-class ProductXMLImporterModel(XMLImporter):
-    importer_type = None
+# >>> from data_importer.importers import XMLImporter
+# >>> from data_importer.model import MyModel
+# >>> class MyCSVImporterModel(XMLImporter):
+# ...     root = 'file'
+# ...     class Meta:
+# ...         model = MyModel
+
+class ProductXMLImporterModel(GenericImporter):
+    root = 'entry'
+    # XML 'de root belirtiyoruz. Ona göre process ediyor sanırım. Kompleks
+    # XML 'leri nasıl alıyoruz acaba?
 
     class Meta:
         model = Product
-        ignore_first_line = True
+
+    def process_row(self, row, values):
+        print(row, values)
+        importer_map = ProductImportMap.objects.get(pk=self.importer_type)
+        process_xls_row(importer_map=importer_map, row=row, values=values)
 
 
 class XLSImporterCreateView(DataImporterForm):
@@ -227,4 +240,52 @@ class XMLImporterCreateView(DataImporterForm):
                      'success_message': "File uploaded successfully"}
     importer = ProductXMLImporterModel
 
-#
+    def get_context_data(self, **kwargs):
+        context = super(XMLImporterCreateView, self).get_context_data(**kwargs)
+        importer_type_form = ProductImporterMapTypeForm(self.request.POST or None)
+        context['importer_type_form'] = importer_type_form
+        return context
+
+    def form_valid(self, form, owner=None):
+        selected_import_map_id = self.request.POST.get('import_map')
+        selected_map = ProductImportMap.objects.get(pk=selected_import_map_id)
+        root_value = selected_map.root
+        self.importer.importer_type = selected_import_map_id
+        self.importer.root = root_value
+        print(root_value)
+
+        if self.request.user.id:
+            owner = self.request.user
+
+        if self.importer.Meta.model:
+            content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
+            file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
+                                                                owner=owner,
+                                                                content_type=content_type)
+
+        if not self.is_task or not hasattr(self.task, 'delay'):
+            self.task.run(importer=self.importer,
+                          source=file_history,
+                          owner=owner,
+                          send_email=False)
+            if self.task.parser.errors:
+                messages.error(self.request, self.task.parser.errors)
+            else:
+                messages.success(self.request,
+                                 self.extra_context.get('success_message', "File uploaded successfully"))
+        else:
+            self.task.delay(importer=self.importer, source=file_history, owner=owner)
+            if owner:
+                messages.info(
+                    self.request,
+                    "When importer was finished one email will send to: {0!s}".format(owner.email)
+                )
+            else:
+                messages.info(
+                    self.request,
+                    "Importer task in queue"
+                )
+
+        return super(DataImporterForm, self).form_valid(form)
+
+

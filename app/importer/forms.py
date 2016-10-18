@@ -9,6 +9,9 @@ class ProductImporterMapTypeForm(forms.Form):
     import_map = forms.ModelChoiceField(queryset=ProductImportMap.objects.all())
 
 
+class ProductXMLImporterMapRootValueForm(forms.Form):
+    root = forms.CharField()
+
 # class UserCreationForm(forms.Form):
 #     username = forms.CharField(max_length=30)
 #     password1 = forms.CharField(widget=forms.PasswordInput)
