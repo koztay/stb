@@ -70,12 +70,7 @@ class CategoryInline(admin.TabularInline):
     extra = 3
     model = Category
     prepopulated_fields = {'slug': ('title',)}
-
-
-def parent_category(obj):
-    parents = Category.objects.all().filter(parent=None)
-    for parent in parents:
-        return parent
+    verbose_name = "Alt Kategoriler"
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -87,9 +82,13 @@ class CategoryAdmin(admin.ModelAdmin):
     class Meta:
         model = Category
 
+    # sadece parent kategorileri liste olarak göstermeye yarıyor.
     def get_queryset(self, request):
         qs = super(CategoryAdmin, self).get_queryset(request)
-        return qs.filter(parent=None)
+        # categories = Category.objects.filter(parent__in=qs.filter(parent=None))
+        # print(categories)
+        has_sub = Category.with_childrens.categories_with_children()
+        return (qs.filter(parent=None) | has_sub).distinct()
 
 
 admin.site.register(Product, ProductAdmin)

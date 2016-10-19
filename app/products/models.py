@@ -183,6 +183,13 @@ class ProductImage(models.Model):
         return self.product.title
 
 
+class CategoryManager(models.Manager):
+
+    def categories_with_children(self):
+        custom_list = [category.id for category in Category.objects.all() if category.get_children() is not None]
+        return Category.objects.filter(pk__in=custom_list)  # tekrar queryset'e döndürdük.
+
+
 # Product Category
 class Category(models.Model):
     parent = models.ForeignKey("self", null=True, blank=True)
@@ -193,6 +200,9 @@ class Category(models.Model):
     show_on_homepage = models.BooleanField(default=True)
     order = models.IntegerField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    objects = models.Manager()  # The default manager.
+    with_childrens = CategoryManager()
 
     def __str__(self):
         return self.title
