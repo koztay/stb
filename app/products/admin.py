@@ -66,11 +66,31 @@ class ProductAdmin(admin.ModelAdmin):
         model = Product
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryInline(admin.TabularInline):
+    extra = 3
+    model = Category
     prepopulated_fields = {'slug': ('title',)}
+
+
+def parent_category(obj):
+    parents = Category.objects.all().filter(parent=None)
+    for parent in parents:
+        return parent
+
+
+class CategoryAdmin(admin.ModelAdmin):
+    # list_display = (parent_category, )
+    prepopulated_fields = {'slug': ('title',)}
+
+    inlines = [CategoryInline, ]
 
     class Meta:
         model = Category
+
+    def get_queryset(self, request):
+        qs = super(CategoryAdmin, self).get_queryset(request)
+        return qs.filter(parent=None)
+
 
 admin.site.register(Product, ProductAdmin)
 
