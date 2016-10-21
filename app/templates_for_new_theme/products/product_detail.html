@@ -46,6 +46,64 @@
             // $("#add-form").submit()
 
         });
+
+        // quick view modal
+        $('#quick-view-modal').on('show.bs.modal', function (event) {
+
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var title = button.data('title'); // Extract info from data-* attributes
+        var description = button.data('description');
+        var price = button.data('price');
+        var saleprice = button.data('saleprice');
+        var url = button.data('url');
+        var imagehd = button.data('imagehd');
+        var imagesd = button.data('imagesd');
+        var imagemedium = button.data('imagemedium');
+        var imagemicro = button.data('imagemicro');
+        var category = button.data('category');
+        var category_url = button.data('category_url');
+
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or
+  // other methods instead.
+
+        var modal = $(this);
+        modal.find('.modal-product-title').text(title);
+        modal.find(".modal-product-description").text(description);
+        modal.find('.view-product-details').attr("href", url);
+        modal.find('.simpleLens-big-image').attr("src", imagemedium);
+        modal.find('.simpleLens-lens-image').attr('data-lens-image', imagehd);
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-lens-image', imagemedium);#}
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('data-big-image', imagemedium);#}
+{#        modal.find('.simpleLens-thumbnail-wrapper').attr('src', imagemedium);#}
+        modal.find('.category-url').attr("href", category_url);
+        modal.find(".category-url").text(category);
+
+        if (saleprice > 0){
+
+            var element = modal.find('.aa-product-view-price');
+            element.text('');
+            var spansale = document.createElement("span");
+            var nodesale = document.createTextNode(saleprice + ' ,-₺ ');
+            spansale.appendChild(nodesale);
+            element[0].appendChild(spansale);
+
+            var spanprice = document.createElement("span");
+            var del = document.createElement("del");
+            var nodeprice = document.createTextNode(price + ' ,-₺ ');
+            del.appendChild(nodeprice);
+            spanprice.appendChild(del);
+            element[0].appendChild(spanprice);
+
+        }else{
+            //console.log("burası çalışmamalı");
+            modal.find('.aa-product-view-price').text(price + ' ,-₺ ');
+        }
+
+
+});
+
+
     {% endblock %}
 </script>
 
@@ -113,42 +171,105 @@
                             <div class="col-md-7 col-sm-7 col-xs-12">
                                 <div class="aa-product-view-content">
                                     <h3>{{ object.title }}</h3>
-                                    <div class="aa-price-block">
-                                        <span class="aa-product-view-price" id='price'>
-                                            {% if object.variation_set.first.sale_price %}
-                                                {{ object.variation_set.first.sale_price }}
-                                                <small class='og-price'>{{ object.variation_set.first.price }}</small>
-                                            {% else %}
-                                                {{ object.variation_set.first.price }}
-                                            {% endif %} ,-₺
-                                        </span>
-                                        <p class="aa-product-avilability">Stok Durumu: <span>10+</span></p>
-                                    </div>
-{#                                    {% autoescape off %}#}
-{#                                        <p>{{ object.description|truncatechars:150 }}</p>#}
-{#                                    {% endautoescape %}#}
-                                    <div class="aa-prod-quantity">
-                                        <form action="">
-                                            <select id="" name="">
-                                                <option selected="1" value="0">1</option>
-                                                <option value="1">2</option>
-                                                <option value="2">3</option>
-                                                <option value="3">4</option>
-                                                <option value="4">5</option>
-                                                <option value="5">6</option>
-                                            </select>
-                                        </form>
-                                        <p class="aa-prod-category">
-                                            Kategori: <a href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a>
+                                    <form id='add-form' method='GET' action="{% url 'cart' %}">
+                                        <p id='jquery-message' class='lead'>
+
                                         </p>
-                                    </div>
-                                    <div class="aa-prod-view-bottom">
-                                        <a class="aa-add-to-cart-btn" href="#">Sepete At</a>
-{#                                        <a class="aa-add-to-cart-btn" href="#">Wishlist</a>#}
-{#                                        <a class="aa-add-to-cart-btn" href="#">Compare</a>#}
-                                    </div>
+                                            <div class="aa-price-block">
+
+                                                <span class="aa-product-view-price" id='price'>
+                                                     {% if object.variation_set.count > 1 %}
+                                                         <h1>varyasyon 1 'den büyük</h1>
+                                                        <h3>
+                                                            {% if object.variation_set.first.sale_price %}
+                                                                {{ object.variation_set.first.sale_price }}
+                                                                <del>{{ object.variation_set.first.price }}</del>
+                                                            {% else %}
+                                                                {{ object.variation_set.first.price }}
+                                                            {% endif %} ,-₺
+                                                        </h3>
+                                                    {% else %}
+                                                        <input type="hidden" name='item' value='{{ object.variation_set.first.id }}'/>
+                                                         <h3>
+                                                         <h1>varyasyon 1 'den büyük değil</h1>
+                                                            {% if object.variation_set.first.sale_price %}
+                                                                {{ object.variation_set.first.sale_price }}
+                                                                <del>{{ object.variation_set.first.price }}</del>
+                                                            {% else %}
+                                                                {{ object.variation_set.first.price }}
+                                                            {% endif %} ,-₺
+                                                        </h3>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="row aa-prod-quantity">
+                                                <div class="col-xs-6"><p class="aa-product-avilability">Stok Durumu: <span>10+</span></p></div>
+                                                <div class="col-xs-6"><p class="aa-prod-category">
+                                                Kategori: <a href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a>
+                                                </p></div>
+
+                                            </div>
+    {#                                    {% autoescape off %}#}
+    {#                                        <p>{{ object.description|truncatechars:150 }}</p>#}
+    {#                                    {% endautoescape %}#}
+                                        <div class="aa-prod-quantity">
+                                            <h3>Adet:</h3>
+                                            <input class='form-control' type='number' name='qty' value='1'/>
+
+                                        </div>
+                                        <div class="aa-prod-quantity">
+                                            <h3>Seçenek:</h3>
+                                            <select name='item' class='form-control variation_select'>
+                                            {% for vari_obj in object.variation_set.all %}
+                                                <!-- <option data-img="http://www.spirit1059.com/pics/Feeds/Articles/2015611/118317/Beach.jpg" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->
+                                                <option data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}"
+                                                        value="{{ vari_obj.id }}">{{ vari_obj }}</option>
+                                            {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="aa-prod-view-bottom">
+{#                                          <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-default'/>#}
+                                            <button class="aa-filter-btn" id='submit-btn'>Sepete At</button>
+    {#                                      <a class="aa-add-to-cart-btn" href="#">Wishlist</a>#}
+    {#                                      <a class="aa-add-to-cart-btn" href="#">Compare</a>#}
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
+{#     BURASI ESKİ FORM      #}
+                            <form id='add-form' method='GET' action="{% url 'cart' %}">
+                                <p id='jquery-message' class='lead'>
+
+                                </p>
+{#                                {% if object.variation_set.count > 1 %}#}
+{#                                    <h3 id='price'>{{ object.variation_set.first.price }}</h3>#}
+{##}
+{#                                    <select name='item' class='form-control variation_select'>#}
+{#                                        {% for vari_obj in object.variation_set.all %}#}
+{#                                            <!-- <option data-img="http://www.spirit1059.com/pics/Feeds/Articles/2015611/118317/Beach.jpg" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->#}
+{#                                            <option data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}"#}
+{#                                                    value="{{ vari_obj.id }}">{{ vari_obj }}</option>#}
+{#                                        {% endfor %}#}
+{#                                    </select>#}
+{##}
+{#                                {% else %}#}
+{#                                    <input type="hidden" name='item' value='{{ object.variation_set.first.id }}'/>#}
+{#                                    <h3 id='price'>{% if object.variation_set.first.sale_price %}#}
+{#                                        {{ object.variation_set.first.sale_price }}#}
+{#                                        <small class='og-price'>{{ object.variation_set.first.price }}</small>#}
+{#                                    {% else %}#}
+{##}
+{#                                        {{ object.variation_set.first.price }}#}
+{#                                    {% endif %}#}
+{#                                    </h3>#}
+{##}
+{##}
+{#                                {% endif %}#}
+{#                                <br/>#}
+{#                                <input class='form-control' type='number' name='qty' value='1'/>#}
+{#                                <br/>#}
+{#                                <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-default'/>#}
+                            </form>
                         </div>
                     </div>
                     <div class="aa-product-details-bottom">
@@ -186,4 +307,114 @@
 </section>
 <!-- / product category -->
 
+{#Buradan itibaren eski template başlıyor#}
+{#<div class='row'>#}
+{##}
+{#        <div class='col-sm-8'>#}
+{#            <h2>{{ object.title }}</h2>#}
+{##}
+            {#{% if object.get_image_url %}#}
+{#            {% if object|get_thumbnail:"hd" %}#}
+{#                <div>#}
+{#                    <img id='img' class='img-responsive' src='{{ object|get_thumbnail:"hd" }}'/>#}
+{#                </div>#}
+{#            {% endif %}#}
+{##}
+{##}
+{##}
+{#            <p class='lead'>#}
+{#                {{ object.description }}#}
+{#            </p>#}
+{#        </div>#}
+{##}
+{##}
+{#        <!-- Product Sidebar -->#}
+{#        <div class='col-sm-4'>#}
+{##}
+{#            <form id='add-form' method='GET' action="{% url 'cart' %}">#}
+{#                <p id='jquery-message' class='lead'>#}
+{##}
+{#                </p>#}
+{#                {% if object.variation_set.count > 1 %}#}
+{#                    <h3 id='price'>{{ object.variation_set.first.price }}</h3>#}
+{##}
+{#                    <select name='item' class='form-control variation_select'>#}
+{#                        {% for vari_obj in object.variation_set.all %}#}
+{#                            <!-- <option data-img="http://www.spirit1059.com/pics/Feeds/Articles/2015611/118317/Beach.jpg" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->#}
+{#                            <option data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}"#}
+{#                                    value="{{ vari_obj.id }}">{{ vari_obj }}</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{##}
+{#                {% else %}#}
+{#                    <input type="hidden" name='item' value='{{ object.variation_set.first.id }}'/>#}
+{#                    <h3 id='price'>{% if object.variation_set.first.sale_price %}#}
+{#                        {{ object.variation_set.first.sale_price }}#}
+{#                        <small class='og-price'>{{ object.variation_set.first.price }}</small>#}
+{#                    {% else %}#}
+{##}
+{#                        {{ object.variation_set.first.price }}#}
+{#                    {% endif %}#}
+{#                    </h3>#}
+{##}
+{##}
+{#                {% endif %}#}
+{#                <br/>#}
+{#                <input class='form-control' type='number' name='qty' value='1'/>#}
+{#                <br/>#}
+{#                <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-default'/>#}
+{#            </form>#}
+{##}
+{#            <br/>#}
+{#            <hr/>#}
+{#            <p>#}
+{#                Share<br/>#}
+{#                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">#}
+{#                    <i class="fa fa-facebook-square fa-3x"></i></a>#}
+{##}
+{#                <a href="#">#}
+{#                    <i class="fa fa-twitter-square fa-3x"></i></a>#}
+{#            </p>#}
+{##}
+{#            <hr/>#}
+{#            <h4>Related Products</h4>#}
+{##}
+{#            <div class='row'>#}
+{#                {% for product in related %}#}
+{##}
+{#                    <div class='col-xs-6'>#}
+{#                        {% include "products/product_thumbnail.html" with product=product price="True" %}#}
+{#                    </div>#}
+{#                    {% cycle '' '</div><div class="row">' %}#}
+{#                {% endfor %}#}
+{##}
+{#            </div>#}
+{##}
+{##}
+{#        </div>#}
+{#        <!-- End Product Sidebar -->#}
+{##}
+{##}
+{#    </div>#}
+
+{# BURADA BİTİYOR #}
+
+
+{% endblock %}
+
+{% block custom_javascripts %}
+<!-- SmartMenus jQuery plugin -->
+{#<script type="text/javascript" src="{% static 'js/jquery.smartmenus.js' %}"></script>#}
+{#<!-- SmartMenus jQuery Bootstrap Addon -->#}
+{#<script type="text/javascript" src="{% static 'js/jquery.smartmenus.bootstrap.js' %}"></script>#}
+<!-- To Slider JS -->
+{#<script src="{% static 'js/sequence.js' %}"></script>#}
+{#<script src="{% static 'js/sequence-theme.modern-slide-in.js' %}"></script>#}
+<!-- Product view slider -->
+<script type="text/javascript" src="{% static 'js/jquery.simpleGallery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.simpleLens.js' %}"></script>
+<!-- slick slider / alttaki benzer ürünleri kaydırıyor -->
+<script type="text/javascript" src="{% static 'js/slick.js' %}"></script>
+{#<!-- Price picker slider -->#}
+{#<script type="text/javascript" src="{% static 'js/nouislider.js' %}"></script>#}
 {% endblock %}

@@ -1,0 +1,34 @@
+{% load staticfiles %}
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+{#<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>#}
+<script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+{#<script src="{% static 'js/bootstrap.min.js' %}"></script>#}
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+{#<script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>#}
+<script src="{% static 'js/custom_message.js' %}"></script>
+
+
+
+{# product list sayfasında butona tıklanınca fiyat filtresi yapan fonksiyon #}
+<script>
+     $("#filter-btn").click(function() {
+        {#   set span values from min max values bunu sayfa yüklenince yapmak lazım #}
+
+         {#  get span and other values  #}
+         var lower_set_value = $("#skip-value-lower").text();
+         var upper_set_value =  $("#skip-value-upper").text();
+         var category_id = ""
+
+            {#  set input values  #}
+         $("#skip-value-lower-input").val(lower_set_value);
+         $("#skip-value-upper-input").val(upper_set_value);
+
+        {#  seçili kategori varsa kategori id'lerini de set etmek gerek #}
+        {#  artı ilave başka filterlar varsa onları da set et. #}
+});
+</script>
+
+
+

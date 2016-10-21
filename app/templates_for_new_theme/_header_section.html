@@ -98,7 +98,7 @@
                             <a class="aa-cart-link" href='{% url "cart" %}'>
                                 <span class="fa fa-shopping-basket"></span>
                                 <span class="aa-cart-title">SEPETİM</span>
-                                <span class="aa-cart-notify">{{ request.session.cart_item_count }}</span>
+                                <span id="cart-count-badge" class="aa-cart-notify">{{ request.session.cart_item_count }}</span>
                             </a>
 {#                            <div class="aa-cartbox-summary">#}
 {#                                <ul>#}
