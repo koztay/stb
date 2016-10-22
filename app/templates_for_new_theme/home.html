@@ -100,6 +100,30 @@
 
         });
 
+
+        $('.aa-add-card-btn').click( function(e, productid) {
+            e.preventDefault();
+            var product_id = this.dataset['productid'];
+
+            $.ajax({
+                type: "GET", // "POST"
+                url: "{% url 'cart' %}",
+                data: "item=" + product_id + "&qty=" + 1,
+                success: function (data) {
+                    showFlashMessage(data.flash_message);
+                    updateCartItemCount();
+                },
+                error: function (response, error) {
+                    // console.log(response)
+                    // console.log(error)
+                    $("#add-form").submit(); //bu çalışmaz
+                }
+            });
+            return false;
+        } );
+
+
+
         // quick view modal
         $('#quick-view-modal').on('show.bs.modal', function (event) {
 
