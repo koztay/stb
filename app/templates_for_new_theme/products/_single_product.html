@@ -1,16 +1,18 @@
 {% load get_thumbnail %}
+{% load jsonify %}
 
 <!-- start single product item -->
 <li>
     <figure>
         {% if product|get_thumbnail:"medium" %}
         <a class="aa-product-img" href='{{ product.get_absolute_url }}'>
-            <img id='img' src='{{ product|get_thumbnail:"medium"}}'
+            <img src='{{ product|get_thumbnail:"medium"}}'
             alt="{{ product.title|lower }} img" />
         </a>
         {% endif %}
+        {# aşağıya id değeri veremiyoruz. çünkü aynı id'den bir sürü oluyor.  #}
         <a class="aa-add-card-btn" href="#"><span
-                class="fa fa-shopping-cart"></span>Add To Cart</a>
+                class="fa fa-shopping-cart"></span>Sepete At</a>
         <figcaption>
             <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
             {% if product.variation_set.first.sale_price %}
@@ -40,6 +42,7 @@
            data-imagemicro = '{{ product|get_thumbnail:"micro"}}'
            data-category = "{{ product.get_main_category }}"
            data-category_url = "{{ product.get_main_category.get_absolute_url }}"
+           data-variation_set = "{{ product.variation_set.all|jsonify }}"
         ><span class="fa fa-search"></span></a>
     </div>
     <!-- product badge -->

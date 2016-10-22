@@ -40,13 +40,13 @@
 
                     }
 
-                    var message = "";
+                   var message = "";
                     if (data.item_added) {
-                        message = "New item added"
+                        message = "Ürün sepetinize eklendi."
                     } else if (data.deleted) {
-                        message = "Item removed"
+                        message = "Ürün sepetten çıkarıldı."
                     } else {
-                        message = "Item updated"
+                        message = "Ürün adeti güncellendi."
                     }
                     showFlashMessage(message);
                     updateCartItemCount()

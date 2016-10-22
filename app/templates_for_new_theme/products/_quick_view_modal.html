@@ -46,41 +46,47 @@
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="aa-product-view-content">
                             <h3 class="modal-product-title">{{ product.title }}</h3>
-                            <div class="aa-price-block">
-                                <span class="aa-product-view-price">34.99</span>
-                                <p class="aa-product-avilability">Stok durumu: <span>10+</span>
-                                </p>
-                            </div>
-                            <p class="modal-product-description">{{ product.description|truncatechars:200 }}</p>
-{#                                                        <h4>Size</h4>#}
-{#                                                        <div class="aa-prod-view-size">#}
-{#                                                            <a href="#">S</a>#}
-{#                                                            <a href="#">M</a>#}
-{#                                                            <a href="#">L</a>#}
-{#                                                            <a href="#">XL</a>#}
-{#                                                        </div>#}
-                            <div class="aa-prod-quantity">
-                                <form action="">
-                                    <select name="" id="">
-                                        <option value="0" selected="1">1</option>
-                                        <option value="1">2</option>
-                                        <option value="2">3</option>
-                                        <option value="3">4</option>
-                                        <option value="4">5</option>
-                                        <option value="5">6</option>
-                                    </select>
-                                </form>
-                                <p class="aa-prod-category">
-                                    Kategori: <a class="category-url" href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a>
-                                </p>
-                            </div>
-                            <div class="aa-prod-view-bottom">
-                                <a href="#" class="aa-add-to-cart-btn"><span
-                                        class="fa fa-shopping-cart"></span>Sepete At</a>
-                                <a href="{{ product.get_absolute_url }}" class="aa-add-to-cart-btn view-product-details">Ürün Detayı</a>
-                            </div>
+                            <form id='add-form' method='GET' action="{% url 'cart' %}">
+                                        <p id='jquery-message' class='lead'>
+
+                                        </p>
+                                            <div class="aa-price-block">
+
+                                                <span class="aa-product-view-price" id='price'>
+
+                                                </span>
+                                            </div>
+                                            <div class="row aa-prod-quantity">
+                                                <div class="col-xs-6"><p class="aa-product-avilability">Stok Durumu: <span>10+</span></p></div>
+                                                <div class="col-xs-6"><p class="aa-prod-category">
+                                                Kategori: <a class="category-url" href="{{ product.get_main_category.get_absolute_url }}">{{ product.get_main_category }}</a>
+                                                </p></div>
+
+                                            </div>
+    {#                                    {% autoescape off %}#}
+    {#                                        <p>{{ object.description|truncatechars:150 }}</p>#}
+    {#                                    {% endautoescape %}#}
+                                        <div class="aa-prod-quantity">
+                                            <h3>Adet:</h3>
+                                            <input class='form-control' type='number' name='qty' value='1'/>
+
+                                        </div>
+                                        <div class="aa-prod-quantity">
+                                            <h3>Seçenek:</h3>
+                                            <select id="variation" name='item' class='form-control variation_select'>
+                                            </select>
+                                        </div>
+                                        <div class="aa-prod-view-bottom">
+{#                                          <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-default'/>#}
+{#                                            <button class="aa-filter-btn" id='submit-btn'>Sepete At</button>#}
+                                            <a id='submit-btn' class="aa-add-to-cart-btn" href="#">Sepete At</a>
+    {#                                      <a class="aa-add-to-cart-btn" href="#">Wishlist</a>#}
+    {#                                      <a class="aa-add-to-cart-btn" href="#">Compare</a>#}
+                                        </div>
+                                    </form>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div><!-- /.modal-content -->

@@ -13,11 +13,11 @@
 }
 
 .container-alert-flash {
-    position: absolute;
-    top: 10px;
+    position: fixed;
+    top: 15%;
     z-index: 50000;
     width: 100%;
-    right: 0%;
+    right: 25%;
     margin: 0px;
     display: none;
 }
