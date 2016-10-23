@@ -78,8 +78,9 @@
 {% include '_login_modal_form.html' %}
 {% include '_javascript_section.html' %}
 {##}
-{#{% include "javascript.html" %}#}
+{% include "javascript.html" %}
 {% block custom_javascripts %}
+
 {% endblock %}
 
 <script>
@@ -87,7 +88,6 @@
         {% block jquery %}
         {% endblock %}
     });
-
 </script>
 </body>
 </html>

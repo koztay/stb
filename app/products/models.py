@@ -220,14 +220,14 @@ class Category(models.Model):
     def get_children(self):
         children = Category.objects.filter(parent=self)
         if len(children) > 0:
-            print(self)
-            print(len(children))
-            print("children 0 den büyük:", children)
+            # print(self)
+            # print(len(children))
+            # print("children 0 den büyük:", children)
             return children
         else:
-            print(self)
-            print(len(children))
-            print("children 0 den büyük değil:", children)
+            # print(self)
+            # print(len(children))
+            # print("children 0 den büyük değil:", children)
             return None
 
         # if self.is_child:
