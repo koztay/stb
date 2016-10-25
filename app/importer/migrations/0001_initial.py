@@ -13,22 +13,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Fields',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('product_field', models.CharField(null=True, choices=[('PRODUCT_TITLE', 'title'), ('PRODUCT_DESCRIPTION', 'description'), ('PRODUCT_CATEGORY', 'category'), ('PRODUCT_IMAGE', 'image'), ('PRODUCT_TYPE', 'type'), ('ATTRIBUTE_TYPE', 'attribute_type'), ('ATTRIBUTE_VALUE', 'attribute_value')], blank=True, max_length=20)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('product_field', models.CharField(null=True, blank=True, max_length=20)),
                 ('xml_field', models.CharField(null=True, blank=True, max_length=1200)),
             ],
         ),
         migrations.CreateModel(
             name='ProductImportMap',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=120)),
-                ('file', models.FileField(upload_to='')),
+                ('type', models.CharField(max_length=120)),
+                ('root', models.CharField(null=True, blank=True, max_length=120)),
             ],
         ),
         migrations.AddField(
             model_name='fields',
             name='map',
-            field=models.ForeignKey(null=True, blank=True, to='importer.ProductImportMap'),
+            field=models.ForeignKey(blank=True, to='importer.ProductImportMap', null=True),
         ),
     ]

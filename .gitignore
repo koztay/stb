@@ -16,7 +16,7 @@ README.md
 *.log
 *.pot
 *.pyc
-*.sh
+#*.sh
 *.xls
 *.xlsx
 
