@@ -78,6 +78,7 @@ ORDER_STATUS_CHOICES = (
     ('shipped', 'Shipped'),
     ('refunded', 'Refunded'),
 )
+#
 
 
 class Order(models.Model):
