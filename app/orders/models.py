@@ -65,7 +65,7 @@ class UserAddress(models.Model):
     state = models.CharField(max_length=120)
     zipcode = models.CharField(max_length=120)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.street
 
     def get_address(self):
@@ -90,7 +90,7 @@ class Order(models.Model):
     order_total = models.DecimalField(max_digits=50, decimal_places=2, )
     order_id = models.CharField(max_length=20, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.cart.id)
 
     class Meta:
