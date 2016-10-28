@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='StaticPage',
             fields=[
-                ('post_ptr', models.OneToOneField(serialize=False, auto_created=True, to='blog.Post', parent_link=True, primary_key=True)),
+                ('post_ptr', models.OneToOneField(auto_created=True, parent_link=True, serialize=False, primary_key=True, to='blog.Post')),
             ],
             bases=('blog.post',),
         ),

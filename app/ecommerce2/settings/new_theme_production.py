@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 print("the fucking secret_key is:", SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DEBUG')
 print("the fucking DEBUG setting is:", DEBUG)
 
 ALLOWED_HOSTS = ["istebu.com", "139.59.139.108", "192.168.99.100"]

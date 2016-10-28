@@ -1,4 +1,8 @@
-import braintree
+# import braintree
+import json
+from requests import Request, Session
+import requests
+from requests.auth import HTTPBasicAuth
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -15,11 +19,11 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
-if settings.DEBUG:
-    braintree.Configuration.configure(braintree.Environment.Sandbox,
-                                      merchant_id=settings.BRAINTREE_MERCHANT_ID,
-                                      public_key=settings.BRAINTREE_PUBLIC,
-                                      private_key=settings.BRAINTREE_PRIVATE)
+# if settings.DEBUG:
+#     braintree.Configuration.configure(braintree.Environment.Sandbox,
+#                                       merchant_id=settings.BRAINTREE_MERCHANT_ID,
+#                                       public_key=settings.BRAINTREE_PUBLIC,
+#                                       private_key=settings.BRAINTREE_PRIVATE)
 
 
 class ItemCountView(View):
@@ -138,7 +142,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
     def get_object(self, *args, **kwargs):
         cart = self.get_cart()
-        if cart == None:
+        if cart is None:
             return None
         return cart
 
@@ -188,13 +192,13 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
     def get(self, request, *args, **kwargs):
         get_data = super(CheckoutView, self).get(request, *args, **kwargs)
         cart = self.get_object()
-        if cart == None:
+        if cart is None:
             return redirect("cart")
         new_order = self.get_order()
         user_checkout_id = request.session.get("user_checkout_id")
-        if user_checkout_id != None:
+        if user_checkout_id is not None:
             user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-            if new_order.billing_address == None or new_order.shipping_address == None:
+            if new_order.billing_address is None or new_order.shipping_address is None:
                 return redirect("order_address")
             new_order.user = user_checkout
             new_order.save()
@@ -206,30 +210,54 @@ class CheckoutFinalView(CartOrderMixin, View):
         order = self.get_order()
         order_total = order.order_total
         nonce = request.POST.get("payment_method_nonce")
-        if nonce:
-            result = braintree.Transaction.sale({
-                "amount": order_total,
-                "payment_method_nonce": nonce,
-                "billing": {
-                    "postal_code": "%s" % (order.billing_address.zipcode),
-
-                },
-                "options": {
-                    "submit_for_settlement": True
+        session_id = request.POST.get("session_id")
+        token_id = request.POST.get("token_id")
+        print("session_id : ", session_id)
+        print("token_id : ", token_id)
+        print("eğer bu değerler varsa o zaman transaction yapabiliriz...")
+        # r = requests.post('http://localhost:9090/validate', data=request.POST)
+        if session_id is not None and token_id is not None:
+            headers = {"Content-Type": "application/json; charset=UTF-8",
+                       "Accept": "application/json; charset=UTF-8",
+                       "Authorization": "Basic sck_pcs_TipCY8rx00h*18iHedwnT7nKC7vkGUso"
+                       }
+            data = {
+                'session_id': session_id,
+                'token_id': token_id,
+                "reference_no": "1234",
+                "transaction_type": '1'
                 }
-            })
-            if result.is_success:
-                # result.transaction.id to order
-                order.mark_completed(order_id=result.transaction.id)
-                messages.success(request, "Siparişiniz için teşekkür ederiz.")
-                del request.session["cart_id"]
-                del request.session["order_id"]
+            # post_data = json.dumps(data)  # Bunu gönderince invalid_request_error veriyor.
+            # auth = ('sck_pcs_TipCY8rx00h*18iHedwnT7nKC7vkGUso', '')
+            # result = requests.post("https://pts-api.paynet.com.tr/v1/transaction/charge",
+            #                        params=data, headers=headers)
+            # yukarıdakini gönderince de ivalid_request_error verdi
+            result = requests.post("https://pts-api.paynet.com.tr/v1/transaction/charge",
+                                   json=data, headers=headers)
+            # yukarıdaki bilinmeyen bir hata oldu mesajı veriyor.
+            #
+            json_response = result.json()
+            if 'is_succeed' in json_response:
+                # şimdilik sadece print edip gelen değerleri kontrol edelim
+                if json_response['is_succeed']:
+                    # result.transaction.id to order
+                    order.mark_completed(order_id=json_response['order_id'])
+                    messages.success(request, "Siparişiniz için teşekkür ederiz.")
+                    # burada siliyoruz cart değerlerini
+                    del request.session["cart_id"]
+                    del request.session["order_id"]
+                else:
+                    # messages.success(request, "There was a problem with your order.")
+                    messages.success(request, "%s" % (json_response['message']))
+                    return redirect("checkout")
             else:
                 # messages.success(request, "There was a problem with your order.")
-                messages.success(request, "%s" % (result.message))
+                messages.success(request, "%s" % (json_response['message']))
                 return redirect("checkout")
-
+        else:
+            print("form post edildikten sonra nonce değerini bulamadık ve cartı silemedik.")
         return redirect("order_detail", pk=order.pk)
 
     def get(self, request, *args, **kwargs):
         return redirect("checkout")
+

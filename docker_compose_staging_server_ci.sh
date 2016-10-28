@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
 # set the nevironment for digital-ocean
-source ~/.bashrc
-dvm use 1.10.3
-docker -v
-eval $(docker-machine env istebu-staging)
+#source ~/.bashrc
+#dvm use 1.10.3
+#docker -v
+eval $(docker-machine env istebu-core01)
+#
+## Delete all containers (server client versiyon uyuşmazlığı yüzünden çalışmıyor.)
+#docker rm -f $(docker ps -a -q)
+## Delete all images
+#docker rmi -f $(docker images -q)
 
 # Build with no-cache
 docker-compose -f docker-compose-production.yml build

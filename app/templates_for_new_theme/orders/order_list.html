@@ -3,7 +3,9 @@
 
 
 {% block content %}
-
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
 
     {% if object_list|length <= 0 %}
 

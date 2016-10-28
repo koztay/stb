@@ -16,11 +16,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Order',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
-                ('status', models.CharField(choices=[('created', 'Created'), ('paid', 'Paid'), ('shipped', 'Shipped'), ('refunded', 'Refunded')], default='created', max_length=120)),
-                ('shipping_total_price', models.DecimalField(max_digits=50, decimal_places=2, default=5.99)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('status', models.CharField(default='created', max_length=120, choices=[('created', 'Created'), ('paid', 'Paid'), ('shipped', 'Shipped'), ('refunded', 'Refunded')])),
+                ('shipping_total_price', models.DecimalField(default=5.99, max_digits=50, decimal_places=2)),
                 ('order_total', models.DecimalField(max_digits=50, decimal_places=2)),
-                ('order_id', models.CharField(null=True, blank=True, max_length=20)),
+                ('order_id', models.CharField(max_length=50, blank=True, null=True)),
             ],
             options={
                 'ordering': ['-id'],
@@ -29,8 +29,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserAddress',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
-                ('type', models.CharField(choices=[('billing', 'Billing'), ('shipping', 'Shipping')], max_length=120)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('type', models.CharField(max_length=120, choices=[('billing', 'Billing'), ('shipping', 'Shipping')])),
                 ('street', models.CharField(max_length=120)),
                 ('city', models.CharField(max_length=120)),
                 ('state', models.CharField(max_length=120)),
@@ -40,10 +40,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserCheckout',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('email', models.EmailField(unique=True, max_length=254)),
-                ('braintree_id', models.CharField(null=True, blank=True, max_length=120)),
-                ('user', models.OneToOneField(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('braintree_id', models.CharField(max_length=120, blank=True, null=True)),
+                ('user', models.OneToOneField(blank=True, null=True, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='billing_address',
-            field=models.ForeignKey(related_name='billing_address', to='orders.UserAddress', null=True),
+            field=models.ForeignKey(related_name='billing_address', null=True, to='orders.UserAddress'),
         ),
         migrations.AddField(
             model_name='order',
@@ -64,11 +64,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='shipping_address',
-            field=models.ForeignKey(related_name='shipping_address', to='orders.UserAddress', null=True),
+            field=models.ForeignKey(related_name='shipping_address', null=True, to='orders.UserAddress'),
         ),
         migrations.AddField(
             model_name='order',
             name='user',
-            field=models.ForeignKey(null=True, to='orders.UserCheckout'),
+            field=models.ForeignKey(to='orders.UserCheckout', null=True),
         ),
     ]

@@ -8,8 +8,8 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('products', '0001_initial'),
         ('carts', '0001_initial'),
+        ('products', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -22,11 +22,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cart',
             name='items',
-            field=models.ManyToManyField(to='products.Variation', through='carts.CartItem'),
+            field=models.ManyToManyField(through='carts.CartItem', to='products.Variation'),
         ),
         migrations.AddField(
             model_name='cart',
             name='user',
-            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(blank=True, null=True, to=settings.AUTH_USER_MODEL),
         ),
     ]

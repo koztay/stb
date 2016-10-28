@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AttributeType',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('order', models.IntegerField(default=0)),
                 ('type', models.CharField(max_length=120)),
             ],
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AttributeValue',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('value', models.CharField(default='', max_length=120)),
                 ('attribute_type', models.ForeignKey(to='products.AttributeType')),
             ],
@@ -33,30 +33,30 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=120)),
                 ('slug', models.SlugField(unique=True, blank=True)),
-                ('description', models.TextField(null=True, blank=True)),
+                ('description', models.TextField(blank=True, null=True)),
                 ('active', models.BooleanField(default=True)),
                 ('show_on_homepage', models.BooleanField(default=True)),
-                ('order', models.IntegerField(null=True, blank=True)),
+                ('order', models.IntegerField(blank=True, null=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('parent', models.ForeignKey(blank=True, to='products.Category', null=True)),
+                ('parent', models.ForeignKey(blank=True, null=True, to='products.Category')),
             ],
         ),
         migrations.CreateModel(
             name='Product',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('title', models.CharField(max_length=120)),
-                ('description', tinymce.models.HTMLField(null=True, blank=True, default='<h1>default description</h1>')),
-                ('price', models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)),
+                ('description', tinymce.models.HTMLField(default='<h1>default description</h1>', blank=True, null=True)),
+                ('price', models.DecimalField(blank=True, max_digits=20, null=True, decimal_places=2)),
                 ('active', models.BooleanField(default=True)),
                 ('slug', models.SlugField(unique=True, blank=True)),
                 ('show_on_homepage', models.BooleanField(default=True)),
                 ('show_on_popular', models.BooleanField(default=True)),
-                ('categories', models.ManyToManyField(to='products.Category', blank=True)),
-                ('default', models.ForeignKey(blank=True, related_name='default_category', to='products.Category', null=True)),
+                ('categories', models.ManyToManyField(blank=True, to='products.Category')),
+                ('default', models.ForeignKey(related_name='default_category', blank=True, null=True, to='products.Category')),
             ],
             options={
                 'ordering': ['-title'],
@@ -65,12 +65,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProductFeatured',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('image', models.ImageField(upload_to=products.models.image_upload_to_featured)),
-                ('title', models.CharField(null=True, blank=True, max_length=120)),
-                ('text', models.CharField(null=True, blank=True, max_length=220)),
+                ('title', models.CharField(max_length=120, blank=True, null=True)),
+                ('text', models.CharField(max_length=220, blank=True, null=True)),
                 ('text_right', models.BooleanField(default=False)),
-                ('text_css_color', models.CharField(null=True, blank=True, max_length=6)),
+                ('text_css_color', models.CharField(max_length=6, blank=True, null=True)),
                 ('show_price', models.BooleanField(default=False)),
                 ('make_image_background', models.BooleanField(default=False)),
                 ('active', models.BooleanField(default=True)),
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProductImage',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('image', models.ImageField(upload_to=products.models.image_upload_to)),
                 ('product', models.ForeignKey(to='products.Product')),
             ],
@@ -88,52 +88,52 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProductType',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('name', models.CharField(default='Projeksiyon Cihazı', max_length=120)),
             ],
         ),
         migrations.CreateModel(
             name='Thumbnail',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
-                ('type', models.CharField(choices=[('hd', 'HD'), ('sd', 'SD'), ('medium', 'Medium'), ('micro', 'Micro')], default='hd', max_length=20)),
-                ('height', models.CharField(null=True, blank=True, max_length=20)),
-                ('width', models.CharField(null=True, blank=True, max_length=20)),
-                ('media', models.ImageField(height_field='height', width_field='width', null=True, blank=True, upload_to=products.models.thumbnail_location)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
+                ('type', models.CharField(default='hd', max_length=20, choices=[('hd', 'HD'), ('sd', 'SD'), ('medium', 'Medium'), ('micro', 'Micro')])),
+                ('height', models.CharField(max_length=20, blank=True, null=True)),
+                ('width', models.CharField(max_length=20, blank=True, null=True)),
+                ('media', models.ImageField(blank=True, null=True, width_field='width', height_field='height', upload_to=products.models.thumbnail_location)),
                 ('product', models.ForeignKey(to='products.Product')),
             ],
         ),
         migrations.CreateModel(
             name='Variation',
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', serialize=False, primary_key=True)),
                 ('title', models.CharField(max_length=120)),
-                ('price', models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)),
-                ('sale_price', models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)),
+                ('price', models.DecimalField(blank=True, max_digits=20, null=True, decimal_places=2)),
+                ('sale_price', models.DecimalField(blank=True, max_digits=20, null=True, decimal_places=2)),
                 ('active', models.BooleanField(default=True)),
-                ('inventory', models.IntegerField(null=True, blank=True)),
+                ('inventory', models.IntegerField(blank=True, null=True)),
                 ('product', models.ForeignKey(to='products.Product')),
             ],
         ),
         migrations.AddField(
             model_name='product',
             name='product_type',
-            field=models.ForeignKey(blank=True, to='products.ProductType', null=True),
+            field=models.ForeignKey(blank=True, null=True, to='products.ProductType'),
         ),
         migrations.AddField(
             model_name='product',
             name='tags',
-            field=taggit.managers.TaggableManager(to='taggit.Tag', help_text='A comma-separated list of tags.', through='taggit.TaggedItem', verbose_name='Tags'),
+            field=taggit.managers.TaggableManager(verbose_name='Tags', through='taggit.TaggedItem', help_text='A comma-separated list of tags.', to='taggit.Tag'),
         ),
         migrations.AddField(
             model_name='attributevalue',
             name='product',
-            field=models.ForeignKey(blank=True, to='products.Product', null=True),
+            field=models.ForeignKey(blank=True, null=True, to='products.Product'),
         ),
         migrations.AddField(
             model_name='attributetype',
             name='product',
-            field=models.ManyToManyField(to='products.Product', blank=True),
+            field=models.ManyToManyField(blank=True, to='products.Product'),
         ),
         migrations.AddField(
             model_name='attributetype',

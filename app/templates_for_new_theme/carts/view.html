@@ -1,6 +1,10 @@
 {% extends "__base.html" %}
 {% load staticfiles %}
 
+{% block messages %}
+    {% include '_messages.html' %}
+{% endblock %}
+
 <script>
     {% block jquery %}
         $(".item-qty").change(function () {

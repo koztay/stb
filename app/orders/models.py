@@ -7,17 +7,17 @@ from django.db.models.signals import pre_save, post_save
 
 from carts.models import Cart
 
-if settings.DEBUG:
-    braintree.Configuration.configure(braintree.Environment.Sandbox,
-                                      merchant_id=settings.BRAINTREE_MERCHANT_ID,
-                                      public_key=settings.BRAINTREE_PUBLIC,
-                                      private_key=settings.BRAINTREE_PRIVATE)
+# if settings.DEBUG:
+#     braintree.Configuration.configure(braintree.Environment.Sandbox,
+#                                       merchant_id=settings.BRAINTREE_MERCHANT_ID,
+#                                       public_key=settings.BRAINTREE_PUBLIC,
+#                                       private_key=settings.BRAINTREE_PRIVATE)
 
 
 class UserCheckout(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)  # not required
     email = models.EmailField(unique=True)  # --> required
-    braintree_id = models.CharField(max_length=120, null=True, blank=True)
+    braintree_id = models.CharField(max_length=120, null=True, blank=True) # bu değişecek
 
     def __unicode__(self):  # def __str__(self):
         return self.email
@@ -26,30 +26,37 @@ class UserCheckout(models.Model):
     def get_braintree_id(self, ):
         instance = self
         if not instance.braintree_id:
-            result = braintree.Customer.create({
-                "email": instance.email,
-            })
-            if result.is_success:
-                instance.braintree_id = result.customer.id
+            print("burada braintreee cutomer yaratma funk çalışıyor.")
+            # result = braintree.Customer.create({
+            #     "email": instance.email,
+            # })
+
+            if True:
+                instance.braintree_id = "fake_braintree_id"
                 instance.save()
         return instance.braintree_id
 
     def get_client_token(self):
         customer_id = self.get_braintree_id
-        if customer_id:
-            client_token = braintree.ClientToken.generate({
-                "customer_id": customer_id
-            })
-            return client_token
-        return None
+        # if customer_id:
+        #     client_token = braintree.ClientToken.generate({
+        #         "customer_id": customer_id
+        #     })
+        #     return client_token
+        return "This_is_fake_client_token and it will be replaced by Paynet Methods"
 
 
-def update_braintree_id(sender, instance, *args, **kwargs):
-    if not instance.braintree_id:
-        instance.get_braintree_id
+# def update_braintree_id(sender, instance, *args, **kwargs):
+#     if not instance.braintree_id:
+#         instance.get_braintree_id
 
+def handle_paynet_checkout(sender, instance, *args, **kwargs):
+    print("sender :", sender)
+    print("instance :", instance)
+    print("args :", args)
+    print("kwargs :", kwargs)
 
-post_save.connect(update_braintree_id, sender=UserCheckout)
+post_save.connect(handle_paynet_checkout, sender=UserCheckout)
 
 ADDRESS_TYPE = (
     ('billing', 'Billing'),
@@ -89,7 +96,7 @@ class Order(models.Model):
     shipping_address = models.ForeignKey(UserAddress, related_name='shipping_address', null=True)
     shipping_total_price = models.DecimalField(max_digits=50, decimal_places=2, default=5.99)
     order_total = models.DecimalField(max_digits=50, decimal_places=2, )
-    order_id = models.CharField(max_length=20, null=True, blank=True)
+    order_id = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return str(self.cart.id)
@@ -105,6 +112,9 @@ class Order(models.Model):
         if order_id and not self.order_id:
             self.order_id = order_id
         self.save()
+
+    def paynet_order_total(self):
+        return self.order_total*100
 
 
 def order_pre_save(sender, instance, *args, **kwargs):
