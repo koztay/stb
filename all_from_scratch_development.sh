@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-eval $(docker-machine env default)
+eval $(docker-machine env istebu)
 # eval $(docker-machine env istebu)
 # Stop and remove all containers
 docker stop $(docker ps -a -q)
