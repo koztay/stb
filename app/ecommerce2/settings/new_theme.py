@@ -12,26 +12,13 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from django.core.exceptions import ImproperlyConfigured
-
-
-def get_env_variable(var_name):
-    print("bu fonk çalışmalı")
-    """Get the environment variable or return exception."""
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(var_name)
-        raise ImproperlyConfigured(error_msg)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # root of project
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'csqwlmc8s55o($rt6ozh7u+ui9zb-et00w$d90j8$^!nvj41_r'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -134,9 +121,9 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'tr_TR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
 
@@ -170,14 +157,16 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # DJANGO REGISTRATION REDUX SETTINGS
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
-SITE_ID = 2
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
-
-# Braintree Payments Details
-BRAINTREE_PUBLIC = "qn3p5n7njksw47r3"
-BRAINTREE_PRIVATE = "d14ac944794c0df1c81991ecf49221ff"
-BRAINTREE_MERCHANT_ID = "n84nynknvzz3j3sz"
-BRAINTREE_ENVIRONEMNT = "Sandbox"
 
 # django-import-export setting
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+# celery settings
+CELERY_BROKER_URL = 'redis://192.168.99.100:32768'
+CELERY_RESULT_BACKEND = 'redis://192.168.99.100:32768'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

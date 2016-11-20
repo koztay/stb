@@ -1,6 +1,3 @@
-# Aşağıdaki komutlar manage.py içerisinden settings file
-# belirlemeye engel oluyor, o nedenle kapattım...
-
 from .base import *
 
 try:
@@ -14,6 +11,6 @@ except:
     pass
 
 try:
-    from .new_theme_production import *
+    from ._new_theme_production import *
 except:
     pass

@@ -12,33 +12,20 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from django.core.exceptions import ImproperlyConfigured
-
-
-def get_env_variable(var_name):
-    print("bu fonk çalışmalı")
-    """Get the environment variable or return exception."""
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(var_name)
-        raise ImproperlyConfigured(error_msg)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # root of project
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ.getenv('SECRET_KEY')
+
 print("the fucking secret_key is:", SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.environ.getenv('DEBUG')
 print("the fucking DEBUG setting is:", DEBUG)
 
-ALLOWED_HOSTS = ["istebu.com", "139.59.139.108", "192.168.99.100"]
+ALLOWED_HOSTS = ["istebu.com", "139.59.139.108", "192.168.99.101"]
 
 # EMAIL_HOST = os.environ["EMAIL_HOST"] # bu kesinlikle çalışmıyor.
 EMAIL_HOST = os.getenv('EMAIL_HOST')  # bu çalıştı sanki.
@@ -86,6 +73,8 @@ INSTALLED_APPS = (
     'products',
     'static_pages',
     'visual_site_elements',
+    'django_celery_beat',
+    'django_celery_results',
 
 )
 
@@ -137,11 +126,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     },
 }
-# DB_NAME=istebu
-# DB_USER=istebu_pg_user
-# DB_PASS=5o($rt6ozh7u+ui9zb
-# DB_SERVICE=postgres
-# DB_PORT=5432
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -157,7 +141,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# eğer bunu pickle yapmazsan patlıyor :
+# eğer bunu pickle yapmazsan patlıyor:
 # http://stackoverflow.com/questions/24229397/django-object-is-not-json-serializable-error-after-upgrading-django-to-1-6-5
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
@@ -183,11 +167,16 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # DJANGO REGISTRATION REDUX SETTINGS
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
-SITE_ID = 2
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
-# Braintree Payments Details
-BRAINTREE_PUBLIC = "qn3p5n7njksw47r3"
-BRAINTREE_PRIVATE = "d14ac944794c0df1c81991ecf49221ff"
-BRAINTREE_MERCHANT_ID = "n84nynknvzz3j3sz"
-BRAINTREE_ENVIRONEMNT = "Sandbox"
+# django-import-export setting
+IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+# celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

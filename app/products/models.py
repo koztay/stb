@@ -21,6 +21,13 @@ THUMB_CHOICES = (
 )
 
 
+CURRENCY_CHOICES = (
+    ("₺", "TL"),
+    ("$", "USD"),
+    ("€", "EUR"),
+)
+
+
 # This utility function creates the filename and filepath according to the slug and product instance
 def image_upload_to(instance, filename):
     title = instance.product.title
@@ -127,6 +134,12 @@ class Product(models.Model):
         self.importer_map = None
 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=10, choices=CURRENCY_CHOICES, default='₺')
+    updated = models.DateField(auto_now=True)
+    value = models.FloatField(default=1.0)
+
+
 class Variation(models.Model):
     product = models.ForeignKey(Product)
     title = models.CharField(max_length=120)
@@ -134,6 +147,8 @@ class Variation(models.Model):
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     active = models.BooleanField(default=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
+    buying_curreny = models.ForeignKey(Currency, default=Currency.objects.first())
+    buying_price = models.FloatField(default=1.0)
 
     def __str__(self):
         return self.title
@@ -293,8 +308,6 @@ class Thumbnail(models.Model):
 
     def __unicode__(self):  # __str__(self):
         return str(self.media.path)
-
-
 
 
 """

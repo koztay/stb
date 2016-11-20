@@ -13,7 +13,7 @@ docker rmi -f $(docker images -q)
 docker volume ls -qf dangling=true | xargs docker volume rm
 
 # Build with no-cache
-docker-compose -f docker-compose-development.yml build --no-cache
+docker-compose -f docker-compose-development.yml build
 
 # Up containers
 docker-compose -f docker-compose-development.yml up -d
