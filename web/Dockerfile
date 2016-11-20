@@ -1,4 +1,4 @@
-FROM nginx:1.9
+FROM nginx:1.11.5-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 ADD default.conf /etc/nginx/conf.d/
 

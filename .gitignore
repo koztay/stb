@@ -6,7 +6,8 @@ lib/
 
 ;;files to ignore
 settings.py
-.env
+.env*
+
 LICENSE
 Notlar.txt
 README.md
@@ -19,6 +20,11 @@ README.md
 #*.sh
 *.xls
 *.xlsx
+*.sqlite3
+*.sql
+*.json
+*.bz2
+*.gz
 
 ;;directories to ignore
 .idea/
@@ -26,19 +32,8 @@ bootstrap template/
 images/
 static_in_env
 eski site wayback/
+*__pycache__
 
 
-carts/__pycache__/
-carts/migrations/__pycache__/
-ecommerce2/__pycache__/
-ecommerce2/settings/__pycache__/
-newsletter/__pycache__/
-newsletter/migrations/__pycache__/
-orders/__pycache__/
-orders/migrations/__pycache__/
-products/__pycache__/
-products/migrations/0010_auto_20160528_1907.py
-products/migrations/__pycache__/
-products/templatetags/__pycache__/
-/src/db.sqlite3
+
 
