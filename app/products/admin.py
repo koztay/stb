@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Product, Variation, ProductImage, Category, ProductFeatured, AttributeType, AttributeValue, \
-    ProductType, Thumbnail
+    ProductType, Thumbnail, Currency
 
 
 class ProductImageInline(admin.TabularInline):
@@ -10,9 +10,12 @@ class ProductImageInline(admin.TabularInline):
     max_num = 10
 
 
-class VariationInline(admin.TabularInline):
+class VariationInline(admin.StackedInline):
     model = Variation
-    extra = 1
+    # fields = ('title', 'buying_price', 'price', 'sale_price', 'inventory', 'active', )
+    # # list_display = ('title', 'buying_currency', 'buying_price', 'price', 'sale_price', 'inventory', 'active',)
+    # list_display = ('title', 'buying_currency', )
+    extra = 0
     max_num = 10
 
 
@@ -91,6 +94,11 @@ class CategoryAdmin(admin.ModelAdmin):
         return (qs.filter(parent=None) | has_sub).distinct()
 
 
+class CurrencyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'value', 'updated')
+    readonly_fields = ('name', 'value', 'updated')
+
+
 admin.site.register(Product, ProductAdmin)
 
 # admin.site.register(Variation)
@@ -104,3 +112,4 @@ admin.site.register(ProductFeatured)
 admin.site.register(ProductType)
 admin.site.register(AttributeType, AttributeTypeAdmin)
 admin.site.register(AttributeValue)
+admin.site.register(Currency, CurrencyAdmin)

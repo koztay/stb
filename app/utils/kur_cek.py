@@ -26,7 +26,6 @@ def get(currency_name=None):
 
     for currency, value in zip(isim, satis):
         # print(currency, value)
-
         # print(currency_name)
         if currency.firstChild.nodeValue == currency_name:
             # print("buldum, buldum !!!!!")
@@ -35,4 +34,9 @@ def get(currency_name=None):
             return value.firstChild.data
 
         else:
-            return "Kur bulunamadı, lütfen girdiğiniz değeri kontrol edin."
+            print("Kur bulunamadı, lütfen girdiğiniz değeri kontrol edin.")
+            # return "Kur bulunamadı, lütfen girdiğiniz değeri kontrol edin." //bunu return edince dongü bitiyor yapma!
+
+# get('EURO')
+# get('ABD DOLARI')
+# get('abuk')

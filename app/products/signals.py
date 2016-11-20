@@ -2,7 +2,14 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.text import slugify
 
-from products.models import Variation, AttributeType, AttributeValue, Product, Category, Thumbnail, ProductImage
+from products.models import (Variation,
+                             AttributeType,
+                             AttributeValue,
+                             Product,
+                             Category,
+                             Currency,
+                             Thumbnail,
+                             ProductImage)
 from utils import thumbnail_creator
 
 
@@ -14,6 +21,7 @@ def product_post_save_receiver_for_variation(sender, instance, created, *args, *
         new_var.product = product
         new_var.title = "Default"
         new_var.price = product.price
+        new_var.buying_curreny = Currency.objects.get(name="TURK LIRASI")
         new_var.save()
 
 
