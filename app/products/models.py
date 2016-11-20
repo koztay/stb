@@ -72,6 +72,8 @@ class Product(models.Model):
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
     tags = TaggableManager()
+    kdv = models.IntegerField(default=18)
+    desi = models.IntegerField(default=1)
 
     objects = ProductManager()
 
@@ -291,6 +293,8 @@ class Thumbnail(models.Model):
 
     def __unicode__(self):  # __str__(self):
         return str(self.media.path)
+
+
 
 
 """

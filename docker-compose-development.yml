@@ -16,7 +16,7 @@ services:
     expose:
       - '8000'
     volumes:
-      - ./app:/app
+      - ./app:/usr/src/app
 # yukarıdaki volume ayarını sadece local virtualbox 'larda aç. Yoksa digitalocean vb.
 # cloud 'da asla ve asla çalışmıyor. Django app 'no module named ecommerce2' hatası verip
 # başlayamıyor..

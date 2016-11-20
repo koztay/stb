@@ -1,4 +1,5 @@
-FROM python:3.5-onbuild
+FROM python:3.5.2-onbuild
+#FROM python:3.5-onbuild
 #FROM python:3.5
 #ENV PYTHON UNBUFFERED 1
 #ADD . /app
