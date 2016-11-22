@@ -10,18 +10,44 @@ services:
 
   app:
     build: ./app/
+    image: koztay/app
     restart: always
+    depends_on:
+      - postgres
+      - redis
     env_file:
       - .env_PRODUCTION
     expose:
-      - '8000'
+      - "8000"
     volumes:
       - static-data:/usr/src/static_in_env/static_root/
       - media-data:/usr/src/static_in_env/media_root/
     command: /usr/local/bin/gunicorn ecommerce2.wsgi:application -w 2 -b :8000
 
+  celery_worker:
+    image: koztay/app
+    restart: always
+    env_file:
+      - .env_PRODUCTION
+    depends_on:
+      - app
+      - postgres
+      - redis
+    command: celery -A ecommerce2 worker -l info # delete  -l info parameters on production
+
+  celery_beat:
+    image: koztay/app
+    restart: always
+    env_file:
+      - .env_PRODUCTION
+    depends_on:
+      - app
+      - postgres
+      - redis
+    command: celery -A ecommerce2 beat -l info -S django # delete  -l info parameters on production
+
   web:
-    build: ./web/
+    build: ./web
     restart: always
     ports:
       - "80:80"
@@ -30,6 +56,12 @@ services:
       - media-data:/usr/src/static_in_env/media_root/
     volumes_from:
       - app
+
+  redis:
+    image: redis:3.0.7
+    restart: always
+    ports:
+      - "6379"
 
 volumes:
   postgres-data:

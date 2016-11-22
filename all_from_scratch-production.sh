@@ -16,7 +16,7 @@ docker -v
 eval $(docker-machine env istebu-core01)
 # eval $(docker-machine env istebu)
 # Stop and remove all containers
-
+docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # Delete all images

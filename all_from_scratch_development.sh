@@ -6,14 +6,14 @@ eval $(docker-machine env istebu)
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
-# Delete all images
+# Delete all images // tüm imajları silmeye gerek yok ki postgres, redis vb. niye siliyorsun?
 docker rmi -f $(docker images -q)
 
-# Delete all volumes
+# Delete all volumes // volume 'ları da silmeye gerek olmayabilir.
 docker volume ls -qf dangling=true | xargs docker volume rm
 
-# Build with no-cache
-docker-compose -f docker-compose-development.yml build
+# Build with no-cache // no-cache yapmak lazım yalnız olmayınca olmuyor..
+docker-compose -f docker-compose-development.yml build --no-cache
 
 # Up containers
 docker-compose -f docker-compose-development.yml up -d
