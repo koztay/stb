@@ -1,5 +1,7 @@
 version: '2'
+
 services:
+
   postgres:
     image: postgres:9.4
     restart: always
@@ -58,10 +60,11 @@ services:
       - app
 
   redis:
-    image: redis:3.0.7
+    build: ./redis
     restart: always
-    ports:
-      - "6379"
+#    ports:
+#      - "6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
 
 volumes:
   postgres-data:

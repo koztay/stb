@@ -27,6 +27,7 @@ docker volume ls -qf dangling=true | xargs docker volume rm
 
 # Build with no-cache
 docker-compose -f docker-compose-production.yml build --no-cache
-
+# Build without no-cache
+#docker-compose -f docker-compose-production.yml build
 # Up containers
 docker-compose -f docker-compose-production.yml up -d
