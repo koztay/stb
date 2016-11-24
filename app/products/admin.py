@@ -1,13 +1,9 @@
 from django.contrib import admin
+# import nested_admin
+
 
 from .models import Product, Variation, ProductImage, Category, ProductFeatured, AttributeType, AttributeValue, \
     ProductType, Thumbnail, Currency
-
-
-class ProductImageInline(admin.TabularInline):
-    model = ProductImage
-    extra = 1
-    max_num = 10
 
 
 class VariationInline(admin.StackedInline):
@@ -50,9 +46,39 @@ class AttributeTypeAdmin(admin.ModelAdmin):
         order_by = 'order'
 
 
-class ThumbnailInline(admin.TabularInline):
+class ThumbnailInline(admin.StackedInline):
     extra = 1
     model = Thumbnail
+
+
+class ProductImageInline(admin.StackedInline):
+    model = ProductImage
+    extra = 1
+    max_num = 10
+    # inlines = [ThumbnailInline]
+
+
+class ProductImageAdmin(admin.ModelAdmin):
+    inlines = [
+        ThumbnailInline,
+    ]
+
+    class Meta:
+        model = ProductImage
+
+
+# class ThumbnailInline(nested_admin.NestedStackedInline):
+#     model = Thumbnail
+#
+#
+# class ProductImageInline(nested_admin.NestedStackedInline):
+#     model = ProductImage
+#     inlines = [ThumbnailInline]
+#
+#
+# class ProductImageAdmin(nested_admin.NestedModelAdmin):
+#     model = ProductImage
+#     inlines = [ThumbnailInline]
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -60,7 +86,6 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     inlines = [
         ProductImageInline,
-        ThumbnailInline,
         VariationInline,
         AttributeValueInline,
     ]
@@ -100,16 +125,28 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
-
-# admin.site.register(Variation)
-
-admin.site.register(ProductImage)
-
+admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(Category, CategoryAdmin)
-
 admin.site.register(ProductFeatured)
-
 admin.site.register(ProductType)
 admin.site.register(AttributeType, AttributeTypeAdmin)
 admin.site.register(AttributeValue)
 admin.site.register(Currency, CurrencyAdmin)
+
+# from .models import TableOfContents, TocArticle, TocSection
+#
+# class TocArticleInline(nested_admin.NestedStackedInline):
+#     model = TocArticle
+#     sortable_field_name = "position"
+#
+# class TocSectionInline(nested_admin.NestedStackedInline):
+#     model = TocSection
+#     sortable_field_name = "position"
+#     inlines = [TocArticleInline]
+#
+# class TableOfContentsAdmin(nested_admin.NestedModelAdmin):
+#     inlines = [TocSectionInline]
+#
+# admin.site.register(TableOfContents, TableOfContentsAdmin)
+
+

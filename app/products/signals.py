@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.utils.text import slugify
+from uuslug import slugify
 
 from products.models import (Variation,
                              AttributeType,
@@ -13,6 +13,7 @@ from products.models import (Variation,
 from utils import thumbnail_creator
 
 
+# TODO: bu signal içerisinde kar marjı varsa price 'ı update et, yoksa, kar marjını bulup kaydet.
 def product_post_save_receiver_for_variation(sender, instance, created, *args, **kwargs):
     product = instance
     variations = product.variation_set.all()
@@ -21,7 +22,7 @@ def product_post_save_receiver_for_variation(sender, instance, created, *args, *
         new_var.product = product
         new_var.title = "Default"
         new_var.price = product.price
-        new_var.buying_curreny = Currency.objects.get(name="TURK LIRASI")
+        # new_var.buying_curreny = Currency.objects.get(name="TURK LIRASI") buna gerek yok.
         new_var.save()
 
 
@@ -159,18 +160,20 @@ post_save.connect(product_post_save_receiver_for_variation, sender=Product)
 post_save.connect(attribute_type_post_save_receiver, sender=AttributeType)
 
 
+# TODO : Bunu normal olarak product ve kategori post save olarak yaratamaz mıyız? (mixin vb. yöntemle)
 @receiver(pre_save)  # tüm objeler pre_save olmadan çalışıyor...
 def slug_pre_save_receiver(sender, instance, *args, **kwargs):
-    print("pre_save_receiver_çalıştı...")
+    # print("pre_save_receiver_çalıştı...")
 
     list_of_models = ('Product', 'Category')
-    print("sender:", sender.__name__)
+    # print("sender:", sender.__name__)
 
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
         if not instance.slug:
             instance.slug = create_slug(instance, sender)
     else:
-        print("sender list of models içinde değil")
+        pass
+        # print("sender list of models içinde değil")
 
 
 #     if sender.__name__ == 'Category':

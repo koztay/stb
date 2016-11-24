@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.text import slugify
+from uuslug import slugify
 
 
 from taggit.managers import TaggableManager
@@ -250,7 +250,7 @@ class Category(models.Model):
 
 
 class ProductFeatured(models.Model):
-    product = models.ForeignKey(Product)
+    product = models.ForeignKey(ProductImage)
     image = models.ImageField(upload_to=image_upload_to_featured)
     title = models.CharField(max_length=120, null=True, blank=True)
     text = models.CharField(max_length=220, null=True, blank=True)
@@ -292,6 +292,7 @@ class AttributeValue(models.Model):
 
 class Thumbnail(models.Model):
     product = models.ForeignKey(Product)  # instance.product.title
+    main_image = models.ForeignKey(ProductImage)
     type = models.CharField(max_length=20, choices=THUMB_CHOICES, default='hd')
     height = models.CharField(max_length=20, null=True, blank=True)
     width = models.CharField(max_length=20, null=True, blank=True)
