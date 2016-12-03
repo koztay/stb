@@ -17,6 +17,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
+from .settings import DEBUG
+print("settings.debug value which celery sees :", DEBUG)
+
 #
 # app.conf.beat_schedule = {
 #     'add-every-minute-contrab': {

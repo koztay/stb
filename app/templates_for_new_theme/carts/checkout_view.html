@@ -69,8 +69,8 @@
                 <script
                     class="paynet-button"
                     type="text/javascript"
-                    src="https://pts-pj.paynet.com.tr/public/js/paynet.min.js"
-                    data-key="pbk_pcs_TipCY8rx00hQAICpfn2lR52H9cyTa3sV"
+                    src="{{ paynet_js_url }}"
+                    data-key="{{ paynet_publishable_key }}"
                     data-amount="{{ order.paynet_order_total }}"
                     data-button_label="Ödeme Yap"
                     data-image="[image_url]">

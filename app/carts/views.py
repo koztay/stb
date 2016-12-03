@@ -19,18 +19,19 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
-# if settings.DEBUG:
-#     braintree.Configuration.configure(braintree.Environment.Sandbox,
-#                                       merchant_id=settings.BRAINTREE_MERCHANT_ID,
-#                                       public_key=settings.BRAINTREE_PUBLIC,
-#                                       private_key=settings.BRAINTREE_PRIVATE)
+if settings.DEBUG:
+    api_url = settings.PAYNET_TEST_API_URL
+    paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
+else:
+    api_url = settings.PAYNET_PRODUCTION_API_URL
+    paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
 
 
 class ItemCountView(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             cart_id = self.request.session.get("cart_id")
-            if cart_id == None:
+            if cart_id is None:
                 count = 0
             else:
                 cart = Cart.objects.get(id=cart_id)
@@ -48,9 +49,9 @@ class CartView(SingleObjectMixin, View):
     def get_object(self, *args, **kwargs):
         self.request.session.set_expiry(0)  # 5 minutes
         cart_id = self.request.session.get("cart_id")
-        if cart_id == None:
+        if cart_id is None:
             cart = Cart()
-            cart.tax_percentage = 0.075
+            cart.tax_percentage = 0.075  # TODO: bunu üründen al.
             cart.save()
             cart_id = cart.id
             self.request.session["cart_id"] = cart_id
@@ -66,6 +67,7 @@ class CartView(SingleObjectMixin, View):
         delete_item = request.GET.get("delete", False)
         flash_message = ""
         item_added = False
+
         if item_id:
             item_instance = get_object_or_404(Variation, id=item_id)
             qty = request.GET.get("qty", 1)
@@ -74,7 +76,9 @@ class CartView(SingleObjectMixin, View):
                     delete_item = True
             except:
                 raise Http404
+
             cart_item, created = CartItem.objects.get_or_create(cart=cart, item=item_instance)
+
             if created:
                 flash_message = "Ürün sepetinize eklendi."
                 item_added = True
@@ -157,13 +161,13 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
             user_checkout.save()
             context["client_token"] = user_checkout.get_client_token()
             self.request.session["user_checkout_id"] = user_checkout.id
-        elif not self.request.user.is_authenticated() and user_check_id == None:
+        elif not self.request.user.is_authenticated() and user_check_id is None:
             context["login_form"] = AuthenticationForm()
             context["next_url"] = self.request.build_absolute_uri()
         else:
             pass
 
-        if user_check_id != None:
+        if user_check_id is not None:
             user_can_continue = True
             if not self.request.user.is_authenticated():  # GUEST USER
                 user_checkout_2 = UserCheckout.objects.get(id=user_check_id)
@@ -173,6 +177,9 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         context["order"] = self.get_order()
         context["user_can_continue"] = user_can_continue
         context["form"] = self.get_form()
+        context["paynet_js_url"] = paynet_js_url
+        context["paynet_publishable_key"] = settings.PAYNET_PUBLISHABLE_KEY
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -215,11 +222,11 @@ class CheckoutFinalView(CartOrderMixin, View):
         print("session_id : ", session_id)
         print("token_id : ", token_id)
         print("eğer bu değerler varsa o zaman transaction yapabiliriz...")
-        # r = requests.post('http://localhost:9090/validate', data=request.POST)
+
         if session_id is not None and token_id is not None:
             headers = {"Content-Type": "application/json; charset=UTF-8",
                        "Accept": "application/json; charset=UTF-8",
-                       "Authorization": "Basic sck_pcs_TipCY8rx00h*18iHedwnT7nKC7vkGUso"
+                       "Authorization": settings.PAYNET_SECRET_KEY
                        }
             data = {
                 'session_id': session_id,
@@ -227,16 +234,13 @@ class CheckoutFinalView(CartOrderMixin, View):
                 "reference_no": "1234",
                 "transaction_type": '1'
                 }
-            # post_data = json.dumps(data)  # Bunu gönderince invalid_request_error veriyor.
-            # auth = ('sck_pcs_TipCY8rx00h*18iHedwnT7nKC7vkGUso', '')
-            # result = requests.post("https://pts-api.paynet.com.tr/v1/transaction/charge",
-            #                        params=data, headers=headers)
-            # yukarıdakini gönderince de ivalid_request_error verdi
-            result = requests.post("https://pts-api.paynet.com.tr/v1/transaction/charge",
-                                   json=data, headers=headers)
-            # yukarıdaki bilinmeyen bir hata oldu mesajı veriyor.
-            #
+            # yukarıdaki token_id değerinden PAYNET bizim ne kadar charge ettiğimizi biliyor.
+            # // TODO: reference no oluşturmamız lazım, kendi sistemimize göre.
+
+            final_api_url = api_url + "/v1/transaction/charge"
+            result = requests.post(final_api_url, json=data, headers=headers)
             json_response = result.json()
+
             if 'is_succeed' in json_response:
                 # şimdilik sadece print edip gelen değerleri kontrol edelim
                 if json_response['is_succeed']:

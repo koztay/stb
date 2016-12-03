@@ -137,6 +137,14 @@ class Currency(models.Model):
 
 
 class Variation(models.Model):
+    """
+    Bu sınıfı vendorlar için silmeyeceğiz. Farklı her verdor için bir variation
+    yaratacağız. Dolayısıyla bir ürünü 5 farklı yerden alıyorsak 5 farklı variation
+    olacak. Ancak burada sitede hangi vendora ait variationı göstereceğimize karar
+    verecek bir algoritma olmalı. Add to cart yaptığımızda otomatik olarak algoritmaya
+    göre hangi varitaton eklenecekse onun eklenmesi lazım. Kullanıcı variation seçememeli,
+    ama ürün tipi seçebilmeli, yani size, color vb. gibi ürün tipi.
+    """
     active = models.BooleanField(default=True)
     product = models.ForeignKey(Product)
     title = models.CharField(max_length=120)
@@ -200,7 +208,7 @@ class CategoryManager(models.Manager):
 
     def categories_with_children(self):
         custom_list = [category.id for category in Category.objects.all() if category.get_children() is not None]
-        return Category.objects.filter(pk__in=custom_list)  # tekrar queryset'e döndürdük.
+        return Category.objects.filter(pk__in=custom_list)  # tekrar queryset döndürdük.
 
 
 # Product Category
