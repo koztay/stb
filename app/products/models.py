@@ -3,8 +3,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.safestring import mark_safe
 from uuslug import slugify
-
-
 from taggit.managers import TaggableManager
 from tinymce.models import HTMLField
 # from utils import thumbnail_location, THUMB_CHOICES
