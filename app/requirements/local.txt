@@ -1,2 +1,3 @@
 # Local development dependencies go here
 -r base.txt
+selenium==3.0.2

@@ -2,3 +2,5 @@
 #/ecommerce2/settings/*
 
 *.sqlite3
+Firefox.app
+geckodriver*

@@ -1,4 +1,3 @@
-import braintree
 from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
