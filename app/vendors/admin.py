@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import Tedarikci
+from .models import Vendor
 # Register your models here.
 
-admin.site.register(Tedarikci)
+
+class VendorAdmin(admin.ModelAdmin):
+    fields = ('unvan', 'adres', 'telefon', 'fax', 'email', 'vergi_dairesi', 'vergi_no',)
+    # product 'ı vendor eklerken görmek istemiyorum.
+
+
+admin.site.register(Vendor, VendorAdmin)

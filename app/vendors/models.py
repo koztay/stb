@@ -5,7 +5,7 @@ from products.models import Variation
 
 
 # Create your models here.
-class Tedarikci(models.Model):
+class Vendor(models.Model):
     unvan = models.CharField(max_length=120)
     adres = models.TextField(null=True, blank=True)
     telefon = models.CharField(max_length=120, null=True, blank=True)
