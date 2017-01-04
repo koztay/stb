@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 
 # from_valid metodunu override edersek aşağıdakiler gerekiyor
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.models import ContentType  # bu neden gerekli?
 from data_importer.models import FileHistory
 
 
@@ -42,7 +42,7 @@ def process_xls_row(importer_map, row, values):
             cell_value = ""
         return cell_value
 
-    def update_default_fields(update_product=None):
+    def update_default_fields(product_instance=None):
         for field in default_fields:
             cell = get_cell_for_field(field)
             print("field", field)
@@ -50,25 +50,32 @@ def process_xls_row(importer_map, row, values):
                 print("do nothing")
             elif field == "Ürün Fiyatı":
                 print("update price")
-                update_product.price = cell
+                print(type(cell))
+                print(cell)
+                float_price = float(cell)
+                print(float_price)
+                product_instance.price = float_price  # bu değer text olarak geliyor.
                 # product.save()
             elif field == "Ürün Tanımı":
                 print("update description")
-                update_product.description = cell
+                product_instance.description = cell
                 # product.save()
             elif field == "Ürün Kategorisi":
                 print("update category")
-                category = Category.objects.get(title=cell)
-                update_product.default = category
+                try:
+                    category = Category.objects.get(title=cell)
+                    product_instance.default = category
+                except:
+                    print('Category bulunamadı.')
             elif field == "Ürün Resmi":
                 print("update picture şimdilik birşey yapma")
 
             else:
                 print("this field will be updated as attribute value")
-        update_product.valueset = values
-        update_product.importer_map = importer_map
-        print("update_product.valueset", update_product.valueset)
-        update_product.save()  # burada gönderdiğim values yazılacak mı bakalım?
+        product_instance.valueset = values
+        product_instance.importer_map = importer_map
+        print("product_instance.valueset", product_instance.valueset)
+        product_instance.save()  # burada gönderdiğim values yazılacak mı bakalım?
 
     title = get_cell_for_field("Ürün Adı")
     product_type = ProductType.objects.get(name=importer_map.type)
@@ -113,6 +120,9 @@ class ProductXLSXImporterModel(XLSXImporter):
 # ...     class Meta:
 # ...         model = MyModel
 
+
+# Aşağıdaki tüm viewları comment 'ledim. Çünkü şimdilik gereksiz gibi duruyorlar...
+
 class ProductXMLImporterModel(GenericImporter):
     root = 'entry'
     # XML 'de root belirtiyoruz. Ona göre process ediyor sanırım. Kompleks
@@ -142,43 +152,53 @@ class XLSImporterCreateView(DataImporterForm):
         context['importer_type_form'] = importer_type_form
         return context
 
-    def form_valid(self, form, owner=None):
-        selected_import_map_id = self.request.POST.get('import_map')
-        self.importer.importer_type = selected_import_map_id
-
-        if self.request.user.id:
-            owner = self.request.user
-
-        if self.importer.Meta.model:
-            content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
-            file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
-                                                                owner=owner,
-                                                                content_type=content_type)
-
-        if not self.is_task or not hasattr(self.task, 'delay'):
-            self.task.run(importer=self.importer,
-                          source=file_history,
-                          owner=owner,
-                          send_email=False)
-            if self.task.parser.errors:
-                messages.error(self.request, self.task.parser.errors)
-            else:
-                messages.success(self.request,
-                                 self.extra_context.get('success_message', "File uploaded successfully"))
-        else:
-            self.task.delay(importer=self.importer, source=file_history, owner=owner)
-            if owner:
-                messages.info(
-                    self.request,
-                    "When importer was finished one email will send to: {0!s}".format(owner.email)
-                )
-            else:
-                messages.info(
-                    self.request,
-                    "Importer task in queue"
-                )
-
-        return super(DataImporterForm, self).form_valid(form)
+    # def form_valid(self, form, owner=None):
+    #     selected_import_map_id = self.request.POST.get('import_map')
+    #     self.importer.importer_type = selected_import_map_id
+    #
+    #     if self.request.user.id:
+    #         owner = self.request.user
+    #
+    #     if self.importer.Meta.model:
+    #         content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
+    #         file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
+    #                                                             owner=owner,
+    #                                                             content_type=content_type)
+    #
+    #     self.task.run(importer=self.importer,
+    #                   source=file_history,
+    #                   owner=owner,
+    #                   send_email=False)
+    #     if self.task.parser.errors:
+    #         messages.error(self.request, self.task.parser.errors)
+    #     else:
+    #         messages.success(self.request,
+    #                          self.extra_context.get('success_message', "File uploaded successfully"))
+    #
+    #     # if not self.is_task or not hasattr(self.task, 'delay'):
+    #     #     self.task.run(importer=self.importer,
+    #     #                   source=file_history,
+    #     #                   owner=owner,
+    #     #                   send_email=False)
+    #     #     if self.task.parser.errors:
+    #     #         messages.error(self.request, self.task.parser.errors)
+    #     #     else:
+    #     #         messages.success(self.request,
+    #     #                          self.extra_context.get('success_message', "File uploaded successfully"))
+    #     # else:
+    #     #     self.task.delay(importer=self.importer, source=file_history, owner=owner)
+    #     #     if owner:
+    #     #         messages.info(
+    #     #             self.request,
+    #     #             "When importer was finished one email will send to: {0!s}".format(owner.email)
+    #     #         )
+    #     #     else:
+    #     #         messages.info(
+    #     #             self.request,
+    #     #             "Importer task in queue"
+    #     #         )
+    #
+    #     return super(DataImporterForm, self).form_valid(form)
 
 
 class XLSXImporterCreateView(DataImporterForm):
@@ -194,43 +214,53 @@ class XLSXImporterCreateView(DataImporterForm):
         context['importer_type_form'] = importer_type_form
         return context
 
-    def form_valid(self, form, owner=None):
-        selected_import_map_id = self.request.POST.get('import_map')
-        self.importer.importer_type = selected_import_map_id
-
-        if self.request.user.id:
-            owner = self.request.user
-
-        if self.importer.Meta.model:
-            content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
-            file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
-                                                                owner=owner,
-                                                                content_type=content_type)
-
-        if not self.is_task or not hasattr(self.task, 'delay'):
-            self.task.run(importer=self.importer,
-                          source=file_history,
-                          owner=owner,
-                          send_email=False)
-            if self.task.parser.errors:
-                messages.error(self.request, self.task.parser.errors)
-            else:
-                messages.success(self.request,
-                                 self.extra_context.get('success_message', "File uploaded successfully"))
-        else:
-            self.task.delay(importer=self.importer, source=file_history, owner=owner)
-            if owner:
-                messages.info(
-                    self.request,
-                    "When importer was finished one email will send to: {0!s}".format(owner.email)
-                )
-            else:
-                messages.info(
-                    self.request,
-                    "Importer task in queue"
-                )
-
-        return super(DataImporterForm, self).form_valid(form)
+    # def form_valid(self, form, owner=None):
+    #     selected_import_map_id = self.request.POST.get('import_map')
+    #     self.importer.importer_type = selected_import_map_id
+    #
+    #     if self.request.user.id:
+    #         owner = self.request.user
+    #
+    #     if self.importer.Meta.model:
+    #         content_type = ContentType.objects.get_for_model(self.importer.Meta.model)
+    #         file_history, _ = FileHistory.objects.get_or_create(file_upload=form.cleaned_data['file_upload'],
+    #                                                             owner=owner,
+    #                                                             content_type=content_type)
+    #
+    #     self.task.run(importer=self.importer,
+    #                   source=file_history,
+    #                   owner=owner,
+    #                   send_email=False)
+    #     if self.task.parser.errors:
+    #         messages.error(self.request, self.task.parser.errors)
+    #     else:
+    #         messages.success(self.request,
+    #                          self.extra_context.get('success_message', "File uploaded successfully"))
+    #
+    #         # if not self.is_task or not hasattr(self.task, 'delay'):
+    #         #     self.task.run(importer=self.importer,
+    #         #                   source=file_history,
+    #         #                   owner=owner,
+    #         #                   send_email=False)
+    #         #     if self.task.parser.errors:
+    #         #         messages.error(self.request, self.task.parser.errors)
+    #         #     else:
+    #         #         messages.success(self.request,
+    #         #                          self.extra_context.get('success_message', "File uploaded successfully"))
+    #         # else:
+    #         #     self.task.delay(importer=self.importer, source=file_history, owner=owner)
+    #         #     if owner:
+    #         #         messages.info(
+    #         #             self.request,
+    #         #             "When importer was finished one email will send to: {0!s}".format(owner.email)
+    #         #         )
+    #         #     else:
+    #         #         messages.info(
+    #         #             self.request,
+    #         #             "Importer task in queue"
+    #         #         )
+    #
+    #     return super(DataImporterForm, self).form_valid(form)
 
 
 class XMLImporterCreateView(DataImporterForm):
