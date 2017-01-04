@@ -4,7 +4,7 @@ from .models import Vendor
 
 
 class VendorAdmin(admin.ModelAdmin):
-    fields = ('unvan', 'adres', 'telefon', 'fax', 'email', 'vergi_dairesi', 'vergi_no',)
+    fields = ('isim', 'unvan', 'adres', 'telefon', 'fax', 'email', 'vergi_dairesi', 'vergi_no',)
     # product 'ı vendor eklerken görmek istemiyorum.
 
 

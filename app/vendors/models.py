@@ -6,7 +6,7 @@ from products.models import Variation
 
 # Create your models here.
 class Vendor(models.Model):
-    isim = models.CharField(max_length=120)
+    isim = models.CharField(max_length=120, unique=True)
     unvan = models.CharField(max_length=120)
     adres = models.TextField(null=True, blank=True)
     telefon = models.CharField(max_length=120, null=True, blank=True)
