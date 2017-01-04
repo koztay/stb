@@ -157,7 +157,7 @@ class Variation(models.Model):
     # import ederken hangi producta bağlanacak belli değil o yüzden yukarıdaki foreignkey kısmında null ve blank True.
     title = models.CharField(max_length=120)
     price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
-    buying_curreny = models.ForeignKey(Currency)  # bunun defaultunu 'TL' nasıl seçeceğiz?
+    buying_curreny = models.ForeignKey(Currency, null=True, blank=True)  # null means TL
     buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
