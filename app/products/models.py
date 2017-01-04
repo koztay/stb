@@ -134,23 +134,35 @@ class Currency(models.Model):
         return self.name
 
 
+# delete this model and use product instead of this like commenting system. So, products belongs
+# products like comments. And if product has child products we use an algorithm which one to show.
 class Variation(models.Model):
+
     """
-    Bu sınıfı vendorlar için silmeyeceğiz. Farklı her verdor için bir variation
-    yaratacağız. Dolayısıyla bir ürünü 5 farklı yerden alıyorsak 5 farklı variation
-    olacak. Ancak burada sitede hangi vendora ait variationı göstereceğimize karar
+    Bu sınıfı vendorlar Penta, Arena vb. XML çekmek için için silmeyeceğiz. Farklı her vendor
+    için bir variation yaratacağız. Dolayısıyla bir ürünü 5 farklı yerden alıyorsak 5 farklı
+    variation olacak. Variation 'ları product 'lara bağlarken tıpkı bizim eski sistemdeki gibi
+    havuz benzeri bir yere toplamak ve sonrasında ürünü edit edip bir product'a bağlamak gerek.
+    Eğer ilişkili bir product yoksa da o zaman bu variantı product'a çevir demek gerek.
+    Tüm bunları yok edip variation modeli silsek, product altında product oluşsa comment sistemi gibi.
+    Daha mantıklı olmaz mı?
+    Belki bunu manage.py ile kendi komutumuzu oluşturarak yapabiliriz, ya da admin panelden belki olur.
+    Ancak burada sitede hangi vendora ait variationı göstereceğimize karar
     verecek bir algoritma olmalı. Add to cart yaptığımızda otomatik olarak algoritmaya
-    göre hangi varitaton eklenecekse onun eklenmesi lazım. Kullanıcı variation seçememeli,
+    göre hangi variation eklenecekse onun eklenmesi lazım. Kullanıcı variation seçememeli,
     ama ürün tipi seçebilmeli, yani size, color vb. gibi ürün tipi.
     """
-    active = models.BooleanField(default=True)
-    product = models.ForeignKey(Product)
+    active = models.BooleanField(default=False)  # import nedeniyle manual active edilecek.
+    product = models.ForeignKey(Product, null=True, blank=True)
+    # import ederken hangi producta bağlanacak belli değil o yüzden yukarıdaki foreignkey kısmında null ve blank True.
     title = models.CharField(max_length=120)
     price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
-    buying_curreny = models.ForeignKey(Currency)
-    buying_price = models.FloatField(default=1.0)
+    buying_curreny = models.ForeignKey(Currency)  # bunun defaultunu 'TL' nasıl seçeceğiz?
+    buying_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     inventory = models.IntegerField(null=True, blank=True)  # refer none == unlimited amount
+    product_barkod = models.CharField(max_length=100, null=True, blank=True)
+    istebu_product_no = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -203,8 +215,8 @@ class ProductImage(models.Model):
 
 
 class CategoryManager(models.Manager):
-
-    def categories_with_children(self):
+    # bunun altını neden çiziyor anlamadım?
+    def categories_with_children(self, *args, **kwargs):
         custom_list = [category.id for category in Category.objects.all() if category.get_children() is not None]
         return Category.objects.filter(pk__in=custom_list)  # tekrar queryset döndürdük.
 
@@ -271,7 +283,7 @@ class ProductFeatured(models.Model):
 
 
 class ProductType(models.Model):
-    name = models.CharField(max_length=120, default="Projeksiyon Cihazı")
+    name = models.CharField(max_length=120, default="Generic Product")
 
     def __str__(self):
         return self.name
