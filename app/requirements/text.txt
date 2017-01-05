@@ -1,3 +1,0 @@
-# Test dependencies go here.
-# buradaki bileşenleri local içerisine de alabiliriz.
--r base.txt

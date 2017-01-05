@@ -36,7 +36,10 @@ class Fields(models.Model):
     map = models.ForeignKey(ProductImportMap, blank=True, null=True)
     product_field = models.CharField(max_length=20, blank=True, null=True)  # bizdeki
     #  eşleşeceği field
-    xml_field = models.CharField(max_length=1200, blank=True, null=True)  # XML  ya da excel deki field
+    xml_field = models.CharField(max_length=1200, blank=True, null=True,
+                                 help_text='Buraya excel için index değerini yaz: 0,1,2 vb.'
+                                           'XML için ne yazılacak bakacağız.'
+                                 )  # XML  ya da excel deki field
 
     def __str__(self):
         return "%s - %s :" % (self.product_field, self.xml_field)

@@ -20,6 +20,8 @@ README.md
 #*.sh
 *.xls
 *.xlsx
+*.csv
+*.xml
 *.sqlite3
 *.sql
 *.json
@@ -28,6 +30,7 @@ README.md
 
 ;;directories to ignore
 .idea/
+app/importer/data
 bootstrap template/
 images/
 static_in_env
