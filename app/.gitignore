@@ -1,6 +1,0 @@
-/ecommerce2/old_settings.py
-#/ecommerce2/settings/*
-
-*.sqlite3
-Firefox.app
-geckodriver*

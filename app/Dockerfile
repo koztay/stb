@@ -1,9 +1,11 @@
-FROM python:3.5.2-onbuild
-#FROM python:3.5-onbuild
-#FROM python:3.5
-#ENV PYTHON UNBUFFERED 1
-#ADD . /app
-#WORKDIR "/app"
-#RUN pip install -r requirements.txt
+FROM python:3.5.2
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY . /usr/src/app
+
+COPY requirements.txt /usr/src/app/
+RUN pip install --no-cache-dir -r requirements.txt
+
 RUN SECRET_KEY=tmpkey python manage.py collectstatic --noinput
-#CMD gunicorn ecommerce2.wsgi:application -b 0.0.0.0:8000
+
