@@ -82,7 +82,7 @@ class ProductGenericImporter(GenericImporter):
         ignore_first_line = True
 
     # process row'u override edeceğiz. kendi importerımı kendim yazıyorum.
-    # TODO: Burada her Row 'u process ederken task olarak RabbitMQ queue 'ye ekle.
+    # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
         process_xls_row(importer_map=importer_map, row=row, values=values)

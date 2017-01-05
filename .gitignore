@@ -27,6 +27,7 @@ README.md
 *.json
 *.bz2
 *.gz
+*.env
 
 ;;directories to ignore
 .idea/

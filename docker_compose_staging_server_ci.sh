@@ -5,6 +5,7 @@
 #dvm use 1.10.3
 #docker -v
 eval $(docker-machine env istebu-core01)
+#eval $(docker-machine env istebu)
 #
 ## Delete all containers (server client versiyon uyuşmazlığı yüzünden çalışmıyor.)
 #docker rm -f $(docker ps -a -q)
@@ -18,7 +19,14 @@ docker-compose -f docker-compose-production.yml build
 docker-compose -f docker-compose-production.yml up -d
 
 # Make migrations
-#docker-compose -f docker-compose-production.yml run app /usr/local/bin/python manage.py makemigrations
+# docker-compose -f docker-compose-production.yml run app /usr/local/bin/python manage.py makemigrations
+# yukarıdaki metodu kullanırsan ilave olarak container yaratıyor kullanma bunun yerine docker-machine ile ssh yap.
+# sonrasında da aşağıdaki komutları ver
+# docker ps (django app 'in id sini al.)
+# docker exec it <django app id> bash (django app içerisinde bash komutu  verebiliriz artık.)
+# python manage.py makemigrations
+# python manage.py migrate.
+
 
 # Migrate
 #docker-compose -f docker-compose-production.yml run app /usr/local/bin/python manage.py migrate
