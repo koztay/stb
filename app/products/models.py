@@ -168,11 +168,15 @@ class Variation(models.Model):
     def __str__(self):
         return self.title
 
+    # eğer ürünü import ederek eklemişsek variation'ın hem price hem de sale price kısmı empty geliyordu.
+    # aşağıdaki revizyon ile düzelttim bakalım düzgün çalışacak mı?
     def get_price(self):
         if self.sale_price is not None:
             return self.sale_price
-        else:
+        elif self.price is not None:
             return self.price
+        else:
+            return self.product.price
 
     def get_html_price(self):
         if self.sale_price is not None:
