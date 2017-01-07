@@ -19,6 +19,7 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
+# bunu DEBUG 'a bağlamak doğru mu acaba?
 if settings.DEBUG:
     api_url = settings.PAYNET_TEST_API_URL
     paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
