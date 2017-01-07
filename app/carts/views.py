@@ -19,6 +19,23 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
+# bunu DEBUG 'a bağlamak doğru mu acaba?
+if settings.DEBUG:
+    print('CHECKOUT yapıyorum DEBUG=False')
+    api_url = settings.PAYNET_TEST_API_URL
+    paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
+else:
+    print('CHECKOUT yapıyorum DEBUG=True')
+    api_url = settings.PAYNET_PRODUCTION_API_URL
+    paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
+
+print('PAYNET_PUBLISHABLE_KEY: ', settings.PAYNET_PUBLISHABLE_KEY)
+print('PAYNET_SECRET_KEY: ', settings.PAYNET_SECRET_KEY)
+print('PAYNET_TEST_API_URL: ', settings.PAYNET_TEST_API_URL)
+print('PAYNET_TEST_PAYNETJS_URL: ', settings.PAYNET_TEST_PAYNETJS_URL)
+print('PAYNET_PRODUCTION_API_URL: ', settings.PAYNET_PRODUCTION_API_URL)
+print('PAYNET_PRODUCTION_PAYNETJS_URL: ', settings.PAYNET_PRODUCTION_PAYNETJS_URL)
+
 
 class ItemCountView(View):
     def get(self, request, *args, **kwargs):
@@ -137,16 +154,6 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
     template_name = "carts/checkout_view.html"
     form_class = GuestCheckoutForm
 
-    # bunu DEBUG 'a bağlamak doğru mu acaba?
-    if settings.DEBUG:
-        print('CHECKOUT yapıyorum DEBUG=False CheckoutView')
-        api_url = settings.PAYNET_TEST_API_URL
-        paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
-    else:
-        print('CHECKOUT yapıyorum DEBUG=True CheckoutView')
-        api_url = settings.PAYNET_PRODUCTION_API_URL
-        paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
-
     def get_object(self, *args, **kwargs):
         cart = self.get_cart()
         if cart is None:
@@ -180,7 +187,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         context["order"] = self.get_order()
         context["user_can_continue"] = user_can_continue
         context["form"] = self.get_form()
-        context["paynet_js_url"] = self.paynet_js_url
+        context["paynet_js_url"] = paynet_js_url
         context["paynet_publishable_key"] = settings.PAYNET_PUBLISHABLE_KEY
 
         return context
@@ -217,19 +224,6 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
 class CheckoutFinalView(CartOrderMixin, View):
 
-    # bunu DEBUG 'a bağlamak doğru mu acaba?
-    if settings.DEBUG:
-        print('CHECKOUT yapıyorum DEBUG=False CheckoutFinalView')
-        api_url = settings.PAYNET_TEST_API_URL
-        paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
-    else:
-        print('CHECKOUT yapıyorum DEBUG=True CheckoutFinalView')
-        api_url = settings.PAYNET_PRODUCTION_API_URL
-        paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
-
-    print("api_url", api_url)
-    print("js_url", paynet_js_url)
-
     def post(self, request, *args, **kwargs):
         order = self.get_order()
         order_total = order.order_total
@@ -251,12 +245,16 @@ class CheckoutFinalView(CartOrderMixin, View):
                 "reference_no": "1234",
                 "transaction_type": '1'
                 }
+
+            print('headers: ', headers)
+            print('data :', data)
             # yukarıdaki token_id değerinden PAYNET bizim ne kadar charge ettiğimizi biliyor.
             # // TODO: reference no oluşturmamız lazım, kendi sistemimize göre.
 
             final_api_url = api_url + "/v1/transaction/charge"
             result = requests.post(final_api_url, json=data, headers=headers)
             json_response = result.json()
+            print("json_response", json_response)
 
             if 'is_succeed' in json_response:
                 # şimdilik sadece print edip gelen değerleri kontrol edelim
@@ -269,7 +267,8 @@ class CheckoutFinalView(CartOrderMixin, View):
                     del request.session["order_id"]
                 else:
                     # messages.success(request, "There was a problem with your order.")
-                    messages.success(request, "%s" % (json_response['message']))
+                    # Unauthorized Credential hatası verdiği yer burası:
+                    messages.error(request, "%s" % (json_response['message']))
                     return redirect("checkout")
             else:
                 # messages.success(request, "There was a problem with your order.")
