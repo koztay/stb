@@ -58,8 +58,8 @@ def handle_paynet_checkout(sender, instance, *args, **kwargs):
 post_save.connect(handle_paynet_checkout, sender=UserCheckout)
 
 ADDRESS_TYPE = (
-    ('billing', 'Billing'),
-    ('shipping', 'Shipping'),
+    ('billing', 'Fatura Adresi'),
+    ('shipping', 'Sevk Adresi'),
 )
 
 

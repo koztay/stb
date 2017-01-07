@@ -19,14 +19,6 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
-# bunu DEBUG 'a bağlamak doğru mu acaba?
-if settings.DEBUG:
-    api_url = settings.PAYNET_TEST_API_URL
-    paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
-else:
-    api_url = settings.PAYNET_PRODUCTION_API_URL
-    paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
-
 
 class ItemCountView(View):
     def get(self, request, *args, **kwargs):
@@ -145,6 +137,16 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
     template_name = "carts/checkout_view.html"
     form_class = GuestCheckoutForm
 
+    # bunu DEBUG 'a bağlamak doğru mu acaba?
+    if settings.DEBUG:
+        print('CHECKOUT yapıyorum DEBUG=False CheckoutView')
+        api_url = settings.PAYNET_TEST_API_URL
+        paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
+    else:
+        print('CHECKOUT yapıyorum DEBUG=True CheckoutView')
+        api_url = settings.PAYNET_PRODUCTION_API_URL
+        paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
+
     def get_object(self, *args, **kwargs):
         cart = self.get_cart()
         if cart is None:
@@ -178,7 +180,7 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
         context["order"] = self.get_order()
         context["user_can_continue"] = user_can_continue
         context["form"] = self.get_form()
-        context["paynet_js_url"] = paynet_js_url
+        context["paynet_js_url"] = self.paynet_js_url
         context["paynet_publishable_key"] = settings.PAYNET_PUBLISHABLE_KEY
 
         return context
@@ -214,6 +216,20 @@ class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 
 
 class CheckoutFinalView(CartOrderMixin, View):
+
+    # bunu DEBUG 'a bağlamak doğru mu acaba?
+    if settings.DEBUG:
+        print('CHECKOUT yapıyorum DEBUG=False CheckoutFinalView')
+        api_url = settings.PAYNET_TEST_API_URL
+        paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
+    else:
+        print('CHECKOUT yapıyorum DEBUG=True CheckoutFinalView')
+        api_url = settings.PAYNET_PRODUCTION_API_URL
+        paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
+
+    print("api_url", api_url)
+    print("js_url", paynet_js_url)
+
     def post(self, request, *args, **kwargs):
         order = self.get_order()
         order_total = order.order_total

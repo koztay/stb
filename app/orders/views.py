@@ -60,10 +60,10 @@ class AddressSelectFormView(CartOrderMixin, FormView):
     def dispatch(self, *args, **kwargs):
         b_address, s_address = self.get_addresses()
         if b_address.count() == 0:
-            messages.success(self.request, "Please add a billing address before continuing")
+            messages.success(self.request, "Lütfen devam etmeden önce fatura adresi ekleyin! (Adres tipi olarak 'Fatura Adresi' seçin)")
             return redirect("user_address_create")
         elif s_address.count() == 0:
-            messages.success(self.request, "Please add a shipping address before continuing")
+            messages.success(self.request, "Lütfen devam etmeden önce sevk adresi ekleyin! (Adres tipi olarak 'Sevk Adresi' seçin)")
             return redirect("user_address_create")
         else:
             return super(AddressSelectFormView, self).dispatch(*args, **kwargs)

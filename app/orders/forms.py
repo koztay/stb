@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 
 from .models import UserAddress
 
@@ -25,11 +26,13 @@ class GuestCheckoutForm(forms.Form):
 
 class AddressForm(forms.Form):
     billing_address = forms.ModelChoiceField(
+        label='Fatura Adresi :',
         queryset=UserAddress.objects.filter(type="billing"),
         widget=forms.RadioSelect,
         empty_label=None
     )
     shipping_address = forms.ModelChoiceField(
+        label='Sevk Adresi :',
         queryset=UserAddress.objects.filter(type="shipping"),
         widget=forms.RadioSelect,
         empty_label=None,
@@ -47,3 +50,31 @@ class UserAddressForm(forms.ModelForm):
             'zipcode',
             'type'
         ]
+        labels = {
+            'street': _('Cadde, Sokak, Mahalle'),
+            'city': _('İl:'),
+            'state': _('İlçe:'),
+            'zipcode': _('Posta Kodu:'),
+            'type': _('Adres Tipi:')
+        }
+
+
+'''
+from django.utils.translation import ugettext_lazy as _
+
+class AuthorForm(ModelForm):
+    class Meta:
+        model = Author
+        fields = ('name', 'title', 'birth_date')
+        labels = {
+            'name': _('Writer'),
+        }
+        help_texts = {
+            'name': _('Some useful help text.'),
+        }
+        error_messages = {
+            'name': {
+                'max_length': _("This writer's name is too long."),
+            },
+        }
+'''
