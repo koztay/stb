@@ -56,6 +56,7 @@ class ProductImportMap(models.Model):
     name = models.CharField(max_length=120,
                             help_text='Import edeceğimiz dosyaya ilişkin isim')
     type = models.CharField(max_length=120, default='Generic Product',
+                            null=True, blank=True,
                             help_text='Product Type değeri yazılacak, Örneğin: "Generic Product"')
     root = models.CharField(max_length=120, blank=True, null=True,
                             help_text='Eğer XML dosyası ise o zaman ürünlerin çekileceği root tagi yaz.')

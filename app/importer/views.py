@@ -74,14 +74,18 @@ def process_xls_row(importer_map, row, values):
             elif cell_value_model is "Variation":
                 setattr(variation_instance, default_fields[field]["field"], cell)
             elif cell_value_model is "ProductType":
-                pass
+                product_type_instance, created = ProductType.objects.get_or_create(name=default_fields[field]["field"])
+                product_instance.product_type = product_type_instance
             else:
                 print("Hata! Böyle bir model dönmemeli")
         product_instance.save()
         variation_instance.save()
 
     title = get_cell_for_field("Ürün Adı")
-    product_type = ProductType.objects.get(name=importer_map.type)
+    try:
+        product_type = ProductType.objects.get(name=importer_map.type)
+    except:
+        product_type = None
     # aşağıda product yaratılınca aynı zamanda da save ediliyor ama bu sefer importer_map gönderilmiyor.
     product, product_created = Product.objects.get_or_create(title=title, product_type=product_type)
     # aşağıdaki kodları post_save_receiver_fpr_variation 'dan aldım. Import ederken post_save çalışmıyor:
