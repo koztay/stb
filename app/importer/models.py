@@ -11,10 +11,42 @@ from products.models import AttributeType, ProductType
 
 # Eğer ürüne ilişkin hiç attribute yoksa sadece default filed 'lar eşleştirilebiliyor.
 # Burada default field 'lar view 'da işlenerek product 'lar ile ya eşleşip update ediliyorlar,
-# ya da yeni product yaratılıyor. Ancak biz burada default field 'ları manula olarak yazmışız,
+# ya da yeni product yaratılıyor. Ancak biz burada default field 'ları manual olarak yazmışız,
 # dolayısıyla her yeni field eklendiğinde algoritma değişiyor, bunu da pythonic way ile çözmek lazım.
 # bu şekilde hiç mantıklı değil.
-default_fields = ("Ürün Adı", "Ürün Fiyatı", "Ürün Tanımı", "Ürün Kategorisi", "Ürün Resmi", "Desi", "KDV")
+
+# default_fields = ("Mağaza Kodu", "Kategori", "Alt Kategori", "Ürün Tipi", "Ürün Adı",
+#                   "KDV", "Para Birimi", "Alış Fiyatı", "Satış Fiyatı", "Barkod", "Desi", "Kargo")
+
+
+default_fields = {
+    "Mağaza Kodu": {"model": "Variation", "field": "istebu_product_no"},
+    "Kategori": {"model": "Product", "field": "categories"},
+    "Alt Kategori": {"model": "Product", "field": "categories"},
+    "Ürün Tipi": {"model": "ProductType", "field": "name"},
+    "Ürün Adı": {"model": "Product", "field": "title"},
+    "KDV": {"model": "Product", "field": "kdv"},
+    "Para Birimi": {"model": "Variation", "field": "buying_currency"},
+    "Alış Fiyatı": {"model": "Variation", "field": "buying_price"},
+    "Satış Fiyatı": {"model": "Variation", "field": "sale_price"},
+    "Barkod": {"model": "Variation", "field": "product_barkod"},
+    "Kargo": {},
+}
+
+'''
+Mağaza Kodu  => Variation       => istebu_product_no
+Kategori     => Product         => categories
+Alt Kategori => Product         => categories
+Ürün Tipi    => Product Type    => name
+Ürün Adı     => Product         => title
+KDV          => Product         => kdv
+Para Birimi  => Variation       => buying_currency
+Alış Fiyatı  => Variation       => buying_price (eğer TL değilse o zaman buying_price_tl hesaplayarak yaz.)
+Satış Fiyatı => Variation       => sale_price
+Barkod       => Variation       => product_barkod
+Desi         => Product         => desi
+Kargo        => ???             => ???
+'''
 
 
 # bu map 'e ait bir de file field olmalı aslında ki o file'a ilişkin map olsun bu.
@@ -36,10 +68,7 @@ class Fields(models.Model):
     map = models.ForeignKey(ProductImportMap, blank=True, null=True)
     product_field = models.CharField(max_length=20, blank=True, null=True)  # bizdeki
     #  eşleşeceği field
-    xml_field = models.CharField(max_length=1200, blank=True, null=True,
-                                 help_text='Buraya excel için index değerini yaz: 0,1,2 vb.'
-                                           'XML için ne yazılacak bakacağız.'
-                                 )  # XML  ya da excel deki field
+    xml_field = models.CharField(max_length=1200, blank=True, null=True)  # XML  ya da excel deki field
 
     def __str__(self):
         return "%s - %s :" % (self.product_field, self.xml_field)
@@ -48,12 +77,20 @@ class Fields(models.Model):
         return "%s" % self.xml_field
 
 
+# Bu fonksiyon mapteki product_tipine göre fieldları oluşturuyor. Ancak tek excelde birçok produc tipinden ürün
+# gireceksek o zaman generic import oluşturabiliriz. Sonuçta default olarak product tipi oluşacak ve yukarıdaki
+# default fieldlar dönecek. Ürünleri process_row 'da import ederken de tip kategori vb. alanlar set edilecek.
+# Ancak product tipi oluşturmuşsak ve feature değerleri belirtmişsek o zaman specific tipte ürün girmeye de imkan
+# verecek. Çünkü o zaman da feature 'lara göre fieldları döndürüyor ve eşleştirmeye imkan tanıyor.
 def import_map_post_save_receiver(sender, instance, *args, **kwargs):
-    print("map_post_save_receiver çalıştı:", sender)  # sender ile instance farklı birbirinden
-    print("instance:", instance)
+    # print("map_post_save_receiver çalıştı:", sender)  # sender ile instance farklı birbirinden
+    # print("instance:", instance)
+    # yukarıda tanımlanan default fieldları oluşturuyoruz:
     for field in default_fields:
         Fields.objects.get_or_create(map=instance, product_field=field)
-
+    # eğer specific bir ürün grubu import edeceksek ve aynı zamanda da featureları da import edeceksek o zaman
+    # map oluştururken generic değil de Projeksiyon Cihazı, Perde vb. gibi özel bir tip oluşturuyoruz. O zaman
+    # o ürn tipine ilişkin özellik listesini excel ile eşleştirebilelim diye aşağıdaki kod çalışıyor.
     try:
         product_type = ProductType.objects.get(name=instance.type)
         product_features = AttributeType.objects.filter(product_type=product_type)

@@ -56,6 +56,27 @@ class ProductManager(models.Manager):
         return qs
 
 
+# default_fields = ("Mağaza Kodu", "Kategori", "Alt Kategori", "Ürün Tipi", "Ürün Adı",
+#                   "KDV", "Para Birimi", "Alış Fiyatı", "Satış Fiyatı", "Barkod", "Desi", "Kargo")
+
+
+
+'''
+Mağaza Kodu  => Variation       => istebu_product_no
+Kategori     => Product         => categories
+Alt Kategori => Product         => categories
+Ürün Tipi    => Prfoduct Type   => name
+Ürün Adı     => Product         => title
+KDV          => Product         => kdv
+Para Birimi  => Variation       => buying_currency
+Alış Fiyatı  => Variation       => buying_price (eğer TL değilse o zaman buying_price_tl hesaplayarak yaz.)
+Satış Fiyatı => Variation       => sale_price
+Barkod       => Variation       => product_barkod
+Desi         => Product         => desi
+Kargo        => ???             => ???
+'''
+
+
 class Product(models.Model):
     title = models.CharField(max_length=120)
     # description = models.TextField(blank=True, null=True)
@@ -65,7 +86,7 @@ class Product(models.Model):
     categories = models.ManyToManyField('Category', blank=True)
     product_type = models.ForeignKey('ProductType', null=True, blank=True)
     # attribute_type = models.ManyToManyField('AttributeType')
-    default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
+    # default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True) buna gerek yok.
     slug = models.SlugField(blank=True, unique=True)  # unique=True)
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)

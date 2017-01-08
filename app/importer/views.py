@@ -8,7 +8,7 @@ from data_importer.models import FileHistory
 
 from data_importer.views import DataImporterForm
 from data_importer.importers import XMLImporter, GenericImporter  # ileride XMLImporterı da kaldırabilirsek süper olur.
-from products.models import Product, ProductType, AttributeType, AttributeValue, Category, ProductImage
+from products.models import Product, ProductType, Variation, AttributeType, AttributeValue, Category, ProductImage
 from products.mixins import StaffRequiredMixin
 
 from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueForm
@@ -64,12 +64,38 @@ def process_xls_row(importer_map, row, values):
         print("product_instance.valueset", product_instance.valueset)
         product_instance.save()  # burada gönderdiğim values yazılacak mı bakalım?
 
+    # burada generic foreign_key kullanılamaz mı?
+    def update_default_fields_new(product_instance=None, variation_instance=None):
+        for field in default_fields:
+            cell = get_cell_for_field(field)
+            cell_value_model = default_fields[field]["model"]
+            if cell_value_model is "Product":
+                setattr(product_instance, default_fields[field]["field"], cell)
+            elif cell_value_model is "Variation":
+                setattr(variation_instance, default_fields[field]["field"], cell)
+            elif cell_value_model is "ProductType":
+                pass
+            else:
+                print("Hata! Böyle bir model dönmemeli")
+        product_instance.save()
+        variation_instance.save()
+
     title = get_cell_for_field("Ürün Adı")
     product_type = ProductType.objects.get(name=importer_map.type)
     # aşağıda product yaratılınca aynı zamanda da save ediliyor ama bu sefer importer_map gönderilmiyor.
     product, product_created = Product.objects.get_or_create(title=title, product_type=product_type)
+    # aşağıdaki kodları post_save_receiver_fpr_variation 'dan aldım. Import ederken post_save çalışmıyor:
+    variations = product.variation_set.all()
+    if variations.count() == 0:
+        new_var = Variation()
+        new_var.product = product
+        new_var.title = "Default"
+        new_var.save()
+    else:
+        new_var = variations[0]
+
     # aşağıda ise importer_map gönderiliyor.
-    update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
+    update_default_fields_new(product, new_var)  # her halükarda yaratılacak o yüzden önemsiz...
 
 
 class ImporterHomePageView(StaffRequiredMixin, TemplateView):

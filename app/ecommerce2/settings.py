@@ -182,8 +182,8 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'pickle'  # pickle yapmazsak importer çalışmıyor.
-CELERY_RESULT_SERIALIZER = 'pickle'  # pickle yapmazsak importer çalışmıyor.
+CELERY_TASK_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
+CELERY_RESULT_SERIALIZER = 'json'  # pickle yapmazsak importer çalışmıyor, json yapmazsak da kur çekme çalışmıyor.
 CELERY_TIMEZONE = TIME_ZONE
 
 
