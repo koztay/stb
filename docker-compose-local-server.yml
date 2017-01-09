@@ -1,0 +1,76 @@
+version: '2'
+
+services:
+
+  postgres:
+    image: postgres:9.4
+    restart: always
+    env_file:
+      - .env_dev
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+
+  app:
+    build: ./app/
+    image: koztay/app
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env_dev
+    expose:
+      - "8000"
+    volumes:
+      - ./app:/usr/src/app
+      - static-data:/usr/src/static_in_env/static_root/
+      - media-data:/usr/src/static_in_env/media_root/
+    command: /usr/local/bin/gunicorn ecommerce2.wsgi:application -w 2 -b :8000
+
+  celery_worker:
+    image: koztay/app
+    restart: always
+    env_file:
+      - .env_dev
+    depends_on:
+      - app
+      - postgres
+      - redis
+    command: celery -A ecommerce2 worker -l info # delete  -l info parameters on production
+
+  celery_beat:
+    image: koztay/app
+    restart: always
+    env_file:
+      - .env_dev
+    depends_on:
+      - app
+      - postgres
+      - redis
+    command: celery -A ecommerce2 beat -l info -S django # delete  -l info parameters on production
+
+  web:
+    build: ./web
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - static-data:/usr/src/static_in_env/static_root/
+      - media-data:/usr/src/static_in_env/media_root/
+    volumes_from:
+      - app
+
+  redis:
+    build: ./redis
+    restart: always
+#    ports:
+#      - "6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+volumes:
+  postgres-data:
+    driver: local
+  static-data:
+    driver: local
+  media-data:
+    driver: local

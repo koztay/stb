@@ -67,7 +67,7 @@ class TestModelXLSImporter(TestCase):
 
 
 class MercadoXLS(models.Model):
-    item = models.CharField(max_length=50)
+    item = models.CharField(max_length=500)
     qtde = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):

@@ -35,6 +35,8 @@ services:
       - app
       - postgres
       - redis
+    links:  # links koymayınca hiç eklemedi taskları... Ama yine çıkartıp da deneyeceğim.
+      - app
     command: celery -A ecommerce2 worker -l info # delete  -l info parameters on production
 
   celery_beat:

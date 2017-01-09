@@ -20,6 +20,12 @@ Or use automatic routing for certain task types.
 """
 
 
+# This task has been added for testing purposes.
+@task(name="sum_two_numbers")
+def add(x, y):
+    return x + y
+
+
 @task(name="Process XLS Row")
 def process_xls_row(importer_map_pk, row, values):
     """

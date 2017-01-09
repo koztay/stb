@@ -68,7 +68,7 @@ class Product(models.Model):
     default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     # yukarıdaki default field 'ı related products için gerekli. Algoritmayı incelemedim ama daha
     # iyi bir yol bulunabilir. // TODO: Bu field 'a gerek olmayacak şekilde düzenleme yap.
-    slug = models.SlugField(blank=True, unique=True)  # unique=True)
+    slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
     tags = TaggableManager()
@@ -121,10 +121,10 @@ class Product(models.Model):
         return number_of_views
 
     # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
-    def save(self, *args, **kwargs):
-        super(Product, self).save(*args, **kwargs)
-        self.valueset = None
-        self.importer_map = None
+    # def save(self, *args, **kwargs):
+    #     super(Product, self).save(*args, **kwargs)
+    #     self.valueset = None
+    #     self.importer_map = None
 
 
 class Currency(models.Model):
@@ -232,7 +232,7 @@ class CategoryManager(models.Manager):
 class Category(models.Model):
     parent = models.ForeignKey("self", null=True, blank=True)
     title = models.CharField(max_length=120, unique=True)
-    slug = models.SlugField(blank=True, unique=True)
+    slug = models.SlugField(blank=True, unique=True, max_length=1000)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
     show_on_homepage = models.BooleanField(default=True)

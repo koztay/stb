@@ -15,8 +15,12 @@ from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueFor
 from .models import ProductImportMap, default_fields
 from .tasks import process_xls_row
 
+# https://www.youtube.com/watch?v=z0Gxxjbos4k linkinde anlatmış nasıl yapıldığını
+from pycharmdebug import pydevd
+
 
 def process_xls_row_no_task(importer_map_pk, row, values):
+    # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
     importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 
     def get_cell_for_field(field_name):
@@ -41,7 +45,11 @@ def process_xls_row_no_task(importer_map_pk, row, values):
             if cell_value_model is "Product":
                 print("attribute: ", default_fields[main_field]["field"])
                 print("value: ", cell)
-                setattr(product_instance, default_fields[main_field]["field"], cell)
+                attribute = default_fields[main_field]["field"]
+                if attribute is 'categories':
+                    pass
+                else:
+                    setattr(product_instance, attribute, cell)
 
             elif cell_value_model is "Variation":
                 print("attribute: ", default_fields[main_field]["field"])
@@ -61,13 +69,14 @@ def process_xls_row_no_task(importer_map_pk, row, values):
                 try:
                     currency_instance = Currency.objects.get(name=cell)
                 except:
-                    return "Currency bulunamadı, %s eklenmedi!" % product.title
+                    print("Currency bulunamadı, %s eklenmedi!" % product.title)
+                    pass
                 variation_instance.buying_currency = currency_instance
                 print("variation_instance.buying_currency", variation_instance.buying_currency)
 
             else:
-                print("Hata! Böyle bir model dönmemeli")
-        product_instance.price = variation_instance.sale_price*1.05  # ürünlerin fiyatı boş geliyor o nedenle...
+                print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
+        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
         product_instance.save()
         variation_instance.save()
 
@@ -93,8 +102,8 @@ class ProductGenericImporter(GenericImporter):
     # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
-        # process_xls_row_no_task(importer_map_pk=importer_map.pk, row=row, values=values)
-        process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        process_xls_row_no_task(importer_map.pk, row, values)
+        # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
 class GenericImporterCreateView(DataImporterForm):
@@ -150,3 +159,4 @@ class GenericImporterCreateView(DataImporterForm):
                 )
 
         return super(DataImporterForm, self).form_valid(form)
+
