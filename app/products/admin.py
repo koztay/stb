@@ -121,7 +121,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class CurrencyAdmin(admin.ModelAdmin):
     list_display = ('name', 'value', 'updated')
-    readonly_fields = ('name', 'value', 'updated')
+    readonly_fields = ('value', 'updated')
 
 
 admin.site.register(Product, ProductAdmin)

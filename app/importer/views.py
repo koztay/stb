@@ -8,98 +8,76 @@ from data_importer.models import FileHistory
 
 from data_importer.views import DataImporterForm
 from data_importer.importers import XMLImporter, GenericImporter  # ileride XMLImporterı da kaldırabilirsek süper olur.
-from products.models import Product, ProductType, Variation, AttributeType, AttributeValue, Category, ProductImage
+from products.models import Product, ProductType, Currency, Variation, AttributeType, AttributeValue, Category, ProductImage
 from products.mixins import StaffRequiredMixin
 
 from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueForm
 from .models import ProductImportMap, default_fields
+from .tasks import process_xls_row
 
 
-def process_xls_row(importer_map, row, values):
-    print(row, values)
-    # print("I am printing importer_map_type_id: ", self.importer_type)
-
-    # 1-) get product type from row (there must be such column in excel sheet)
-    importer_map = importer_map
-    print(importer_map.type)
+def process_xls_row_no_task(importer_map_pk, row, values):
+    importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 
     def get_cell_for_field(field_name):
         try:
             field_object = importer_map.fields_set.get(product_field=field_name)
             cell_value_index = field_object.get_xml_field()  # Adına get_xml_filed demişiz ama xls, xlsx için de aynısı.
+
             cell_value = values[int(cell_value_index)]  # field eşleştirmeleri 0,1,2 gibi indeks değeri ile yapıldığı
             # için sorun yok. Şimdilik indeks yerine hücreye ait başlık ile eşleştirme yapmayı çözemedim.
         except:
             cell_value = ""
         return cell_value
 
-    # Eğer ürün önceden elkenmişse mevcut filed'ları update etmek için kullanılan fonksiyon.
     def update_default_fields(product_instance=None):
-        for field in default_fields:
-            cell = get_cell_for_field(field)
-            print("field", field)
-            if field == "Ürün Adı":
-                print("Ürün Adı:", cell)
-            elif field == "Ürün Fiyatı":
-                print("update price")
-                print("Ürün Fiyatı:", cell)
-                product_instance.price = cell  # bu değer text olarak geliyor.
-            elif field == "Ürün Tanımı":
-                print("Ürün Tanımı:", cell)
-                product_instance.description = cell
-            elif field == "Ürün Kategorisi":
-                print("Ürün Kategorisi:", cell)
-                try:
-                    category = Category.objects.get(title=cell)
-                    product_instance.default = category
-                except:
-                    print('Category bulunamadı.')
-            elif field == "Ürün Resmi":
-                print("Ürün Resmi:", cell)
+        variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
+        for main_field in default_fields:
+            cell = get_cell_for_field(main_field)
+            print("cell_value :", cell)
+            cell_value_model = default_fields[main_field]["model"]
+            print("cell_value_model: ", cell_value_model)
 
-            else:
-                print("this field will be updated as attribute value")
-        product_instance.valueset = values
-        product_instance.importer_map = importer_map
-        print("product_instance.valueset", product_instance.valueset)
-        product_instance.save()  # burada gönderdiğim values yazılacak mı bakalım?
-
-    # burada generic foreign_key kullanılamaz mı?
-    def update_default_fields_new(product_instance=None, variation_instance=None):
-        for field in default_fields:
-            cell = get_cell_for_field(field)
-            cell_value_model = default_fields[field]["model"]
             if cell_value_model is "Product":
-                setattr(product_instance, default_fields[field]["field"], cell)
+                print("attribute: ", default_fields[main_field]["field"])
+                print("value: ", cell)
+                setattr(product_instance, default_fields[main_field]["field"], cell)
+
             elif cell_value_model is "Variation":
-                setattr(variation_instance, default_fields[field]["field"], cell)
+                print("attribute: ", default_fields[main_field]["field"])
+                print("value: ", cell)
+                setattr(variation_instance, default_fields[main_field]["field"], cell)
+
             elif cell_value_model is "ProductType":
-                product_type_instance, created = ProductType.objects.get_or_create(name=default_fields[field]["field"])
+                # product_type_name = default_fields[main_field]["field"]
+                # print("product_type_name :", product_type_name)
+                product_type_instance, created = ProductType.objects.get_or_create(name=cell)
                 product_instance.product_type = product_type_instance
+
+            elif cell_value_model is "Currency":
+                print("attribute: ", default_fields[main_field]["field"])
+                print("value: ", cell)
+                # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
+                try:
+                    currency_instance = Currency.objects.get(name=cell)
+                except:
+                    return "Currency bulunamadı, %s eklenmedi!" % product.title
+                variation_instance.buying_currency = currency_instance
+                print("variation_instance.buying_currency", variation_instance.buying_currency)
+
             else:
                 print("Hata! Böyle bir model dönmemeli")
+        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
         product_instance.save()
         variation_instance.save()
 
     title = get_cell_for_field("Ürün Adı")
-    try:
-        product_type = ProductType.objects.get(name=importer_map.type)
-    except:
-        product_type = None
-    # aşağıda product yaratılınca aynı zamanda da save ediliyor ama bu sefer importer_map gönderilmiyor.
-    product, product_created = Product.objects.get_or_create(title=title, product_type=product_type)
-    # aşağıdaki kodları post_save_receiver_fpr_variation 'dan aldım. Import ederken post_save çalışmıyor:
-    variations = product.variation_set.all()
-    if variations.count() == 0:
-        new_var = Variation()
-        new_var.product = product
-        new_var.title = "Default"
-        new_var.save()
-    else:
-        new_var = variations[0]
+    # product_type = ProductType.objects.get(name=importer_map.type)
+    product, product_created = Product.objects.get_or_create(title=title)
 
-    # aşağıda ise importer_map gönderiliyor.
-    update_default_fields_new(product, new_var)  # her halükarda yaratılacak o yüzden önemsiz...
+    update_default_fields(product_instance=product)
+    # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
+    return "%s update edildi." % product.title
 
 
 class ImporterHomePageView(StaffRequiredMixin, TemplateView):
@@ -115,7 +93,8 @@ class ProductGenericImporter(GenericImporter):
     # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
-        process_xls_row(importer_map=importer_map, row=row, values=values)
+        process_xls_row_no_task(importer_map_pk=importer_map.pk, row=row, values=values)
+        # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
 class GenericImporterCreateView(DataImporterForm):
