@@ -21,7 +21,11 @@ Or use automatic routing for certain task types.
 
 
 @task(name="Process XLS Row")
-def process_xls_row_no_task(importer_map_pk, row, values):
+def process_xls_row(importer_map_pk, row, values):
+    """
+    Please do not forget to create worker with the folloeşng command, in command line:
+    celery -A ecommerce2 worker -l info
+    """
     importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 
     def get_cell_for_field(field_name):

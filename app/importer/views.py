@@ -93,8 +93,8 @@ class ProductGenericImporter(GenericImporter):
     # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
-        process_xls_row_no_task(importer_map_pk=importer_map.pk, row=row, values=values)
-        # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        # process_xls_row_no_task(importer_map_pk=importer_map.pk, row=row, values=values)
+        process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
 class GenericImporterCreateView(DataImporterForm):
