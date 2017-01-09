@@ -67,7 +67,7 @@ def process_xls_row_no_task(importer_map_pk, row, values):
 
             else:
                 print("Hata! Böyle bir model dönmemeli")
-        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
+        product_instance.price = variation_instance.sale_price*1.05  # ürünlerin fiyatı boş geliyor o nedenle...
         product_instance.save()
         variation_instance.save()
 

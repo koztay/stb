@@ -80,7 +80,7 @@ class ProductImageAdmin(admin.ModelAdmin):
 #     model = ProductImage
 #     inlines = [ThumbnailInline]
 
-
+# // TODO: Product Search ekle.
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'price']
     prepopulated_fields = {'slug': ('title',)}

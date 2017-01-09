@@ -11,14 +11,8 @@ from products.models import AttributeType, ProductType
 
 # Eğer ürüne ilişkin hiç attribute yoksa sadece default filed 'lar eşleştirilebiliyor.
 # Burada default field 'lar view 'da işlenerek product 'lar ile ya eşleşip update ediliyorlar,
-# ya da yeni product yaratılıyor. Ancak biz burada default field 'ları manual olarak yazmışız,
-# dolayısıyla her yeni field eklendiğinde algoritma değişiyor, bunu da pythonic way ile çözmek lazım.
-# bu şekilde hiç mantıklı değil.
-
-# default_fields = ("Mağaza Kodu", "Kategori", "Alt Kategori", "Ürün Tipi", "Ürün Adı",
-#                   "KDV", "Para Birimi", "Alış Fiyatı", "Satış Fiyatı", "Barkod", "Desi", "Kargo")
-
-
+# ya da yeni product yaratılıyor. Aşağıdaki mantıkta ileride istediğimiz kadar field ekleyip çıkartmamız mümkün.
+# Ve ekleme çıkarma nericesinde de  kodumuzda değişiklik yapmamız muhtemelen (eğer field foreign key değilse) gerekmez.
 default_fields = {
     "Mağaza Kodu": {"model": "Variation", "field": "istebu_product_no"},
     "Kategori": {"model": "Product", "field": "categories"},

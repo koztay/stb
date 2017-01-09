@@ -4,6 +4,21 @@ from celery.decorators import task
 from .models import default_fields, ProductImportMap
 from products.models import Product, Variation, ProductType
 
+# TODO: Currency ve Product Type, Barkod vb. field ları için Validation ekle.
+
+# TODO: http://stackoverflow.com/questions/11618390/celery-having-sequential-tasks-rather-than-concurrent
+"""
+Single worker consuming from a queue with concurrency equals to one ensures that the tasks will be processed in
+sequential order. In other words you can create a special queue and run only one celery worker with concurrency
+equals to one:
+
+celery -A tasks worker -Q amazon_queue -c 1
+And submit tasks to that queue:
+
+tasks.add.apply_async(args=[1,2], kwargs={}, queue='amazon_queue')
+Or use automatic routing for certain task types.
+"""
+
 
 @task(name="Process XLS Row")
 def process_xls_row(importer_map_pk, row, values):
