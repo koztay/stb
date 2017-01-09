@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from celery.decorators import task
 
 from .models import default_fields, ProductImportMap
-from products.models import Product, Variation, ProductType
+from products.models import Product, ProductType, Currency
 
 # TODO: Currency ve Product Type, Barkod vb. field ları için Validation ekle.
 
@@ -21,7 +21,7 @@ Or use automatic routing for certain task types.
 
 
 @task(name="Process XLS Row")
-def process_xls_row(importer_map_pk, row, values):
+def process_xls_row_no_task(importer_map_pk, row, values):
     importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 
     def get_cell_for_field(field_name):
@@ -36,29 +36,43 @@ def process_xls_row(importer_map_pk, row, values):
         return cell_value
 
     def update_default_fields(product_instance=None):
-        variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılmış olmalı.
+        variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
         for main_field in default_fields:
             cell = get_cell_for_field(main_field)
             print("cell_value :", cell)
             cell_value_model = default_fields[main_field]["model"]
             print("cell_value_model: ", cell_value_model)
+
             if cell_value_model is "Product":
                 print("attribute: ", default_fields[main_field]["field"])
                 print("value: ", cell)
                 setattr(product_instance, default_fields[main_field]["field"], cell)
+
             elif cell_value_model is "Variation":
                 print("attribute: ", default_fields[main_field]["field"])
                 print("value: ", cell)
                 setattr(variation_instance, default_fields[main_field]["field"], cell)
+
             elif cell_value_model is "ProductType":
                 # product_type_name = default_fields[main_field]["field"]
                 # print("product_type_name :", product_type_name)
-
                 product_type_instance, created = ProductType.objects.get_or_create(name=cell)
                 product_instance.product_type = product_type_instance
+
+            elif cell_value_model is "Currency":
+                print("attribute: ", default_fields[main_field]["field"])
+                print("value: ", cell)
+                # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
+                try:
+                    currency_instance = Currency.objects.get(name=cell)
+                except:
+                    return "Currency bulunamadı, %s eklenmedi!" % product.title
+                variation_instance.buying_currency = currency_instance
+                print("variation_instance.buying_currency", variation_instance.buying_currency)
+
             else:
                 print("Hata! Böyle bir model dönmemeli")
-        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
+        product_instance.price = variation_instance.sale_price*1.05  # ürünlerin fiyatı boş geliyor o nedenle...
         product_instance.save()
         variation_instance.save()
 
@@ -68,6 +82,7 @@ def process_xls_row(importer_map_pk, row, values):
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
-    return "% update edildi." % product.title
+    return "%s update edildi." % product.title
+
 
 
