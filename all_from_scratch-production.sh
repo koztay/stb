@@ -9,11 +9,11 @@
 # Use docker 1.10.3
 # source satırını çalıştırmayınca dvm satırı çalışsa bile docker -v
 # doğru versiyon göstermiyor...
-source ~/.bashrc
-dvm use 1.10.3
-docker -v
+#source ~/.bashrc
+#dvm use 1.10.3
+#docker -v
 
-eval $(docker-machine env istebu-core01)
+eval $(docker-machine env istebu-ubuntu01)
 # eval $(docker-machine env istebu)
 # Stop and remove all containers
 docker stop $(docker ps -a -q)

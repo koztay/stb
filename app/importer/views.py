@@ -16,10 +16,14 @@ from .models import ProductImportMap, default_fields
 from .tasks import process_xls_row
 
 # https://www.youtube.com/watch?v=z0Gxxjbos4k linkinde anlatmış nasıl yapıldığını
-from pycharmdebug import pydevd
+# from pycharmdebug import pydevd
 
 
 def process_xls_row_no_task(importer_map_pk, row, values):
+    """
+    Please do not forget to create worker with the folloeşng command, in command line:
+    celery -A ecommerce2 worker -l info
+    """
     # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
     importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 

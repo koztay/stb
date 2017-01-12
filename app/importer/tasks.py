@@ -19,6 +19,15 @@ tasks.add.apply_async(args=[1,2], kwargs={}, queue='amazon_queue')
 Or use automatic routing for certain task types.
 """
 
+# Udemy Complete Object Bootcamp" - "Jose PORTILLA"
+# TODO: Aşağıdaki fonksiyonda "list comprehension" kullanılabilir mi? - LECTURE 37
+# TODO: Aşağıdaki fonksiyonda "lambda expressions" kullanılabilir mi? get_cell_for_field() 'da kesin kullanılır. - L42
+# TODO: Aşağıdaki fonksiyonda "map", "reduce", "filter", zip kullanılabilir mi? lambda ile birlikte - L71,72,73,74
+
+# ins = [x for x in instance_list if type(x).__name__=="int"]
+# instance = lambda modelstring, instancelist: [x for x in instance_list if type(x).__name__==modelstring][0]
+# yukarıdaki iki fonksiyon da çalıştı.
+
 
 # This task has been added for testing purposes.
 @task(name="sum_two_numbers")
@@ -27,11 +36,13 @@ def add(x, y):
 
 
 @task(name="Process XLS Row")
-def process_xls_row(importer_map_pk, row, values):
+def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak viewws 'da çalıştığı görüldü.
+    # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
     Please do not forget to create worker with the folloeşng command, in command line:
     celery -A ecommerce2 worker -l info
     """
+    # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
     importer_map = ProductImportMap.objects.get(pk=importer_map_pk)
 
     def get_cell_for_field(field_name):
@@ -56,7 +67,11 @@ def process_xls_row(importer_map_pk, row, values):
             if cell_value_model is "Product":
                 print("attribute: ", default_fields[main_field]["field"])
                 print("value: ", cell)
-                setattr(product_instance, default_fields[main_field]["field"], cell)
+                attribute = default_fields[main_field]["field"]
+                if attribute is 'categories':
+                    pass
+                else:
+                    setattr(product_instance, attribute, cell)
 
             elif cell_value_model is "Variation":
                 print("attribute: ", default_fields[main_field]["field"])
@@ -76,13 +91,14 @@ def process_xls_row(importer_map_pk, row, values):
                 try:
                     currency_instance = Currency.objects.get(name=cell)
                 except:
-                    return "Currency bulunamadı, %s eklenmedi!" % product.title
+                    print("Currency bulunamadı, %s eklenmedi!" % product.title)
+                    pass
                 variation_instance.buying_currency = currency_instance
                 print("variation_instance.buying_currency", variation_instance.buying_currency)
 
             else:
-                print("Hata! Böyle bir model dönmemeli")
-        product_instance.price = variation_instance.sale_price*1.05  # ürünlerin fiyatı boş geliyor o nedenle...
+                print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
+        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
         product_instance.save()
         variation_instance.save()
 
