@@ -9,3 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN SECRET_KEY=tmpkey python manage.py collectstatic --noinput
 
+
