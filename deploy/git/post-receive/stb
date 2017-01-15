@@ -7,7 +7,7 @@ REPO_NAME="stb"
 export GIT_WORK_TREE="/var/git/${REPO_NAME}"
 git checkout -f
 
-#scp -r ../../../. "$kemal@$192:/var/git/stb"
+#scp -r ../../../. "kemal@192.168.1.150:/var/git/stb"
 #TAG="$(git log --pretty=format:'%h' -n 1)"
 #FULL_COMMIT_TAG="${REPO_NAME}:${TAG}"
 #FULL_LATEST_TAG="${REPO_NAME}:latest"
@@ -18,7 +18,7 @@ git checkout -f
 docker-compose -f "${GIT_WORK_TREE}/docker-compose-production.yml" build
 # Get the Docker ID of the last built image.
 #DOCKER_ID="$(docker images -q ${REPO_NAME} | head -1)"
-
+docker-compose -f "${GIT_WORK_TREE}/docker-compose-production.yml" up -d
 # Tag a latest version based off a commit tag.
 #docker tag -f "${DOCKER_ID}" "${FULL_LATEST_TAG}"
 

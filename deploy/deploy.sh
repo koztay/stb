@@ -78,7 +78,7 @@ function install_docker () {
   ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
 sudo apt-get update
 sudo apt-get install -y -q libapparmor1 aufs-tools ca-certificates
-wget -O "docker.deb https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${1}-0~jessie_amd64.deb"
+wget -O "docker.deb https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${1}-0~debian-jessie_amd64.deb"
 sudo dpkg -i docker.deb
 rm docker.deb
 sudo usermod -aG docker "${KEY_USER}"
@@ -96,15 +96,6 @@ sudo chmod +x /usr/local/bin/docker-compose
   '"
   echo "Installing docker-compose has been done successfully!"
 }
-
-#function docker_pull () {
-#  echo "Pulling Docker images..."
-#  for image in "${DOCKER_PULL_IMAGES[@]}"
-#  do
-#    ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'docker pull ${image}'"
-#  done
-#  echo "done!"
-#}
 
 function git_init () {
   echo "Initialize git repo and hooks..."
