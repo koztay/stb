@@ -5,9 +5,9 @@ REPO_NAME="stb"
 # Check out the newest version of the code.
 
 export GIT_WORK_TREE="/var/git/${REPO_NAME}"
-#git checkout -f
+git checkout -f
 
-scp -r ../../../. "${SSH_USER}@${SERVER_IP}:/var/git/stb"
+#scp -r ../../../. "$kemal@$192:/var/git/stb"
 #TAG="$(git log --pretty=format:'%h' -n 1)"
 #FULL_COMMIT_TAG="${REPO_NAME}:${TAG}"
 #FULL_LATEST_TAG="${REPO_NAME}:latest"
