@@ -1,55 +1,30 @@
 #cloud-config
-hostname: istebu-core01
+
 coreos:
-  update:
-    reboot-strategy: off
-
   etcd2:
-    name: istebu-core01
-    initial-advertise-peer-urls: http://127.0.0.1:2380
-    initial-cluster-token: istebu-core01_etcd
-    initial-cluster: istebu-core01=http://127.0.0.1:2380
-    initial-cluster-state: new
-    listen-peer-urls: http://0.0.0.0:2380,http://0.0.0.0:7001
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new:
+    discovery: https://discovery.etcd.io/19f23f62401ca162bc8f831d84538d1d
+    # multi-region deployments, multi-cloud deployments, and Droplets without
+    # private networking need to use $public_ipv4:
+    advertise-client-urls: http://$private_ipv4:2379,http://$private_ipv4:4001
+    initial-advertise-peer-urls: http://$private_ipv4:2380
+    # listen on the official ports 2379, 2380 and one legacy port 4001:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-    advertise-client-urls:  http://0.0.0.0:2379,http://0.0.0.0:4001
-
+    listen-peer-urls: http://$private_ipv4:2380
   fleet:
     public-ip: $private_ipv4   # used for fleetctl ssh command
-
   units:
     - name: etcd2.service
       command: start
     - name: fleet.service
       command: start
-    - name: docker-tcp.socket
-      command: start
-      enable: true
-      content: |
-        [Unit]
-        Description=Docker Socket for the API
-
-        [Socket]
-        ListenStream=2375
-        BindIPv6Only=both
-        Service=docker.service
-
-        [Install]
-        WantedBy=sockets.target
-    - name: docker.service
-      command: start
-      drop-ins:
-        - name: 50-insecure-registry.conf
-          content: |
-            [Unit]
-            [Service]
-            Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
 
 users:
-  - name: "koztay"
-    passwd: "$qilcga#NB3Mkxd5yYv$6mTlWfOo$CYHZmfi3$LDKVltj.E8XNKEcwWm#"
+  - name: koztay
+    # hashed password should be below :
+    passwd: ﻿$1$aFIPh3vk$M/4cGCBiZ7WsFyJbwLra0/
     groups:
-      - "sudo"
-      - "docker"
+      - sudo
+      - docker
     ssh-authorized-keys:
-      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSF8+oGw2NITXgrFgVMcyY6eFk8FHeWPMXglFuqV0riBxxA/LLd9kO5ZyPszrEIL6hSM4nBrMRR1kwb324PgIAsKTt4NtgVgkzEdxR0Z0jPuuEPDxAb/pzq1JhlgPjIYRgkt7UiZONakMrwtDlncerP34trrs0fxqyoB3iyQ2ym8r1V8Rj9MATQHEq/38qedEYPpSh0np6pea1v/uaYj3iqNHCthQf4lDZ6+khFbjb0GJCbJI2dk3HzhhEsMApNKx/M7AYOgw/VfBetYX3dVLMsTBwT9u64Z9cUQarAf7830H7DYCOzUMGpmrteFqHbkmu+FY/oN3FjRf0FZCnqtuz kemal@KEMALs-MacBook-Retina.local"
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSF8+oGw2NITXgrFgVMcyY6eFk8FHeWPMXglFuqV0riBxxA/LLd9kO5ZyPszrEIL6hSM4nBrMRR1kwb324PgIAsKTt4NtgVgkzEdxR0Z0jPuuEPDxAb/pzq1JhlgPjIYRgkt7UiZONakMrwtDlncerP34trrs0fxqyoB3iyQ2ym8r1V8Rj9MATQHEq/38qedEYPpSh0np6pea1v/uaYj3iqNHCthQf4lDZ6+khFbjb0GJCbJI2dk3HzhhEsMApNKx/M7AYOgw/VfBetYX3dVLMsTBwT9u64Z9cUQarAf7830H7DYCOzUMGpmrteFqHbkmu+FY/oN3FjRf0FZCnqtuz kemal@KEMALs-MacBook-Retina.local
