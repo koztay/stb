@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-SERVER_IP="${SERVER_IP:-192.168.1.150}"
+SERVER_IP="${SERVER_IP:-139.162.164.170}"
 SSH_USER="${SSH_USER:-$(whoami)}"
 KEY_USER="${KEY_USER:-$(whoami)}"
 DOCKER_VERSION="${DOCKER_VERSION:-1.12.6}"
@@ -77,7 +77,7 @@ function install_docker () {
   echo "Configuring Docker v${1}..."
   ssh -t "${SSH_USER}@${SERVER_IP}" bash -c "'
 sudo apt-get update
-sudo apt-get install -y -q libapparmor1 aufs-tools ca-certificates
+sudo apt-get install -y -q libapparmor1 aufs-tools ca-certificates libltdl7
 wget -O "docker.deb https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_${1}-0~debian-jessie_amd64.deb"
 sudo dpkg -i docker.deb
 rm docker.deb

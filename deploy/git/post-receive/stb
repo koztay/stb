@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
 REPO_NAME="stb"
+# just add the remote repo before pushing any code to server lik below:
+# git remote add <REPO_NAME> ssh://<IP_ADDRESS>:<REPO_LOCATION_ON_REMOTE>
+# example below :
+# git remote add production ssh://139.162.164.170:/var/git/stb.git
+
 
 # Check out the newest version of the code.
 
