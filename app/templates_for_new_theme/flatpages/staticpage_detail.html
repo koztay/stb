@@ -1,0 +1,56 @@
+{% extends "__base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}İştebu! | {{ flatpage.title }}{% endblock %}
+
+{% block content %}
+
+<!-- catg header banner section -->
+<section id="aa-catg-head-banner">
+    <img src={% static "img/fashion/fashion-header-bg-8.jpg" %} alt="fashion">
+    <div class="aa-catg-head-banner-area">
+        <div class="container">
+            <div class="aa-catg-head-banner-content">
+                <h2>{{ flatpage.title }}</h2>
+                <ol class="breadcrumb">
+                    <li><a href="{% url 'home' %}">Anasayfa</a></li>
+                    <li class="active">Hakkımızda</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / catg header banner section -->
+
+<!-- Blog Archive -->
+<section id="aa-blog-archive">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="aa-blog-archive-area">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <!-- Blog details -->
+                            <div class="aa-blog-content aa-blog-details">
+                                <article class="aa-blog-content-single">
+                                    {% autoescape off %}
+                                        {{ flatpage.content }}
+                                    {% endautoescape %}
+                                </article>
+                            </div>
+                        </div>
+
+                        <!-- blog sidebar -->
+                        {% include 'flatpages/_sidebar.html' with categories=categories %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / Blog Archive -->
+
+{% endblock %}

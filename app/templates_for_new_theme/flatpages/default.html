@@ -1,0 +1,10 @@
+{% extends "__base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}İştebu! | {{ flatpage.title }}{% endblock %}
+
+{% block content %}
+    <p><h2>{{ flatpage.title }}</h2></p>
+    {{ flatpage.content }}
+{% endblock %}

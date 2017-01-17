@@ -47,15 +47,17 @@ https://accounts.google.com/displayunlockcaptcha
 # Application definition
 
 INSTALLED_APPS = (
-    # django app
+
+    # django core apps
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
 
     # third party apps
     'crispy_forms',
@@ -76,7 +78,6 @@ INSTALLED_APPS = (
     'newsletter',
     'orders',
     'products',
-    'static_pages',
     'vendors',
     'visual_site_elements',
 

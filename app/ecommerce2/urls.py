@@ -13,6 +13,8 @@ from orders.views import (
 from static_pages.views import StaticPageDetailView
 
 urlpatterns = [
+
+    url(r'^pages/', include('django.contrib.flatpages.urls')),
     # Examples:
     url(r'^$', 'newsletter.views.home', name='home'),
     url(r'^contact/$', 'newsletter.views.contact', name='contact'),
