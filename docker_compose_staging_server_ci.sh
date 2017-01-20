@@ -4,7 +4,7 @@
 #source ~/.bashrc
 #dvm use 1.10.3
 #docker -v
-eval $(docker-machine env istebu-ubuntu01)
+eval $(docker-machine env istebu-core01)
 #eval $(docker-machine env istebu)
 #
 ## Delete all containers (server client versiyon uyuşmazlığı yüzünden çalışmıyor.)

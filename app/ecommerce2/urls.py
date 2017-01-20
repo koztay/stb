@@ -45,7 +45,7 @@ urlpatterns = [
     # url(r'^nested_admin/', include('nested_admin.urls')),
 
     # static_pages bu en altta olmazsa yukarıdakiler çalışmıyor.
-    url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'),
+    # url(r'^(?P<slug>[\w-]+)/$', StaticPageDetailView.as_view(), name='static_page_detail'), # flatpages kullanıyorum
 
 ]
 
