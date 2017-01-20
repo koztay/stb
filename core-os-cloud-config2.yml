@@ -1,4 +1,5 @@
 #cloud-config
+# buna gerek yok mevcut cloud-config dosyası core isimli bir user yaratıyor ve o user ile sudo komutları verilebiliyor.
 
 coreos:
   etcd2:
