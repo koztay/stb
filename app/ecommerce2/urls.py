@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-
+from django.contrib.flatpages import views
 from carts.views import CartView, ItemCountView, CheckoutView, CheckoutFinalView
 from orders.views import (
     AddressSelectFormView,
@@ -10,11 +10,13 @@ from orders.views import (
     OrderList,
     OrderDetail)
 
-from static_pages.views import StaticPageDetailView
 
 urlpatterns = [
 
-    url(r'^pages/', include('django.contrib.flatpages.urls')),
+    # url(r'^pages/', include('django.contrib.flatpages.urls')),  # fpr flatpages urls
+    # url(r'^(?P<url>.*/)$', views.flatpage, name='flatpage'),  # for displaying flatpages urls in templates
+    url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
+    # url(r'^license/$', views.flatpage, {'url': '/license/'}, name='license'),
     # Examples:
     url(r'^$', 'newsletter.views.home', name='home'),
     url(r'^contact/$', 'newsletter.views.contact', name='contact'),
