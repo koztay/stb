@@ -36,10 +36,10 @@ def add(x, y):
 
 
 @task(name="Process XLS Row")
-def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak viewws 'da çalıştığı görüldü.
+def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
     # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
-    Please do not forget to create worker with the folloeşng command, in command line:
+    Please do not forget to create worker with the followinng command, in command line:
     celery -A ecommerce2 worker -l info
     """
     # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
@@ -108,7 +108,19 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
+
     return "%s update edildi." % product.title
 
+
+@task(name="Download Image")
+def download_image_for_product(product, image_link):
+
+    def download_image(image_link):
+        pass
+
+    def set_image_for_product(product):
+        pass
+
+    pass
 
 

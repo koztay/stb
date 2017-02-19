@@ -120,11 +120,23 @@ def create_slug(instance, sender, new_slug=None):
 
 
 def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *args, **kwargs):
-    if sender:  # bu ilk seferde neden None döndürüyor anlamadım?
-        hd, hd_created = Thumbnail.objects.get_or_create(product=instance.product, type='hd')
-        sd, sd_created = Thumbnail.objects.get_or_create(product=instance.product, type='sd')
-        mid, mid_created = Thumbnail.objects.get_or_create(product=instance.product, type='medium')
-        micro, micro_created = Thumbnail.objects.get_or_create(product=instance.product, type='micro')
+    print('sender : ', sender)
+    print('instance', instance)
+    print('instance.product', instance.product)
+
+    if sender and instance.image:  # image downloader ile create ediince henüz image set edilmemiş oluyor.
+        hd, hd_created = Thumbnail.objects.get_or_create(product=instance.product,
+                                                         main_image=instance,
+                                                         type='hd')
+        sd, sd_created = Thumbnail.objects.get_or_create(product=instance.product,
+                                                         main_image=instance,
+                                                         type='sd')
+        mid, mid_created = Thumbnail.objects.get_or_create(product=instance.product,
+                                                           main_image=instance,
+                                                           type='medium')
+        micro, micro_created = Thumbnail.objects.get_or_create(product=instance.product,
+                                                               main_image=instance,
+                                                               type='micro')
 
         # hd_max = (width, height)
         hd_max = (900, 1024)
@@ -133,7 +145,9 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         micro_max = (150, 150)
 
         media_path = instance.get_image_path()
+        print('mediapath nedir?: ', media_path)
         owner_slug = instance.product.slug
+
         if hd_created:
             thumbnail_creator.create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
 

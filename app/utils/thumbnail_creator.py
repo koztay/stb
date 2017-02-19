@@ -56,8 +56,6 @@ def create_new_thumb(media_path, instance, owner_slug, max_width, max_height):
         temp_file_path = os.path.join(temp_path, filename)
 
     temp_image = open(temp_file_path, "wb")
-
-    print("temp_image : %s" % temp_image)
     thumb.save(temp_image, "JPEG")
     print("thumb : %s" % thumb)
     thumb_data = open(temp_file_path, "rb")

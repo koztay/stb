@@ -21,8 +21,6 @@ coreos:
 
 users:
  - name: koztay
- # hashed password "123456" is as below created by the following command 'sudo openssl passwd -1'
-   passwd: ﻿$1$aFIPh3vk$M/4cGCBiZ7WsFyJbwLra0/
    groups:
     - sudo
     - docker

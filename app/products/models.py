@@ -203,19 +203,24 @@ class Variation(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product)
-    image = models.ImageField(upload_to=image_upload_to)
+    image = models.ImageField(upload_to=image_upload_to, blank=True, null=True)
+
+    # @property
+    # def image_url(self):
+    #     if self.image and hasattr(self.image, 'url'):
+    #         return self.image.url
 
     def get_image_path(self):
         # img = self.image
-
-        img_url = self.image.url
-        # remove MEDIA_URL from img_url
-        img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
-        # combine with media_root
-        img_path = settings.MEDIA_ROOT + img_url
-        if img_url:
+        if self.image and hasattr(self.image, 'url'):
+            img_url = self.image.url
+            # remove MEDIA_URL from img_url
+            img_url = img_url.replace(settings.MEDIA_URL, "/", 1)
+            # combine with media_root
+            img_path = settings.MEDIA_ROOT + img_url
             return img_path
-        return img_path  # None
+        else:
+            return 'path does not found!!!'  # None
 
     def __str__(self):
         return self.product.title
