@@ -15,6 +15,7 @@ Ancak main image 'ları biz sitede kullanmıyoruz sanırım. Thumbnailler için 
 isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekşlde yapılmış.
 """
 
+
 def download_image(url, product):
     filename = url.split('/')[-1]
     print('file_name', filename)
