@@ -13,12 +13,13 @@ from products.mixins import StaffRequiredMixin
 
 from .forms import ProductImporterMapTypeForm, ProductXMLImporterMapRootValueForm
 from .models import ProductImportMap, default_fields
-from .tasks import process_xls_row
+from .tasks import process_xls_row, download_image_for_product
 
 # https://www.youtube.com/watch?v=z0Gxxjbos4k linkinde anlatmış nasıl yapıldığını
 # from pycharmdebug import pydevd
 
 
+# Aşağıdaki no_task fonksiyonu ile import edebiliyoruz.
 def process_xls_row_no_task(importer_map_pk, row, values):
     """
     Please do not forget to create worker with the folloeşng command, in command line:
@@ -90,9 +91,16 @@ def process_xls_row_no_task(importer_map_pk, row, values):
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
+
+    img_url = get_cell_for_field("Image")
+
+    # aşağıdaki fonsiyon da import ediyor ürünleri sorunsuz şekilde...
+    print("IMG URL => :", img_url)
+    download_image_for_product.delay(img_url, product.id)
     return "%s update edildi." % product.title
 
 
+# /data-importer/import/ linkinde
 class ImporterHomePageView(StaffRequiredMixin, TemplateView):
     template_name = "importer/importer_list.html"
 
@@ -106,8 +114,8 @@ class ProductGenericImporter(GenericImporter):
     # TODO: Burada her Row 'u process ederken task olarak Celery queue 'ye ekle.
     def process_row(self, row, values):
         importer_map = ProductImportMap.objects.get(pk=self.importer_type)
-        process_xls_row_no_task(importer_map.pk, row, values)
-        # process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
+        # process_xls_row_no_task(importer_map.pk, row, values)
+        process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
 class GenericImporterCreateView(DataImporterForm):

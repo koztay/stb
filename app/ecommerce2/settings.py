@@ -19,7 +19,8 @@ env.read_env()
 # print("I am printing the env.read_env", env.read_env())
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# root of project
+print("base_dir : ", BASE_DIR)
+# root of project where manage.py located.
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='#rw*tsqd36o=78ydz*lv_v2kkzo_5e8gpid512bnx@it0#a9*c')
@@ -29,11 +30,11 @@ print("the fucking secret_key is:", SECRET_KEY)
 # DEBUG
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool('DJANGO_DEBUG', False)
+DEBUG = env.bool('DJANGO_DEBUG', True)
 print("the fucking DEBUG setting is:", DEBUG)
 
 # ALLOWED_HOSTS = ["139.59.139.108", "192.168.99.101", "istebu.com", "www.example.com", ]
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=('istebu.com',))
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=('istebu.com', ))
 # print("ALLOWED_HOSTS neymiş bakalım görelim niye set edemiyoruz? =>", ALLOWED_HOSTS)
 # ALLOWED_HOSTS = ('192.168.99.101',)  # bu değeri enviroment variable olarak girince şuna dikkat etmek gerek:
 # Bu parameteryi girerken IP adreslerini tırnak için alma ve virgülle ayırdığın değerlerin arasına
@@ -190,6 +191,7 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+print("STATIC_ROOT : ", STATIC_ROOT)
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static_in_pro", "static_for_new_theme"),

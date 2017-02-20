@@ -2,7 +2,9 @@ from __future__ import absolute_import, unicode_literals
 from celery.decorators import task
 
 from .models import default_fields, ProductImportMap
+from utils import image_downloader
 from products.models import Product, ProductType, Currency
+
 
 # TODO: Currency ve Product Type, Barkod vb. field ları için Validation ekle.
 
@@ -35,7 +37,7 @@ def add(x, y):
     return x + y
 
 
-@task(name="Process XLS Row")
+@task(name="Process XLS Row", rate_limit="20/m")
 def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
     # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
@@ -108,19 +110,17 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
 
     update_default_fields(product_instance=product)
     # update_default_fields(product)  # her halükarda yaratılacak o yüzden önemsiz...
+    img_url = get_cell_for_field("Image")
+
+    print("IMG URL => :", img_url)
+    download_image_for_product.delay(img_url, product.id)
 
     return "%s update edildi." % product.title
 
 
-@task(name="Download Image")
-def download_image_for_product(product, image_link):
+@task(name="Download Image", rate_limit="40/h")
+def download_image_for_product(image_link, product_id):
+    return image_downloader.download_image(image_link, product_id)
 
-    def download_image(image_link):
-        pass
-
-    def set_image_for_product(product):
-        pass
-
-    pass
 
 

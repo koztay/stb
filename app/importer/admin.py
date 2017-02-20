@@ -5,10 +5,11 @@ from .models import ProductImportMap, Fields
 
 
 class FieldsInline(admin.TabularInline):
-    readonly_fields = ('product_field',)
+    # readonly_fields = ('product_field',)
     fields = ('product_field', 'xml_field')
     extra = 0
     model = Fields
+    ordering = ('product_field', )
 
 
 class ProductImportMapAdmin(admin.ModelAdmin):

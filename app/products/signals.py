@@ -147,6 +147,7 @@ def productimage_post_save_receiver_for_thumbnail(sender, instance, created, *ar
         media_path = instance.get_image_path()
         print('mediapath nedir?: ', media_path)
         owner_slug = instance.product.slug
+        print('owner slug nedir?: ', owner_slug)
 
         if hd_created:
             thumbnail_creator.create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
