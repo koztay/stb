@@ -4,7 +4,7 @@ from celery.decorators import task
 
 from .models import default_fields, ProductImportMap
 from utils import image_downloader
-from products.models import Product, ProductType, Currency
+from products.models import Product, ProductType, Currency, Category
 
 
 # TODO: Currency ve Product Type, Barkod vb. field ları için Validation ekle.
@@ -79,7 +79,12 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
                 print("attribute - bunun boş dönmesi gerek: ", attribute)
                 if attribute is 'categories':
                     print("kategori yakaladım")
-                    pass
+                    try:
+                        category = Category.objects.get(title=cell)
+                        print("Kategori: ", category)
+                        product_instance.categories.add(category)
+                    except:
+                      print("kategori bulunamadı.")
                 else:
                     setattr(product_instance, attribute, cell)
                 # setattr(product_instance, attribute, cell)
@@ -101,10 +106,11 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
                 # Eğer currency veriatabanında yoksa o zaman ürünü ekleme. Dolayısıyla "Para Birimi" önceden eklenmeli.
                 try:
                     currency_instance = Currency.objects.get(name=cell)
+                    variation_instance.buying_currency = currency_instance
                 except:
                     print("Currency bulunamadı, %s eklenmedi!" % product.title)
                     pass
-                variation_instance.buying_currency = currency_instance
+
                 print("variation_instance.buying_currency", variation_instance.buying_currency)
 
             else:
@@ -127,6 +133,7 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
 
     print("IMG URL => :", img_url)
     if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
+        print("Resim daha önce eklenmiş. Download task çalıştırılmayacak.")
         download_image_for_product.delay(img_url, product.id)
 
     return "%s update edildi." % product.title
