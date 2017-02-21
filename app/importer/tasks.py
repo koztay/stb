@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+from django.conf import settings
 from celery.decorators import task
 
 from .models import default_fields, ProductImportMap
@@ -41,7 +42,7 @@ def add(x, y):
 def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
     # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
-    Please do not forget to create worker with the followinng command, in command line:
+    Please do not forget to create worker with the following command, in command line:
     celery -A ecommerce2 worker -l info
     """
     # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
@@ -59,10 +60,15 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
         return cell_value
 
     def update_default_fields(product_instance=None):
+
         variation_instance = product_instance.variation_set.all()[0]  # product save edilince otomatik yaratılıyor.
+
+        # default fileds models içerisinde tanımlı
         for main_field in default_fields:
             cell = get_cell_for_field(main_field)
             print("cell_value :", cell)
+
+            # hücrenin Pruduct modelde mi, Variation modelde mi olduğunu bul
             cell_value_model = default_fields[main_field]["model"]
             print("cell_value_model: ", cell_value_model)
 
@@ -70,10 +76,13 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
                 print("attribute: ", default_fields[main_field]["field"])
                 print("value: ", cell)
                 attribute = default_fields[main_field]["field"]
+                print("attribute - bunun boş dönmesi gerek: ", attribute)
                 if attribute is 'categories':
+                    print("kategori yakaladım")
                     pass
                 else:
                     setattr(product_instance, attribute, cell)
+                # setattr(product_instance, attribute, cell)
 
             elif cell_value_model is "Variation":
                 print("attribute: ", default_fields[main_field]["field"])
@@ -100,7 +109,11 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
 
             else:
                 print("Hata! Böyle bir model dönmemeli, cell_value_model: ", cell_value_model)
-        product_instance.price = variation_instance.sale_price  # ürünlerin fiyatı boş geliyor o nedenle...
+
+        factor = float(settings.IMPORTER_SALE_PRICE_FACTOR)
+        product_instance.price = variation_instance.sale_price*factor
+
+        # ürünlerin fiyatı boş geliyor o nedenle factor kadar yükseltiyoruz...
         product_instance.save()
         variation_instance.save()
 
@@ -113,7 +126,8 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
     img_url = get_cell_for_field("Image")
 
     print("IMG URL => :", img_url)
-    download_image_for_product.delay(img_url, product.id)
+    if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
+        download_image_for_product.delay(img_url, product.id)
 
     return "%s update edildi." % product.title
 

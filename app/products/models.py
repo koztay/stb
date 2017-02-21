@@ -72,7 +72,7 @@ class Product(models.Model):
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
     tags = TaggableManager()
-    kdv = models.IntegerField(default=18)
+    kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
 
     objects = ProductManager()

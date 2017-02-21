@@ -35,6 +35,7 @@ images/
 static_in_env
 eski site wayback/
 *__pycache__
+__*
 
 
 

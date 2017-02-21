@@ -20,7 +20,7 @@ isimde ilk ürünün klasöründe kalıyor. Çünkü image_upload_to bu şekilde
 def download_image(url, product_id):
 
     product = Product.objects.get(pk=product_id)
-    if not product.productimage_set.all().count() == 0:
+    if product.productimage_set.all().count() == 0:
         filename = url.split('/')[-1]
         print('file_name', filename)
         # create temp location

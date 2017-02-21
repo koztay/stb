@@ -20,8 +20,13 @@
         <figcaption>
             <h4 class="aa-product-title"><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></h4>
             {% if product.variation_set.first.sale_price %}
-                <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
-                <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                {% if product.variation_set.first.sale_price < product.price %}
+                    <span class="aa-product-price">{{ product.variation_set.first.sale_price }},-₺</span>
+                    <span class="aa-product-price"><del>{{ product.price }},-₺</del></span>
+                {% else %}
+                    <span class="aa-product-price">{{ product.price }},-₺</span>
+                {% endif %}
+
             {% else %}
                 <span class="aa-product-price">{{ product.price }},-₺</span>
             {% endif %}
