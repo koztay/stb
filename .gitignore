@@ -5,7 +5,7 @@ lib/
 .Python
 
 ;;files to ignore
-.env*
+
 
 LICENSE
 Notlar.txt
@@ -25,7 +25,10 @@ Notlar.txt
 *.json
 *.bz2
 *.gz
-*.env
+.env
+.env_dev
+local_dev.env
+
 
 ;;directories to ignore
 .idea/
@@ -35,7 +38,7 @@ images/
 static_in_env
 eski site wayback/
 *__pycache__
-__*
+__importer_xls_files
 
 
 

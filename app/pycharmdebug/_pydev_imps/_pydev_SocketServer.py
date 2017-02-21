@@ -212,7 +212,7 @@ class BaseServer:
         """Handle one request at a time until shutdown.
 
         Polls for shutdown every poll_interval seconds. Ignores
-        self.timeout. If you need to do periodic tasks, do them in
+        self.timeout. If you need to do periodic tasks-delete-this, do them in
         another thread.
         """
         self.__is_shut_down.clear()

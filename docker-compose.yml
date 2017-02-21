@@ -6,7 +6,7 @@ services:
     image: postgres:9.4
     restart: always
     env_file:
-      - .env_PRODUCTION
+      - .env
     volumes:
       - postgres-data:/var/lib/postgresql/data/
 
@@ -18,7 +18,7 @@ services:
       - postgres
       - redis
     env_file:
-      - .env_PRODUCTION
+      - .env
     expose:
       - "8000"
     volumes:
@@ -30,7 +30,12 @@ services:
     image: koztay/app
     restart: always
     env_file:
-      - .env_PRODUCTION
+      - .env
+    volumes:
+      - static-data:/usr/src/static_in_env/static_root/
+      - media-data:/usr/src/static_in_env/media_root/
+    volumes_from:
+      - app
     depends_on:
       - app
       - postgres
@@ -43,7 +48,7 @@ services:
     image: koztay/app
     restart: always
     env_file:
-      - .env_PRODUCTION
+      - .env
     depends_on:
       - app
       - postgres

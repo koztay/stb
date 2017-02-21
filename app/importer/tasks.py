@@ -11,14 +11,14 @@ from products.models import Product, ProductType, Currency, Category
 
 # TODO: http://stackoverflow.com/questions/11618390/celery-having-sequential-tasks-rather-than-concurrent
 """
-Single worker consuming from a queue with concurrency equals to one ensures that the tasks will be processed in
+Single worker consuming from a queue with concurrency equals to one ensures that the tasks-delete-this will be processed in
 sequential order. In other words you can create a special queue and run only one celery worker with concurrency
 equals to one:
 
-celery -A tasks worker -Q amazon_queue -c 1
-And submit tasks to that queue:
+celery -A tasks-delete-this worker -Q amazon_queue -c 1
+And submit tasks-delete-this to that queue:
 
-tasks.add.apply_async(args=[1,2], kwargs={}, queue='amazon_queue')
+tasks-delete-this.add.apply_async(args=[1,2], kwargs={}, queue='amazon_queue')
 Or use automatic routing for certain task types.
 """
 

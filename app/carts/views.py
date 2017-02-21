@@ -19,16 +19,17 @@ from orders.models import UserCheckout
 from products.models import Variation
 from .models import Cart, CartItem
 
-# bunu DEBUG 'a bağlamak doğru mu acaba?
-if settings.DEBUG:
-    print('CHECKOUT yapıyorum DEBUG=False')
+
+if settings.DEBUG:  # bunu DEBUG 'a bağlamak doğru mu acaba? Sıkıntı gözükmüyor.
+    print('CHECKOUT yapıyorum DEBUG=True')
     api_url = settings.PAYNET_TEST_API_URL
     paynet_js_url = settings.PAYNET_TEST_PAYNETJS_URL
 else:
-    print('CHECKOUT yapıyorum DEBUG=True')
+    print('CHECKOUT yapıyorum DEBUG=False')
     api_url = settings.PAYNET_PRODUCTION_API_URL
     paynet_js_url = settings.PAYNET_PRODUCTION_PAYNETJS_URL
 
+print("carts.views içerisindeki bu printleri neden yazıyor bu? Ayrıca debug değerini neden doğru okumaz?")
 print('PAYNET_PUBLISHABLE_KEY: ', settings.PAYNET_PUBLISHABLE_KEY)
 print('PAYNET_SECRET_KEY: ', settings.PAYNET_SECRET_KEY)
 print('PAYNET_TEST_API_URL: ', settings.PAYNET_TEST_API_URL)

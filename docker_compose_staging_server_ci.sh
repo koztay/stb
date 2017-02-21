@@ -13,10 +13,10 @@ eval $(docker-machine env istebu-core01)
 #docker rmi -f $(docker images -q)
 
 # Build with no-cache
-docker-compose -f docker-compose-production.yml build
+docker-compose build
 
 # Up containers
-docker-compose -f docker-compose-production.yml up -d
+docker-compose up -d
 
 # Make migrations
 # docker-compose -f docker-compose-production.yml run app /usr/local/bin/python manage.py makemigrations
