@@ -57,7 +57,7 @@ class ProductManager(models.Manager):
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=120)
+    title = models.CharField(max_length=1000)
     # description = models.TextField(blank=True, null=True)
     description = HTMLField(default="<h1>default description</h1>", blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, blank=True, null=True)
@@ -281,7 +281,7 @@ class Category(models.Model):
 
 class ProductFeatured(models.Model):
     product = models.ForeignKey(ProductImage)
-    image = models.ImageField(upload_to=image_upload_to_featured)
+    image = models.ImageField(upload_to=image_upload_to_featured, max_length=2000)
     title = models.CharField(max_length=120, null=True, blank=True)
     text = models.CharField(max_length=220, null=True, blank=True)
     text_right = models.BooleanField(default=False)
@@ -331,7 +331,8 @@ class Thumbnail(models.Model):
         height_field="height",
         blank=True,
         null=True,
-        upload_to=thumbnail_location)
+        upload_to=thumbnail_location,
+        max_length=2000)
 
     def __unicode__(self):  # __str__(self):
         return str(self.media.path)
