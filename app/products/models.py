@@ -108,7 +108,7 @@ class Product(models.Model):
         categories = Category.objects.all().filter(product=self)
         for category in categories:
             if category.is_child:
-                return
+                pass
             else:
                 return category
 

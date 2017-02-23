@@ -32,14 +32,30 @@ Or use automatic routing for certain task types.
 # yukarıdaki iki fonksiyon da çalıştı.
 
 
+@task(bind=True, name="Download Image", rate_limit="40/h")
+def download_image_for_product(self, image_link=None, product_id=None):
+    result = "Hata! %s linkindeki resim indirilemedi:" % image_link
+    try:
+        result = image_downloader.download_image(image_link, product_id)
+    except Exception as e:
+        self.retry(countdown=120, exc=e, max_retries=2)
+
+    return result
+
+
 # This task has been added for testing purposes.
-@task(name="sum_two_numbers")
-def add(x, y):
+@task(bind=True)
+def add(self, x, y):
+    try:
+        raise Exception()
+    except Exception as e:
+        self.retry(countdown=2, exc=e, max_retries=2)
+        # countdown kaç saniye beklemesini belirtiyor, max_retries ise adından belli kaç kez tekrarlanmasını.
     return x + y
 
 
-@task(name="Process XLS Row", rate_limit="20/m")
-def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
+@task(bind=True, name="Process XLS Row", rate_limit="20/m")
+def process_xls_row(self, importer_map_pk, row, values):  # Bu fonksiyonun no_task olarak views 'da çalıştığı görüldü.
     # Ancak task olarak çalışıp çalışmadığı test edilemedi.
     """
     Please do not forget to create worker with the following command, in command line:
@@ -132,16 +148,13 @@ def process_xls_row(importer_map_pk, row, values):  # Bu fonksiyonun no_task ola
     img_url = get_cell_for_field("Image")
 
     print("IMG URL => :", img_url)
+    print('product.id neden görülmüyor baba?', product.id)
+    print('product.pk neden görülmüyor baba?', product.pk)
     if product.productimage_set.all().count() == 0:  # image varsa boşu boşuna task ekleme.
-        print("Resim daha önce eklenmiş. Download task çalıştırılmayacak.")
+        print("Resim daha önce eklenmemiş. Download task çalıştırılacak. Yeni fonksiyon bu.")
         download_image_for_product.delay(img_url, product.id)
 
     return "%s update edildi." % product.title
-
-
-@task(name="Download Image", rate_limit="40/h")
-def download_image_for_product(image_link, product_id):
-    return image_downloader.download_image(image_link, product_id)
 
 
 

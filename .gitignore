@@ -28,6 +28,8 @@ Notlar.txt
 .env
 .env_dev
 local_dev.env
+.coverage
+htmlcov
 
 
 ;;directories to ignore

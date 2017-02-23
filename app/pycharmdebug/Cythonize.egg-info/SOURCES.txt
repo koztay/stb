@@ -1,6 +1,0 @@
-setup.cfg
-setup.py
-Cythonize.egg-info/PKG-INFO
-Cythonize.egg-info/SOURCES.txt
-Cythonize.egg-info/dependency_links.txt
-Cythonize.egg-info/top_level.txt

@@ -1,3 +1,9 @@
 # Test dependencies go here.
 # buradaki bileşenleri local içerisine de alabiliriz.
 -r base.txt
+
+pytest
+pytest-django
+-e git+https://github.com/mverteuil/pytest-ipdb.git#egg=pytest-ipdb
+pytest-cov
+mixer
