@@ -151,8 +151,11 @@ class ProductListView(FilterMixin, ListView):
         product_ids = []
         product_tags = []
         for t in context["object_list"]:
-            product_ids += [t.id]
-            product_tags += t.tags.all()
+            try:
+                product_ids += [t.id]
+                product_tags += t.tags.all()
+            except:
+                pass
 
         # remove duplicates
         product_tags = list(set(product_tags))

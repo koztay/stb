@@ -214,7 +214,7 @@ class Variation(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product)
-    image = models.ImageField(upload_to=image_upload_to, blank=True, null=True)
+    image = models.ImageField(upload_to=image_upload_to, blank=True, null=True, max_length=1000)
 
     def get_image_path(self):
         # img = self.image
