@@ -30,7 +30,7 @@ Notlar.txt
 local_dev.env
 .coverage
 htmlcov
-
+.cache
 
 ;;directories to ignore
 .idea/

@@ -1,9 +1,10 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Case, Count, F, Max, Q, Value, When
 from django.utils.safestring import mark_safe
 from uuslug import slugify
-from taggit.managers import TaggableManager
+# from taggit.managers import TaggableManager
 from tinymce.models import HTMLField
 # from utils import thumbnail_location, THUMB_CHOICES
 
@@ -35,6 +36,9 @@ def image_upload_to_featured(instance, filename):
     basename, file_extension = filename.split(".")
     new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
     return "products/%s/featured/%s" % (slug, new_filename)
+
+
+# ************************************************************************************************************ #
 
 
 class ProductQuerySet(models.query.QuerySet):
@@ -71,7 +75,8 @@ class Product(models.Model):
     slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
-    tags = TaggableManager()
+    # tags = TaggableManager()
+    # taggable manager ile ilgili bir hata veriyor test edilemiyor.
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
 
@@ -126,6 +131,8 @@ class Product(models.Model):
     #     self.valueset = None
     #     self.importer_map = None
 
+# ************************************************************************************************************ #
+
 
 class Currency(models.Model):
     name = models.CharField(max_length=10, unique=True, default='TURK LIRASI')
@@ -135,6 +142,8 @@ class Currency(models.Model):
     def __str__(self):
         return self.name
 
+
+# ************************************************************************************************************ #
 
 # delete this model and use product instead of this like commenting system. So, products belongs
 # products like comments. And if product has child products we use an algorithm which one to show.
@@ -200,15 +209,12 @@ class Variation(models.Model):
     def get_title(self):
         return "%s - %s" % (self.product.title, self.title)
 
+# ************************************************************************************************************ #
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product)
     image = models.ImageField(upload_to=image_upload_to, blank=True, null=True)
-
-    # @property
-    # def image_url(self):
-    #     if self.image and hasattr(self.image, 'url'):
-    #         return self.image.url
 
     def get_image_path(self):
         # img = self.image
@@ -220,13 +226,39 @@ class ProductImage(models.Model):
             img_path = settings.MEDIA_ROOT + img_url
             return img_path
         else:
-            return 'path does not found!!!'  # None
+            return None  # None
+
 
     def __str__(self):
         return self.product.title
 
+# ************************************************************************************************************ #
+
+
+# aşağıdaki queryseti refactor etmeye başladım, ancak cloud 'a yükleme yapıp test etmeliyim.
+class CategoryQueryset(models.query.QuerySet):
+    def root_categories(self):  # which has no parent
+        return self.filter(parent__isnull=True)
+
+    def child_categories(self):  # they can also be root for another child
+        return self.filter(parent__isnull=False)
+
+
+    # yukarıdaki her iki func da işe yaramaz.
+    # def stale(self, cutoff=datetime.timedelta(hours=1)):
+    #     end_time = now() - cutoff
+    #     return self.annotate(
+    #         last_check=Max('checkresult__checked_on')
+    #     ).filter(
+    #         Q(last_check__lt=end_time) | Q(last_check__isnull=True))
 
 class CategoryManager(models.Manager):
+    def get_queryset(self):
+        return CategoryQueryset(self.model, using=self._db)
+
+    def roots(self):
+        return self.get_queryset().root_categories()
+
     # bunun altını neden çiziyor anlamadım?
     def categories_with_children(self, *args, **kwargs):
         custom_list = [category.id for category in Category.objects.all() if category.get_children() is not None]
@@ -261,22 +293,14 @@ class Category(models.Model):
             return False
 
     def get_children(self):
-        children = Category.objects.filter(parent=self)
-        if len(children) > 0:
-            # print(self)
-            # print(len(children))
-            # print("children 0 den büyük:", children)
+        children = Category.objects.filter(parent=self)  # tüm kategoriler içerisinde parenti benim olduklarımı listele
+        if len(children) > 0:  # eğer listede eleman varsa bunlar benim children 'ımdır.
             return children
         else:
-            # print(self)
-            # print(len(children))
-            # print("children 0 den büyük değil:", children)
             return None
 
-        # if self.is_child:
-        #     return None
-        # else:
-        #     return Category.objects.filter(parent=self)
+
+# ************************************************************************************************************ #
 
 
 class ProductFeatured(models.Model):
@@ -294,11 +318,17 @@ class ProductFeatured(models.Model):
         return self.product.title
 
 
+# ************************************************************************************************************ #
+
+
 class ProductType(models.Model):
     name = models.CharField(max_length=120, default="Generic Product")
 
     def __str__(self):
         return self.name
+
+
+# ************************************************************************************************************ #
 
 
 class AttributeType(models.Model):
@@ -311,6 +341,9 @@ class AttributeType(models.Model):
         return self.type
 
 
+# ************************************************************************************************************ #
+
+
 class AttributeValue(models.Model):
     attribute_type = models.ForeignKey(AttributeType, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.CASCADE)
@@ -318,6 +351,8 @@ class AttributeValue(models.Model):
 
     def __str__(self):
         return self.value
+
+# ************************************************************************************************************ #
 
 
 class Thumbnail(models.Model):
@@ -338,6 +373,7 @@ class Thumbnail(models.Model):
         return str(self.media.path)
 
 
+# ************************************************************************************************************ #
 """
 This way you have a clear picture of how each attribute relates to some vehicle.
 

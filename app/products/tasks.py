@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 import random
 from celery.decorators import task
 
-from utils import kur_cek
+from utils import kur_cek, delete_problematic_images
 from .models import Currency
 
 
@@ -38,4 +38,9 @@ def usd_cek(currency_name='ABD DOLARI'):
     currency.value = kur_value
     currency.save()
     return kur_value
+
+
+@task(name="image_cleaner")
+def delete_images():
+    return delete_problematic_images.delete_all()
 
