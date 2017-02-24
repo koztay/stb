@@ -30,7 +30,7 @@ Notlar.txt
 local_dev.env
 .coverage
 htmlcov
-.cache
+
 
 ;;directories to ignore
 .idea/
@@ -43,5 +43,5 @@ eski site wayback/
 __importer_xls_files
 
 
-
-
+app/.cache/
+app/importer/tests/data/
