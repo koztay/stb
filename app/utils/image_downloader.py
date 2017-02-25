@@ -5,6 +5,7 @@ import os
 import shutil
 import random
 import requests
+import urllib3
 from products.models import ProductImage, Product
 
 download_url = 'http://i.hurimg.com/i/hurriyet/75/892x220/58a9fa28c03c0e20402a9064.jpg'
@@ -36,10 +37,18 @@ def download_image(url, product_id):
             os.makedirs(temp_path)
             temp_file_path = os.path.join(temp_path, filename)
         # download_image
-        response = requests.get(url, stream=True)
+        # response = requests.get(url, stream=True)
+
         with open(temp_file_path, 'wb') as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-        del response
+            http = urllib3.PoolManager()
+            response = http.request('GET', url)
+            if response.status is 200:
+                shutil.copyfileobj(response.data, out_file)
+                del response
+            else:
+                del response
+                raise ValueError('A very specific bad thing happened. Response code was not 200')
+
         product_image_data = open(temp_file_path, "rb")
         product_image_file = File(product_image_data)
         product_image = ProductImage.objects.create(product=product)

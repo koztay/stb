@@ -59,6 +59,8 @@ class ProductImageInline(admin.StackedInline):
 
 
 class ProductImageAdmin(admin.ModelAdmin):
+    search_fields = ['product__title', ]
+
     inlines = [
         ThumbnailInline,
     ]
