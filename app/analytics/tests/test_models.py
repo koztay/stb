@@ -1,24 +1,33 @@
-# import pytest
-# from mixer.backend.django import mixer
-# from django.contrib.auth.models import User
-# pytestmark = pytest.mark.django_db
-#
-#
-# class TestProductView:
-#
-#     def test_model(self):
-#         obj = mixer.blend('analytics.ProductView')
-#         assert obj.pk == 1, 'Should save an instance'
-#
-#
-# class TestProductViewManager:
-#     tst_user = mixer.blend(User)
-#     tst_product = mixer.blend('products.Product')
-#
-#     def test_add_count(self, tst_user, tst_product):
-#         obj = mixer.blend('analytics.ProductView')
-#         obj.add_count(tst_user, tst_product)
-#         assert obj.count == 1
+import pytest
+from mixer.backend.django import mixer
+from products.models import Product
+
+pytestmark = pytest.mark.django_db
+
+# mixer = Mixer(commit=False)
+
+
+class TestProductView:
+
+    def test_model(self):
+        obj = mixer.blend('analytics.ProductView',
+                          product=mixer.blend('products.Product', title='LG G5 Cep Telefonu'),
+                          user=mixer.blend('auth.User'))
+        assert obj.pk == 1, 'Should save an instance'
+        assert str(obj) == 'LG G5 Cep Telefonu', 'Should return the above title value'
+
+    def test_add_count(self):
+        obj = mixer.blend('analytics.ProductView',
+                          product=mixer.blend('products.Product', title='LG G5 Cep Telefonu'),
+                          user=mixer.blend('auth.User'))
+
+        obj.add_count()  # 1
+        obj.add_count()  # 2
+        obj.add_count()  # 3
+        obj.add_count()  # 4
+        obj.add_count()  # 5
+        assert obj.count == 5, 'Should return 5'
+
 
 
 

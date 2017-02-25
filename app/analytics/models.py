@@ -6,22 +6,15 @@ from django.db import models
 from products.models import Product
 
 
-class ProductViewManager(models.Manager):
-    def add_count(self, user, product):
-        obj, created = self.model.objects.get_or_create(user=user,
-                                                        product=product)
-        obj.count += 1
-        obj.save()
-        return obj
-
-
 class ProductView(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     product = models.ForeignKey(Product)
     count = models.IntegerField(default=0)
 
-    objects = ProductViewManager()
-
     def __str__(self):
         return str(self.product.title)
+
+    def add_count(self):
+        self.count += 1
+        return self.count
 

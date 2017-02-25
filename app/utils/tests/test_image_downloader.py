@@ -19,11 +19,7 @@ class TestImageDownloader:
         'DYMO LM PnP Masaüstü ve PC Bağlantılı Etiketleme Makinesi (6/9/12 mm D1 şeritlerle uyumlu kullanım)',
     )
 
-    obj = mixer.blend('products.Product')
-    # product2 = mixer.blend('products.Product', title=titles[1])
-    # product3 = mixer.blend('products.Product', title=titles[2])
-
-    # download_image(urls[0], product1.id)
+    # download_image(urls[0], 'some_products[0].id')
     # assert product1.image_set.all()[0].exists() is False,  'Should return the given number of characters'
     assert 1 == 1
 
