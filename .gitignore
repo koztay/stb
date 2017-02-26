@@ -42,6 +42,5 @@ eski site wayback/
 *__pycache__
 __importer_xls_files
 
-
-app/.cache/
+.cache
 app/importer/tests/data/

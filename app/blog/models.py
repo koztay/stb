@@ -62,8 +62,8 @@ class Comment(models.Model):
         return 'Comment by {} on {}'.format(self.name, self.post)
 
 
-class AbukPost(models.Model):
-    body = models.TextField()
-
-    def get_excerpt(self, chars):
-        return self.body[:chars]
+# class AbukPost(models.Model):
+#     body = models.TextField()
+#
+#     def get_excerpt(self, chars):
+#         return self.body[:chars]
