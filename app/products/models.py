@@ -23,6 +23,8 @@ THUMB_CHOICES = (
 # This utility function creates the filename and filepath according to the slug and product instance
 def image_upload_to(instance, filename):
     title = instance.product.title
+    if len(title) > 50:
+        title = title[:50]
     slug = slugify(title)
     basename, file_extension = filename.split(".")
     new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
@@ -32,12 +34,12 @@ def image_upload_to(instance, filename):
 # This utility function creates the filename and filepath according to the slug and product instance
 def image_upload_to_featured(instance, filename):
     title = instance.product.title
+    if len(title) > 50:
+        title = title[:50]
     slug = slugify(title)
     basename, file_extension = filename.split(".")
     new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
     return "products/%s/featured/%s" % (slug, new_filename)
-
-
 # ************************************************************************************************************ #
 
 

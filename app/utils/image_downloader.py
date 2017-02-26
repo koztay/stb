@@ -39,14 +39,20 @@ def download_image(url, product_id):
         # download_image
         # response = requests.get(url, stream=True)
 
-        with open(temp_file_path, 'wb') as out_file:
-            http = urllib3.PoolManager()
-            response = http.request('GET', url)
-            if response.status is 200:
-                shutil.copyfileobj(response.data, out_file)
-                del response
+        # with open(temp_file_path, 'wb') as out_file:
+        #     http = urllib3.PoolManager()
+        #     response = http.request('GET', url)
+        #     if response.status is 200:
+        #         shutil.copyfileobj(response.data, out_file)
+        #         del response
+        #     else:
+        #         del response
+        #         raise ValueError('A very specific bad thing happened. Response code was not 200')
+        http = urllib3.PoolManager()
+        with http.request('GET', url, preload_content=False) as resp, open(temp_file_path, 'wb') as out_file:
+            if resp.status is 200:
+                shutil.copyfileobj(resp, out_file)
             else:
-                del response
                 raise ValueError('A very specific bad thing happened. Response code was not 200')
 
         product_image_data = open(temp_file_path, "rb")

@@ -3,6 +3,17 @@ from xml.dom import minidom
 
 
 def get(currency_name=None):
+    """
+    İsim değeri olarak today.xml 'de yer alan kur isimleri kullanılmalı.
+    Örnek : 'EURO', 'ABD DOLARI'
+    get('EURO')
+    get('ABD DOLARI')
+    şeklinde çağrılmalı fonksiyon aksi taktirde çekemez.
+    Not: TL diye bir kur değeri eklemeye gerek var. Çünkü Excel 'de TL olarak
+    var o para birimi.
+    :param currency_name:
+    :return: currency value from tcmb
+    """
     url = 'http://www.tcmb.gov.tr/kurlar/today.xml'
     parsed = minidom.parse(urlopen(url))
 
@@ -15,6 +26,9 @@ def get(currency_name=None):
     tags = ['Isim', 'ForexBuying', 'ForexSelling']
     isim, alis, satis = [parsed.getElementsByTagName(tag) for tag in tags]
 
+    # print('isim', isim)
+    # print('alis', alis)
+    # print('satis', satis)
     # Aşağıdaki kod tüm kurları yazıdır
     # for i, a, s in zip(isim, alis, satis):
     #     try:
@@ -29,7 +43,7 @@ def get(currency_name=None):
         # print(currency_name)
         if currency.firstChild.nodeValue == currency_name:
             # print("buldum, buldum !!!!!")
-            # print(currency_name)
+            # print(currency)
             # print(currency.firstChild.data)
             return value.firstChild.data
 
@@ -37,6 +51,3 @@ def get(currency_name=None):
             print("Kur bulunamadı, lütfen girdiğiniz değeri kontrol edin.")
             # return "Kur bulunamadı, lütfen girdiğiniz değeri kontrol edin." //bunu return edince dongü bitiyor yapma!
 
-# get('EURO')
-# get('ABD DOLARI')
-# get('abuk')
