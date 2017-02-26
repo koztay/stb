@@ -137,7 +137,12 @@ class Product(models.Model):
 
 
 class Currency(models.Model):
-    name = models.CharField(max_length=10, unique=True, default='TURK LIRASI')
+    NAME_CHOICES = (
+        ("TL", "TURK LIRASI"),
+        ("USD", "AMERIKAN DOLARI"),
+        ("EUR", "EURO"),
+    )
+    name = models.CharField(max_length=10, choices=NAME_CHOICES, unique=True, default='TL')
     updated = models.DateField(auto_now=True)
     value = models.FloatField(default=1.0)
 

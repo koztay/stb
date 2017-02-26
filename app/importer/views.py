@@ -1,5 +1,4 @@
 from django.views.generic.base import TemplateView
-
 # from_valid metodunu override edersek aşağıdakiler gerekiyor
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType  # bu neden gerekli?
@@ -101,6 +100,7 @@ def process_xls_row_no_task(importer_map_pk, row, values):
 
 
 # /data-importer/import/ linkinde
+# @staff_member_required
 class ImporterHomePageView(StaffRequiredMixin, TemplateView):
     template_name = "importer/importer_list.html"
 
@@ -118,7 +118,8 @@ class ProductGenericImporter(GenericImporter):
         process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
-class GenericImporterCreateView(DataImporterForm):
+# @staff_member_required
+class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
 
     template_name = 'importer/product_importer.html'
     extra_context = {'title': 'Select File for Data Importer',
