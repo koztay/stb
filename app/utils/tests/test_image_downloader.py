@@ -4,7 +4,6 @@ from .. image_downloader import download_image
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.usefixtures("django_db", "db", "transactional_db")
 class TestImageDownloader:
 
     urls = (
@@ -19,7 +18,13 @@ class TestImageDownloader:
         'DYMO LM PnP Masaüstü ve PC Bağlantılı Etiketleme Makinesi (6/9/12 mm D1 şeritlerle uyumlu kullanım)',
     )
 
-    # download_image(urls[0], 'some_products[0].id')
+    # burada ne yaptıysam yapayım bir türlü product yaratamadım. hep aşağıdaki hatayı verdi:
+    # E   Failed: Database access not allowed, use the "django_db" mark, or the "db" or "transactional_db"
+    # fixtures to enable it.
+    # Bir de sadece yukarıdaki hata varken ortaya çıkan aşağıdaki warning var:,
+    # SQLite received a naive datetime (2017-02-26 12:28:40.018645) while time zone support is active.
+
+    # download_image(urls[0], product_id=4)
     # assert product1.image_set.all()[0].exists() is False,  'Should return the given number of characters'
     assert 1 == 1
 
