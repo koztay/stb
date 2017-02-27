@@ -30,7 +30,7 @@ class Post(models.Model):
                               default='draft')
     objects = models.Manager()  # The default manager.
     published = PublishedManager()  # Our custom manager.
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     def get_absolute_url(self):
         return reverse('blog:post_detail',

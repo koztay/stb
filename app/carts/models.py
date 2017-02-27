@@ -15,7 +15,7 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     line_item_total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.item.title
 
     def remove(self):
@@ -58,7 +58,7 @@ class Cart(models.Model):
     # discounts
     # shipping
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.id)
 
     def update_subtotal(self):
