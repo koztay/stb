@@ -133,7 +133,7 @@ ROOT_URLCONF = 'ecommerce2.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates_for_new_theme")],
+        'DIRS': [os.path.join(BASE_DIR, "templates_for_istebu")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,7 +195,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_r
 print("STATIC_ROOT : ", STATIC_ROOT)
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static_in_pro", "static_for_new_theme"),
+    os.path.join(BASE_DIR, "static_in_pro", "static_for_istebu"),
     # os.path.join(BASE_DIR, "static_in_env"),
     # '/var/www/static/',
 )
