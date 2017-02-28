@@ -9,6 +9,7 @@ from tinymce.models import HTMLField
 # from utils import thumbnail_location, THUMB_CHOICES
 
 
+# for Thumbnail Class
 def thumbnail_location(instance, filename):
     return "products/%s/thumbnails/%s" % (instance.product.slug, filename)
 
@@ -20,6 +21,7 @@ THUMB_CHOICES = (
 )
 
 
+# For ProductImage Class
 # This utility function creates the filename and filepath according to the slug and product instance
 def image_upload_to(instance, filename):
     title = instance.product.title
@@ -234,7 +236,6 @@ class ProductImage(models.Model):
             return img_path
         else:
             return None  # None
-
 
     def __str__(self):
         return self.product.title

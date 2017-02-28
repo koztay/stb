@@ -12,7 +12,7 @@ class TestPost:
 
     def test_get_absolute_url(self):
         obj = mixer.blend('blog.Post', title='Bir varmış bir yokmuş.')
-        assert len(obj.get_absolute_url()) > 0, 'should return an url'
+        assert obj.get_absolute_url() is not None, 'should return an url'
 
 
 class TestComment:
