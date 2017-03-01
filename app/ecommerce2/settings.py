@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'django_celery_results',
     'django_filters',
     'registration',
+    'rest_framework',
     'taggit',
     'tinymce',
 
