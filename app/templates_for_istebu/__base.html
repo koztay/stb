@@ -21,25 +21,32 @@
 <!-- END SCROLL TOP BUTTON -->
 {% include '_header_section.html' %}
 
-{% include '_menu_section.html' %}
+{#{% include '_menu_section.html' %}#}
+{% include "visual_site_elements/menu/menu_items.html" with object_list=categories %}
 
-{% include '_slider_section.html' %}
+{% block messages %} {% endblock %}
 
-{% include '_promo_section.html' %}
+{% block slider_section %} {% endblock %}
 
-{% include '_products_section/__products_section.html' %}
+{% block content %} {% endblock %}
 
-{% include '_banner_section.html' %}
+{% block promo_section %} {% endblock %}
 
-{% include '_popular_section.html' %}
+{% block products_section %} {% endblock %}
 
-{% include '_support_section.html' %}
+{% block banner_section %} {% endblock %}
 
-{% include '_latest_blog_section.html' %}
+{% block popular_section %} {% endblock %}
 
-{% include '_brand_section.html' %}
+{% block support_section %} {% endblock %}
 
-{% include '_subscribe_section.html' %}
+{% block latest_blog_section %} {% endblock %}
+
+{% block brand_section %} {% endblock %}
+
+{% block subscribe_section %} {% endblock %}
+
+{% block footer_section %} {% endblock %}
 
 {% include '_footer_section.html' %}
 

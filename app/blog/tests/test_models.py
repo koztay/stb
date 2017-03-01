@@ -24,15 +24,6 @@ class TestComment:
             "Should return : 'Comment by {} on {}'.format(self.name, self.post)."
 
 
-# @pytest.fixture
-# def feed():
-#     return feeds.LatestPostsFeed()
-#
-#
-# class TestLatestPostsFeed:
-#     def test_items(self):
-#         obj = feed()
-#         assert len(obj.items()) == 5
 
 
 

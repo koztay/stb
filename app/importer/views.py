@@ -21,7 +21,7 @@ from .tasks import process_xls_row, download_image_for_product
 # Aşağıdaki no_task fonksiyonu ile import edebiliyoruz.
 def process_xls_row_no_task(importer_map_pk, row, values):
     """
-    Please do not forget to create worker with the folloeşng command, in command line:
+    Please do not forget to create worker with the following command, in command line:
     celery -A ecommerce2 worker -l info
     """
     # pydevd.settrace('192.168.1.22', port=5678, stdoutToServer=True, stderrToServer=True)
