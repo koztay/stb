@@ -10,7 +10,7 @@ from django.views.generic.list import ListView
 from django_filters import FilterSet, CharFilter, NumberFilter
 
 
-from analytics.models import ProductView
+from analytics.models import ProductAnalytics
 from taggit.models import Tag
 
 from .forms import VariationInventoryFormSet, ProductFilterForm
@@ -274,9 +274,12 @@ class ProductDetailView(DetailView):
 
         # yukarıdaki gibi herhangi bir değişkene de atmaya gerek yok.
         if self.request.user.is_authenticated():
-            ProductView.objects.add_count(self.request.user, instance)  # eğer user login olmuşsa
+            user = self.request.user  # eğer user login olmuşsa
         else:
-            ProductView.objects.add_count(self.request.user.id, instance)  # eğer user login olmamışsa
+            user = self.request.user.id  # eğer user login olmamışsa
+        analytics, created = ProductAnalytics.objects.get_or_create(user=user, product=instance)
+        analytics.add_count()
+
 
         context["related"] = sorted(Product.objects.get_related(instance)[:8], key=lambda x: random.random())
         return context

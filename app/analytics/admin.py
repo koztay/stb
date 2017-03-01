@@ -1,6 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ProductView
+from .models import ProductAnalytics
 
-admin.site.register(ProductView)
+admin.site.register(ProductAnalytics)

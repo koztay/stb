@@ -6,12 +6,14 @@ from requests.auth import HTTPBasicAuth
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.base import View
 from django.views.generic.detail import SingleObjectMixin, DetailView
 from django.views.generic.edit import FormMixin
+
 
 from orders.forms import GuestCheckoutForm
 from orders.mixins import CartOrderMixin
@@ -49,6 +51,27 @@ class ItemCountView(View):
                 count = cart.items.count()
             request.session["cart_item_count"] = count
             return JsonResponse({"count": count})
+        else:
+            raise Http404
+
+
+class ItemsView(View):
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            cart_id = self.request.session.get("cart_id")
+            if cart_id is None:
+                cart_items = None
+            else:
+                cart = Cart.objects.get(id=cart_id)
+                cart_items = cart.items.all()
+                print(cart_items)
+                for cart_item in cart_items:
+                    print('cart item title', cart_item.product.title)
+                    # print('cart item image', cart_item.item.product.productimage_set[0])
+                    # burada pk 'den product ve image 'a nasıl erişeceğiz?
+
+                cart_items = serializers.serialize('json', cart.items.all(), fields=('product', 'sale_price'))
+            return JsonResponse({"cart_items": cart_items})
         else:
             raise Http404
 

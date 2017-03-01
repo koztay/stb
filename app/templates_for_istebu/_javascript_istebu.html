@@ -1,0 +1,92 @@
+<!-- aşağıdaki fonksiyon django template tag içerdiği için .js dosyasına koyamıyoruz. -->
+<script>
+
+    // bu fonksiyon custom_message.js dosyasımda idi...
+function showFlashMessage(message) {
+    console.log("showFlashMessaje çalıştı");
+    var template = "<div class='container container-alert-flash'>" +
+        "<div class='col-sm-3 col-sm-offset-8'> " +
+        "<div class='alert alert-success alert-dismissible' role='alert'>" +
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+        "<span aria-hidden='true'>&times;</span></button>"
+        + message + "</div></div></div>";
+    console.log(template)
+    $("body").append(template);
+    $(".container-alert-flash").fadeIn();
+    setTimeout(function () {
+        $(".container-alert-flash").fadeOut();
+    }, 1800);
+
+}
+// bu anasayfadaki herhangi bir ürüne tıklandığında çalışan fonksiyon...
+$('.aa-add-card-btn').click( function(e) {
+    e.preventDefault();
+    var product_id = this.dataset['productid'];
+    console.log('Add to cart clicklendi, product_id:', product_id);
+    $.ajax({
+        type: "GET", // "POST"
+        url: "{% url 'cart' %}",
+        data: "item=" + product_id + "&qty=" + 1,
+        success: function (data) {
+            console.log('success çalıştı');
+            console.log(data);
+            showFlashMessage(data.flash_message);
+            updateCartItemCount();
+        },
+        error: function (response, error) {
+            // console.log(response)
+            // console.log(error)
+            $("#add-form").submit(); //bu çalışmaz
+        }
+    });
+    return false;
+} );
+
+
+function updateCartItemCount() {
+    var badge = $("#cart-count-badge");
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'item_count' %}",
+        success: function (data) {
+            badge.text(data.count);
+            console.log(data.count);
+        },
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    });
+
+    getCartItems();
+
+}
+
+function getCartItems() {
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'items_list' %}",
+        success: function (data) {
+            console.log('itemları çektim');
+            console.log(data);
+            for (var item in data) {
+                console.log(item);
+            }
+        },
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    })
+
+}
+
+$(document).ready(function () {
+    updateCartItemCount();
+})
+
+</script>

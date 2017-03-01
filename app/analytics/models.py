@@ -6,7 +6,7 @@ from django.db import models
 from products.models import Product
 
 
-class ProductView(models.Model):
+class ProductAnalytics(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     product = models.ForeignKey(Product)
     count = models.IntegerField(default=0)

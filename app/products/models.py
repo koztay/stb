@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import Case, Count, F, Max, Q, Value, When
 from django.utils.safestring import mark_safe
 from uuslug import slugify
-# from taggit.managers import TaggableManager
+from taggit.managers import TaggableManager
 from tinymce.models import HTMLField
 # from utils import thumbnail_location, THUMB_CHOICES
 
@@ -79,7 +79,7 @@ class Product(models.Model):
     slug = models.SlugField(blank=True, unique=True, max_length=1000)  # unique=True)
     show_on_homepage = models.BooleanField(default=True)
     show_on_popular = models.BooleanField(default=True)
-    # tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     # taggable manager ile ilgili bir hata veriyor test edilemiyor.
     kdv = models.FloatField(default=18.0)
     desi = models.IntegerField(default=1)
