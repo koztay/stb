@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^orders/(?P<pk>\d+)/$', OrderDetail.as_view(), name='order_detail'),
     url(r'^cart/$', CartView.as_view(), name='cart'),
     url(r'^api/cart/$', include('carts.api.urls', namespace='cart_api')),
+    url(r'^api/products/', include('products.api.urls', namespace='products_api')),
     url(r'^cart/count/$', ItemCountView.as_view(), name='item_count'),  # ajax call url
     url(r'^cart/items/$', ItemsView.as_view(), name='items_list'),  # ajax call url
     url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),

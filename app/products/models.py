@@ -129,6 +129,28 @@ class Product(models.Model):
         print(number_of_views)
         return number_of_views
 
+    @property
+    def micro_thumb(self):
+        first_image = ProductImage.objects.all().filter(product=self).first()
+        micro_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='micro').first()
+        print(micro_thumb.media.url)
+        return micro_thumb.media.url
+
+    @property
+    def medium_thumb(self):
+        first_image = ProductImage.objects.all().filter(product=self).first()
+        medium_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='medium').first()
+        print(medium_thumb.media.url)
+        return medium_thumb.media.url
+
+    @property
+    def sd_thumb(self):
+        first_image = ProductImage.objects.all().filter(product=self).first()
+        sd_thumb = Thumbnail.objects.all().filter(main_image=first_image, type='sd').first()
+        print(sd_thumb.media.url)
+        return sd_thumb.media.url
+
+
     # bu metodu import edilince save ederken valueset parametresini göndermek için override ettik.
     # def save(self, *args, **kwargs):
     #     super(Product, self).save(*args, **kwargs)
@@ -251,7 +273,6 @@ class CategoryQueryset(models.query.QuerySet):
     def child_categories(self):  # they can also be root for another child
         return self.filter(parent__isnull=False)
 
-
     # yukarıdaki her iki func da işe yaramaz.
     # def stale(self, cutoff=datetime.timedelta(hours=1)):
     #     end_time = now() - cutoff
@@ -259,6 +280,7 @@ class CategoryQueryset(models.query.QuerySet):
     #         last_check=Max('checkresult__checked_on')
     #     ).filter(
     #         Q(last_check__lt=end_time) | Q(last_check__isnull=True))
+
 
 class CategoryManager(models.Manager):
     def get_queryset(self):
