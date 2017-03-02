@@ -21,6 +21,9 @@ class CartItem(models.Model):
     def remove(self):
         return self.item.remove_from_cart()
 
+    @property
+    def cart_item(self):
+        return self.item.title, self.item.quantity
 
 def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
     print("cart_item_pre_save_receiver çalıştı")

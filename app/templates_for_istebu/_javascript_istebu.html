@@ -52,6 +52,7 @@ function updateCartItemCount() {
         success: function (data) {
             badge.text(data.count);
             console.log(data.count);
+
         },
         error: function (response, error) {
             console.log(response);
@@ -65,16 +66,49 @@ function updateCartItemCount() {
 }
 
 function getCartItems() {
+    var template = '<li>' +
+                        '<a class="aa-cartbox-img" href="#"><img id="product-image" src="#" alt="img"></a>' +
+                            '<div class="aa-cartbox-info">' +
+                               '<h4 id="some-id"><a href="#">Product Name</a></h4>' +
+                                '<p><span id="adet">1</span> x <span id="fiyat">$250</span></p>' +
+                            '</div>' +
+                            '<a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>' +
+                    '</li>';
+    var cart_summary = $("#cartbox-summary");
 
+    cart_summary.empty();
     $.ajax({
         type: "GET",
-        url: "{% url 'items_list' %}",
+        url: "{% url 'products_api:api_variation_list' %}",
         success: function (data) {
-            console.log('itemları çektim');
-            console.log(data);
-            for (var item in data) {
-                console.log(item);
-            }
+            //console.log('itemları çektim');
+            $.each(data, function(arrayID,object) {
+            console.log(object);
+            console.log(object.product.title);
+
+            cart_summary.append(template);
+                var new_title_id = "product"+arrayID;
+                var new_image_id = "image"+arrayID;
+                var new_adet_id = "adet"+arrayID;
+                var new_fiyat_id = "fiyat"+arrayID;
+
+                $('#some-id').attr('id', new_title_id);
+                $('#product-image').attr('id', new_image_id);
+                $('#adet').attr('id', new_adet_id);
+                $('#fiyat').attr('id', new_fiyat_id);
+
+                var product_title = $("#"+new_title_id);
+                var product_image = $("#"+new_image_id);
+                var product_adet = $("#"+new_adet_id);
+                var product_fiyat = $("#"+new_fiyat_id);
+
+                console.log(product_title);
+                product_title.text(object.product.title);
+                product_image.attr("src",object.product.micro_thumb);
+                console.log(object.sale_price);
+                product_fiyat.text(object.sale_price + ' ,-₺')
+
+            });
         },
         error: function (response, error) {
             console.log(response);

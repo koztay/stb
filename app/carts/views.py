@@ -154,6 +154,7 @@ class CartView(SingleObjectMixin, View):
                 total_items = 0
 
             data = {
+                "quantity": qty,
                 "deleted": delete_item,
                 "item_added": item_added,
                 "line_total": total,
