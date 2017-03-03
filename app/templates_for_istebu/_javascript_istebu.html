@@ -79,43 +79,72 @@ function getCartItems() {
     cart_summary.empty();
     $.ajax({
         type: "GET",
-        url: "{% url 'products_api:api_variation_list' %}",
+        url: "{% url 'cart_api:api_cartitems_list' %}",
         success: function (data) {
-            //console.log('itemları çektim');
-            $.each(data, function(arrayID,object) {
-            console.log(object);
-            console.log(object.product.title);
+            var cart_total = 0;
+            //console.log(data);
+            if (data.length > 0) {
 
-            cart_summary.append(template);
-                var new_title_id = "product"+arrayID;
-                var new_image_id = "image"+arrayID;
-                var new_adet_id = "adet"+arrayID;
-                var new_fiyat_id = "fiyat"+arrayID;
+                var data_to_be_looped = data[0].items; // items arrayimiz
+                console.log(data_to_be_looped);
 
-                $('#some-id').attr('id', new_title_id);
-                $('#product-image').attr('id', new_image_id);
-                $('#adet').attr('id', new_adet_id);
-                $('#fiyat').attr('id', new_fiyat_id);
+                $.each(data_to_be_looped, function (arrayID, object) {
+                    // console.log(object);
+                    cart_summary.append(template);
+                    var new_title_id = "product" + arrayID;
+                    var new_image_id = "image" + arrayID;
+                    var new_adet_id = "adet" + arrayID;
+                    var new_fiyat_id = "fiyat" + arrayID;
 
-                var product_title = $("#"+new_title_id);
-                var product_image = $("#"+new_image_id);
-                var product_adet = $("#"+new_adet_id);
-                var product_fiyat = $("#"+new_fiyat_id);
+                    $('#some-id').attr('id', new_title_id);
+                    $('#product-image').attr('id', new_image_id);
+                    $('#adet').attr('id', new_adet_id);
+                    $('#fiyat').attr('id', new_fiyat_id);
 
-                console.log(product_title);
-                product_title.text(object.product.title);
-                product_image.attr("src",object.product.micro_thumb);
-                console.log(object.sale_price);
-                product_fiyat.text(object.sale_price + ' ,-₺')
+                    var product_title = $("#" + new_title_id);
+                    var product_image = $("#" + new_image_id);
+                    var product_adet = $("#" + new_adet_id);
+                    var product_fiyat = $("#" + new_fiyat_id);
 
-            });
+                    //console.log(product_title);
+                    product_title.text(object.product_title);
+                    //console.log("product_title", object.product_title);
+                    product_image.attr("src", object.image);
+                    //console.log(object.sale_price);
+                    product_fiyat.text(object.sale_price + ' ,-₺')
+                    product_adet.text(object.quantity)
+                    cart_total += object.sub_total;
+
+                });
+
+                var total_section = '<li>' +
+                    '<span class="aa-cartbox-total-title">' +
+                    'Toplam :' +
+                    '</span>' +
+                    '<span id="total-rakam" class="aa-cartbox-total-price">' +
+                    '$500' +
+                    '</span>' + '</li>';
+                cart_summary.append(total_section);
+            }
+
+            $("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺');
+            if (cart_total == 0) {
+                //console.log('sepet boş da niye seçemiyor?');
+                $("#checkout").attr('href', '#');
+                $("#checkout").text('Sepetiniz Boş');
+            }else{
+                $("#checkout").attr('href', '{% url "checkout" %}');
+                $("#checkout").text('Alışverişi Tamamla');
+            }
+
         },
+
         error: function (response, error) {
             console.log(response);
             console.log(error);
         }
 
-    })
+    });
 
 }
 
