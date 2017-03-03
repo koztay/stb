@@ -22,14 +22,14 @@ function showFlashMessage(message) {
 $('.aa-add-card-btn').click( function(e) {
     e.preventDefault();
     var product_id = this.dataset['productid'];
-    console.log('Add to cart clicklendi, product_id:', product_id);
+    //console.log('Add to cart clicklendi, product_id:', product_id);
     $.ajax({
         type: "GET", // "POST"
         url: "{% url 'cart' %}",
         data: "item=" + product_id + "&qty=" + 1,
         success: function (data) {
-            console.log('success çalıştı');
-            console.log(data);
+            //console.log('success çalıştı');
+            //console.log(data);
             showFlashMessage(data.flash_message);
             updateCartItemCount();
         },
@@ -42,6 +42,26 @@ $('.aa-add-card-btn').click( function(e) {
     return false;
 } );
 
+
+function removeProduct(id) {
+    //console.log('remove clicklendi, product_id ???', id);
+    $.ajax({
+        type: "GET", // "POST"
+        url: "{% url 'cart' %}",
+        data: "item=" + id + "&qty=0",
+        success: function (data) {
+            //console.log('success çalıştı');
+            //console.log(data);
+            showFlashMessage(data.flash_message);
+            updateCartItemCount();
+        },
+        error: function (response, error) {
+            // console.log(response)
+            // console.log(error)
+            $("#add-form").submit(); //bu çalışmaz
+        }
+    });
+}
 
 function updateCartItemCount() {
     var badge = $("#cart-count-badge");
@@ -69,10 +89,11 @@ function getCartItems() {
     var template = '<li>' +
                         '<a class="aa-cartbox-img" href="#"><img id="product-image" src="#" alt="img"></a>' +
                             '<div class="aa-cartbox-info">' +
-                               '<h4 id="some-id"><a href="#">Product Name</a></h4>' +
+                               '<h4><a id="some-id" href="#">Product Name</a></h4>' +
                                 '<p><span id="adet">1</span> x <span id="fiyat">$250</span></p>' +
                             '</div>' +
-                            '<a class="aa-remove-product" href="#"><span class="fa fa-times"></span></a>' +
+                            '<a id="product-id" class="aa-remove-product" href="#" onclick="return removeProduct(this.id);">' +
+                            '<span class="fa fa-times"></span></a>' +
                     '</li>';
     var cart_summary = $("#cartbox-summary");
 
@@ -86,7 +107,7 @@ function getCartItems() {
             if (data.length > 0) {
 
                 var data_to_be_looped = data[0].items; // items arrayimiz
-                console.log(data_to_be_looped);
+                //console.log(data_to_be_looped);
 
                 $.each(data_to_be_looped, function (arrayID, object) {
                     // console.log(object);
@@ -100,6 +121,8 @@ function getCartItems() {
                     $('#product-image').attr('id', new_image_id);
                     $('#adet').attr('id', new_adet_id);
                     $('#fiyat').attr('id', new_fiyat_id);
+                    $('#product-id').attr('id', object.product_id);
+
 
                     var product_title = $("#" + new_title_id);
                     var product_image = $("#" + new_image_id);
@@ -108,11 +131,13 @@ function getCartItems() {
 
                     //console.log(product_title);
                     product_title.text(object.product_title);
+                    product_title.attr('href', object.product_url);
                     //console.log("product_title", object.product_title);
                     product_image.attr("src", object.image);
                     //console.log(object.sale_price);
-                    product_fiyat.text(object.sale_price + ' ,-₺')
-                    product_adet.text(object.quantity)
+                    product_fiyat.text(object.sale_price + ' ,-₺');
+                    product_adet.text(object.quantity);
+
                     cart_total += object.sub_total;
 
                 });
