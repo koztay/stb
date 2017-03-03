@@ -1,15 +1,5 @@
-from django.http import Http404
-from django.http import JsonResponse
 from rest_framework import serializers
-
-from carts.models import Cart, CartItem
-
-
-class CartItemSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CartItem
-        fields = ['cart_item', 'quantity']
+from carts.models import Cart
 
 
 class CartModelSerializer(serializers.ModelSerializer):
@@ -20,7 +10,11 @@ class CartModelSerializer(serializers.ModelSerializer):
         fields = ['pk', 'items']
 
     def get_items(self, obj):
-            cart = Cart.objects.get(id=obj.pk)
+            request = self.context['request']
+            card_id = request.session.get("cart_id")
+            # or
+            card_id = obj.pk
+            cart = Cart.objects.get(id=card_id)
             cart_items = cart.cartitem_set.all()
             print(cart_items)
             cart_items_array = []
