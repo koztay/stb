@@ -4,7 +4,7 @@
     // bu fonksiyon custom_message.js dosyasımda idi...
 function showFlashMessage(message) {
     //console.log("showFlashMessaje çalıştı");
-    var template = "<div class='container container-alert-flash'>" +
+    var template = "<div id='flash-message' class='container container-alert-flash'>" +
         "<div class='col-sm-3 col-sm-offset-8'> " +
         "<div class='alert alert-success alert-dismissible' role='alert'>" +
         "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
@@ -13,9 +13,17 @@ function showFlashMessage(message) {
     //console.log(template)
     $("body").append(template);
     $(".container-alert-flash").fadeIn();
+
     setTimeout(function () {
         $(".container-alert-flash").fadeOut();
+        $(".container-alert-flash").promise().done(function() {
+            var element = document.getElementById("flash-message");
+            element.parentNode.removeChild(element);
+        });
     }, 1800);
+
+
+
 }
 
 // bu anasayfadaki herhangi bir ürüne tıklandığında çalışan fonksiyon...
@@ -30,8 +38,9 @@ $('.aa-add-card-btn').click( function(e) {
         success: function (data) {
             //console.log('success çalıştı');
             //console.log(data);
-            showFlashMessage(data.flash_message);
             updateCartItemCount();
+            getCartItems();
+            showFlashMessage(data.flash_message);
         },
         error: function (response, error) {
             // console.log(response)
@@ -58,8 +67,8 @@ function removeProduct(product) {
             success: function (data) {
                 //console.log('success çalıştı');
                 //console.log(data);
-                showFlashMessage(data.flash_message);
                 updateCartItemCount();
+                showFlashMessage(data.flash_message);
             },
             error: function (response, error) {
                 // console.log(response)
@@ -88,8 +97,6 @@ function updateCartItemCount() {
         }
 
     });
-
-    getCartItems();
 
 }
 
@@ -190,6 +197,7 @@ function getCartItems() {
 
 $(document).ready(function () {
     updateCartItemCount();
+    getCartItems();
 });
 
 </script>
