@@ -9,51 +9,32 @@
                     <div class="aa-header-top-area">
                         <!-- start header top left -->
                         <div class="aa-header-top-left">
-                            <!-- start language -->
-                            <div class="aa-language">
-                                <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#" type="button" id="dropdownMenu1"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <img src="{% static 'img/flag/english.jpg' %}" alt="english flag">ENGLISH
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#"><img src="{% static 'img/flag/french.jpg' %}" alt="">FRENCH</a></li>
-                                        <li><a href="#"><img src="{% static 'img/flag/english.jpg' %}" alt="">ENGLISH</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- / language -->
-
-                            <!-- start currency -->
-                            <div class="aa-currency">
-                                <div class="dropdown">
-                                    <a class="btn dropdown-toggle" href="#" type="button" id="dropdownMenu1"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        <i class="fa fa-usd"></i>USD
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#"><i class="fa fa-euro"></i>EURO</a></li>
-                                        <li><a href="#"><i class="fa fa-jpy"></i>YEN</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- / currency -->
                             <!-- start cellphone -->
                             <div class="cellphone hidden-xs">
-                                <p><span class="fa fa-phone"></span>00-62-658-658</p>
+                                <p><span class="fa fa-phone"></span>(212) - 220 9069</p>
                             </div>
                             <!-- / cellphone -->
                         </div>
                         <!-- / header top left -->
                         <div class="aa-header-top-right">
                             <ul class="aa-head-top-nav-right">
-                                <li><a href="account.html">My Account</a></li>
-                                <li class="hidden-xs"><a href="wishlist.html">Wishlist</a></li>
-                                <li class="hidden-xs"><a href="cart.html">My Cart</a></li>
-                                <li class="hidden-xs"><a href="checkout.html">Checkout</a></li>
-                                <li><a href="" data-toggle="modal" data-target="#login-modal">Login</a></li>
+{#                                <li>#}
+{#                                    <a href='{% url "cart" %}'><i class="fa fa-shopping-cart fa-navbar-cart"></i> <span#}
+{#                                            id="cart-count-badge" class='badge'>{{ request.session.cart_item_count }}</span></a>#}
+{#                                </li>#}
+                            {% if request.session.cart_item_count > 0 %}
+                                <li class="hidden-xs"><a href="{% url 'checkout' %}">Alışverişi Tamamla</a></li>
+                            {% endif %}
+                            {% if request.user.is_authenticated %}
+                                <li><a href="{% url 'orders' %}">Siparişlerim</a></li>
+                                <li><a href="{% url 'auth_logout' %}">Çıkış</a></li>
+                            {% else %}
+                                <li><a href="{% url 'registration_register' %}">Kayıt Ol</a></li>
+                                {% if not request.user.is_authenticated and not "/accounts/login" in request.get_full_path %}
+                                    <li><a href="" data-toggle="modal" data-target="#login-modal">Giriş Yap</a></li>
+                                {% endif %}
+
+                            {% endif %}
                             </ul>
                         </div>
                     </div>
