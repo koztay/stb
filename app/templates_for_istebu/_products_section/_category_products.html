@@ -4,12 +4,48 @@
  <div class="tab-pane fade" id="women">
  kendisi otomatik active ediyor.
  -->
-<!-- Start men product category -->
-                                <div class="tab-pane fade in active" id="men">
+                                <!-- Start one-cikanlar product category -->
+                                <div class="tab-pane fade in active" id="one-cikanlar">
                                     <ul class="aa-product-catg">
-                                        {% include '_products_section/_single_product.html' %}
+                                        {% include '_products_section/_single_product.html' with products=products%}
                                     </ul>
-                                    <a class="aa-browse-btn" href="#">Browse all Product <span
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
                                             class="fa fa-long-arrow-right"></span></a>
                                 </div>
-                                <!-- / men product category -->
+                                <!-- / one-cikanlar product category -->
+
+                                <!-- Start firsat ürünleri product category -->
+                                <div class="tab-pane fade" id="firsat">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / firsat ürünleri product category -->
+
+                                <!-- Start kampanya ürünleri product category -->
+                                <div class="tab-pane fade" id="kampanya">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / kampanya product category -->
+
+                                <!-- Start cok-satanlar ürünleri product category -->
+                                <div class="tab-pane fade" id="cok-satan">
+                                    <ul class="aa-product-catg">
+                                        {% include '_products_section/_single_product.html' with products=products %}
+                                    </ul>
+
+                                    <a class="aa-browse-btn" href="{% url 'products:products' %}">TÜMÜNE GÖZAT <span
+                                            class="fa fa-long-arrow-right"></span></a>
+
+                                </div>
+                                <!-- / cok-satanlar product category -->
