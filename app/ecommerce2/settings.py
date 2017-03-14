@@ -33,6 +33,7 @@ print("the fucking secret_key is:", SECRET_KEY)
 DEBUG = env.bool('DJANGO_DEBUG', True)
 print("the fucking DEBUG setting is:", DEBUG)
 
+ADMIN_URL = env('DJANGO_ADMIN_URL', default='admin')
 
 # ALLOWED_HOSTS = ["139.59.139.108", "192.168.99.101", "istebu.com", "www.example.com", ]
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=('istebu.com',))

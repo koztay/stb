@@ -193,8 +193,8 @@ class ProductListView(FilterMixin, ListView):
         # -------------Categories section-------------#
         context['categories'] = Category.objects.all().filter(parent=None).order_by('title')
 
-        # ----------Most Visited deneme bu oldu----------------#
-        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productview__count')).order_by('-num_views')
+        # ----------Most Visited deneme bu oldu----------------# # products model 'da queryset içine alınabilir mi? #
+        most_viewed_product_list = Product.objects.annotate(num_views=Sum('productanalytics__count')).order_by('-num_views')
         # print(product_list)
         context['most_visited_products'] = most_viewed_product_list[:3]
 

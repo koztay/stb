@@ -1,11 +1,11 @@
 {% extends '__base.html' %}
 
 {% block slider_section %}
-    {% include '_slider_section.html' %}
+    {% include 'visual_site_elements/sliders/sliders.html' with object_list=sliders %}
 {% endblock %}
 
 {% block promo_section %}
-    {% include '_promo_section.html' with object_list=promotions %}
+    {% include "visual_site_elements/promotions/promotions.html" with object_list=promotions %}
 {% endblock %}
 
 {% block products_section %}

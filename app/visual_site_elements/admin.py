@@ -8,6 +8,7 @@ class PromotionThumbnailInline(admin.TabularInline):
 
 
 class PromotionAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
     inlines = [
         PromotionThumbnailInline,
     ]

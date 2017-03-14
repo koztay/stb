@@ -22,9 +22,9 @@ Notlar.txt
 *.xml
 *.sqlite3
 *.sql
+*.gz
 *.json
 *.bz2
-*.gz
 .env
 .env_dev
 local_dev.env

@@ -107,29 +107,6 @@ function removeProduct(product) {
                 $("#add-form").submit(); //bu çalışmaz
             }
         });
-{#    $(product.parentElement).fadeOut(800);#}
-{#    $(product.parentElement).promise().done(function(){#}
-    // will be called when all the animations on the queue finish
-        // console.log( 'Task finished ama zamanında.' );
-{#        $.ajax({#}
-{##}
-{#            type: "GET", // "POST"#}
-{#            url: "{% url 'cart' %}",#}
-{#            data: "item=" + product_id + "&qty=0",#}
-{#            success: function (data) {#}
-{#                //console.log('success çalıştı');#}
-{#                //console.log(data);#}
-{#                updateCartTotal();#}
-{#                updateCartItemCount();#}
-{#                showFlashMessage(data.flash_message);#}
-{#            },#}
-{#            error: function (response, error) {#}
-{#                // console.log(response)#}
-{#                // console.log(error)#}
-{#                $("#add-form").submit(); //bu çalışmaz#}
-{#            }#}
-{#        });#}
-{#    });#}
 
 }
 
