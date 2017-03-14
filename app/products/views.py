@@ -1,9 +1,12 @@
+from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # from datetime import datetime
 from django.db.models import Q, Max, Min, Count, Sum
 from django.http import Http404
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template import Context, loader
 from django.utils import timezone
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -16,6 +19,31 @@ from taggit.models import Tag
 from .forms import VariationInventoryFormSet, ProductFilterForm
 from .mixins import StaffRequiredMixin, FilterMixin
 from .models import Product, Variation, Category
+
+
+template_vars = {
+
+}
+
+
+def xml_latest(request):
+    """
+    returns an XML of the most latest posts
+    """
+    template_vars['products'] = Product.objects.all()
+
+    # TODO: Burada henüz domain çalışmıyorkenki URL 'yi de koymayı unutma...
+    if settings.DEBUG:
+        domain = 'http://127.0.0.1:8000'
+    else:
+        domain = 'http://www.istebu.com'
+
+    template_vars['domain'] = domain
+
+    t = loader.get_template('products/xml/products.xml')
+    c = Context(template_vars)
+
+    return HttpResponse(t.render(c), content_type="text/xml")
 
 
 # aşağıdaki view filtreleri context olarak gönderemiyor. Dolayısıyla

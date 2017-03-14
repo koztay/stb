@@ -1,14 +1,18 @@
 version: '2'
 
-services:
+volumes:
+  postgres_data: {}
+  postgres_backup: {}
+  static-data: {}
+  media-data: {}
 
+services:
   postgres:
-    image: postgres:9.4
-    restart: always
-    env_file:
-      - .env
+    build: ./compose/postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup:/backups
+    env_file: .env
 
   app:
     build: ./app/
@@ -56,7 +60,7 @@ services:
     command: celery -A ecommerce2 beat -l info -S django # delete  -l info parameters on production
 
   web:
-    build: ./web
+    build: ./compose/web
     restart: always
     ports:
       - "80:80"
@@ -67,16 +71,8 @@ services:
       - app
 
   redis:
-    build: ./redis
+    build: ./compose/redis
     restart: always
 #    ports:
 #      - "6379"
     command: redis-server /usr/local/etc/redis/redis.conf
-
-volumes:
-  postgres-data:
-    driver: local
-  static-data:
-    driver: local
-  media-data:
-    driver: local

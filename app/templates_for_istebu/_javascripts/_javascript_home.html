@@ -102,6 +102,7 @@ function removeProduct(product) {
                 //console.log('success çalıştı');
                 //console.log(data);
                 updateCartItemCount();
+                updateCartTotal();
                 showFlashMessage(data.flash_message);
             },
             error: function (response, error) {
@@ -218,6 +219,42 @@ function getCartItems() {
                 $("#checkout").text('Alışverişi Tamamla');
             }
 
+        },
+
+        error: function (response, error) {
+            console.log(response);
+            console.log(error);
+        }
+
+    });
+
+}
+
+function updateCartTotal() {
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'cart_api:api_cartitems_list' %}",
+        success: function (data) {
+            var cart_total = 0;
+            //console.log(data);
+            if (data.length > 0) {
+                var data_to_be_looped = data[0].items; // items arrayimiz
+
+                $.each(data_to_be_looped, function (arrayID, object) {
+                    cart_total += object.sub_total;
+                });
+            }
+
+            $("#total-rakam").text(parseFloat(cart_total).toFixed(2) + ' ₺');
+            if (cart_total == 0) {
+                //console.log('sepet boş da niye seçemiyor?');
+                $("#checkout").attr('href', '#');
+                $("#checkout").text('Sepetiniz Boş');
+            }else{
+                $("#checkout").attr('href', '{% url "checkout" %}');
+                $("#checkout").text('Alışverişi Tamamla');
+            }
         },
 
         error: function (response, error) {

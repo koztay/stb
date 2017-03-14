@@ -2,8 +2,18 @@ from django.contrib import admin
 # import nested_admin
 
 
-from .models import Product, Variation, ProductImage, Category, ProductFeatured, AttributeType, AttributeValue, \
-    ProductType, Thumbnail, Currency
+from .models import (
+    Product,
+    Variation,
+    ProductImage,
+    Category,
+    ProductFeatured,
+    AttributeType,
+    AttributeValue,
+    ProductType,
+    Thumbnail,
+    Currency
+    )
 
 
 class VariationInline(admin.StackedInline):
@@ -151,5 +161,3 @@ admin.site.register(Currency, CurrencyAdmin)
 #     inlines = [TocSectionInline]
 #
 # admin.site.register(TableOfContents, TableOfContentsAdmin)
-
-
