@@ -87,13 +87,8 @@ $('.aa-add-card-btn').click( function(e) {
 
 function removeProduct(product) {
     var product_id = product.id;
-    console.log('product_id : ', product_id);
-
-    $(product.parentElement).fadeOut(800);
-    $(product.parentElement).promise().done(function(){
-    // will be called when all the animations on the queue finish
-        // console.log( 'Task finished ama zamanında.' );
-        $.ajax({
+    //console.log('product_id : ', product_id);
+    $.ajax({
 
             type: "GET", // "POST"
             url: "{% url 'cart' %}",
@@ -101,8 +96,9 @@ function removeProduct(product) {
             success: function (data) {
                 //console.log('success çalıştı');
                 //console.log(data);
-                updateCartItemCount();
                 updateCartTotal();
+                updateCartItemCount();
+                $(product.parentElement).fadeOut(800);
                 showFlashMessage(data.flash_message);
             },
             error: function (response, error) {
@@ -111,7 +107,29 @@ function removeProduct(product) {
                 $("#add-form").submit(); //bu çalışmaz
             }
         });
-    });
+{#    $(product.parentElement).fadeOut(800);#}
+{#    $(product.parentElement).promise().done(function(){#}
+    // will be called when all the animations on the queue finish
+        // console.log( 'Task finished ama zamanında.' );
+{#        $.ajax({#}
+{##}
+{#            type: "GET", // "POST"#}
+{#            url: "{% url 'cart' %}",#}
+{#            data: "item=" + product_id + "&qty=0",#}
+{#            success: function (data) {#}
+{#                //console.log('success çalıştı');#}
+{#                //console.log(data);#}
+{#                updateCartTotal();#}
+{#                updateCartItemCount();#}
+{#                showFlashMessage(data.flash_message);#}
+{#            },#}
+{#            error: function (response, error) {#}
+{#                // console.log(response)#}
+{#                // console.log(error)#}
+{#                $("#add-form").submit(); //bu çalışmaz#}
+{#            }#}
+{#        });#}
+{#    });#}
 
 }
 
@@ -255,6 +273,8 @@ function updateCartTotal() {
                 $("#checkout").attr('href', '{% url "checkout" %}');
                 $("#checkout").text('Alışverişi Tamamla');
             }
+
+
         },
 
         error: function (response, error) {
