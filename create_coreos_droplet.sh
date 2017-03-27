@@ -3,7 +3,7 @@ source ~/.bashrc
 
 # DOTOKEN = 50984b95f9042ddc668fa34f32e91f51b4e8e6c68983e016ac6a7903968ca055
 
-docker-machine create --driver digitalocean --digitalocean-image coreos-stable --digitalocean-userdata core-os-cloud-config.yml --digitalocean-ssh-user core --digitalocean-size 512mb --digitalocean-region 'fra1' --digitalocean-ipv6 --digitalocean-private-networking --digitalocean-access-token $DOTOKEN istebu-core01
+docker-machine create --driver digitalocean --digitalocean-image coreos-stable --digitalocean-userdata core-os-cloud-config.yml --digitalocean-ssh-user core --digitalocean-size 512mb --digitalocean-region 'fra1' --digitalocean-ipv6 --digitalocean-private-networking --digitalocean-access-token $DOTOKEN consulta-core01
 # yukarıdaki komut aşağıdaki versiyonlara sahip DockerToolbox-1.13.0.pkg dosyasını kurduktan sonra çalıştı.
 # 1.12.5 - 1.12.6 versiyonlarında çalışmıyordu... CoreOS machine yaratamıyordu. Hatta OS belirtilen hiçbit komutta
 # provisioning yapamıyordu. Artık yeni versiyon mu düzeltti durumu, yoksa digitalocean mı bilmiyorum.
