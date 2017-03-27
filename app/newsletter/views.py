@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
-
+from django.contrib.flatpages import views
 
 from products.models import ProductFeatured, Product, Category
 from visual_site_elements.models import SliderImage, Promotion, HorizontalBanner, Testimonial
@@ -70,7 +70,7 @@ def home(request):
     else:
         form = SignUpForm()
 
-    about_us_page = reverse('django.contrib.flatpages.views.flatpage', kwargs={'url': '/hakkimizda/'})
+   # about_us_page = reverse(views.flatpage, kwargs={'url': '/hakkimizda/'})
 
     context = {
         "title": title,
@@ -83,7 +83,7 @@ def home(request):
         "categories": categories,
         "horizontal_banner": horizontal_banner,
         "testimonials": testimonials,
-        "about_us_page": about_us_page,
+        # "about_us_page": about_us_page,
     }
 
     # if form.is_valid():

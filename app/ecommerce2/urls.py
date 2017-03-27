@@ -9,7 +9,7 @@ from orders.views import (
     UserAddressCreateView,
     OrderList,
     OrderDetail)
-
+from newsletter.views import home, contact
 
 urlpatterns = [
 
@@ -18,8 +18,8 @@ urlpatterns = [
     url(r'^hakkimizda/$', views.flatpage, {'url': '/hakkimizda/'}, name='hakkimizda'),
     # url(r'^license/$', views.flatpage, {'url': '/license/'}, name='license'),
     # Examples:
-    url(r'^$', 'newsletter.views.home', name='home'),
-    url(r'^contact/$', 'newsletter.views.contact', name='contact'),
+    url(r'^$', home, name='home'),
+    url(r'^contact/$', contact, name='contact'),
     # url(r'^about/$', 'ecommerce2.views.about', name='about'),
 
 

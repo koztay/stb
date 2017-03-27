@@ -118,7 +118,6 @@ class ProductGenericImporter(GenericImporter):
         process_xls_row.delay(importer_map_pk=importer_map.pk, row=row, values=values)
 
 
-# @staff_member_required
 class GenericImporterCreateView(StaffRequiredMixin, DataImporterForm):
 
     template_name = 'importer/product_importer.html'
